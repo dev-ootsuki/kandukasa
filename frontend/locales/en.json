@@ -1,0 +1,194 @@
+{
+  "langs": {
+    "en": "english",
+    "ja": "japanese"
+  },
+  "app_name": "Database Admin Tool",
+  "link_name": "Databases",
+  "go_home": "Go Home",
+  "common": {
+    "no_record": "No data available",
+    "not_use": "not use",
+    "new_registration_exec": "New registration",
+    "exec_confirm": "Execute {0}. Are you sure?", 
+    "exec": "Execute",
+    "update_exec": "Update",
+    "delete_exec": "Delete",
+    "truncate_exec": "Truncate",
+    "bulk_delete_exec": "Bulk delete",
+    "bulk_truncate_exec": "Bulk truncate",
+    "yes": "yes",
+    "no" : "no",
+    "cancel": "cancel",
+    "close": "close",
+    "operation": "operation",
+    "encount_error": "Error",
+    "required": "Required",
+    "home": "Home"
+  },
+  "leftmenu": {
+    "all": "All",
+    "tables": "Tables",
+    "views" : "Views",
+    "triggers": "Triggers",
+    "events": "Events",
+    "routines": "Routines"
+  },
+  "db_instance": {
+    "info": "Info",
+    "info_title" : "Connection info",
+    "schemas_title" : "Database info",
+    "engine_title" : "DBEngines info",
+    "privilege_title" : "Users and Privileges",
+    "character_sets_title" : "Available character sets",
+    "collations_title": "Available collations"
+  },
+  "schemas": {
+    "info": "Info",
+    "maintenance" : "Maintenance",
+    "query": "SQL",
+    "design": "ER Diagram",
+    "table_total": "Total usage of tables",
+    "index_total": "Total usage of indexes",
+    "num_of_tables" : "Number of tables",
+    "num_of_views": "Number of views",
+    "num_of_triggers": "Number of triggers",
+    "num_of_routines": "Number of routines",
+    "num_of_events": "Number of events",
+    "engines": "Engines in used"
+  },
+  "settings": {
+    "summary": "List of settings",
+    "summary_of_design": "Functions to manage light/dark switching, language settings, various color changes, etc.",
+    "summary_of_db_connections": "Ability to manage the DB connections used by this application.",
+    "summary_of_watch_points": "Function to observe the numerical values of the results of periodic queries.",
+    "summary_of_authority": "Ability to manage permissions granted to users.",
+    "summary_of_users": "Ability to manage users of the application.",
+    "summary_of_configurations": "Application configuration.",
+    "summary_of_external_services": "Settings for external services.",
+    "summary_of_queries": "Ability to manage personally saved SQL shortcuts.",
+    "summary_of_dashboard": "Ability to manage dashboards to be displayed on personal home screens.",
+    "design": {
+      "title": "Design settings",
+      "lang": "Language",
+      "dark_mode": "DarkMode",
+      "primary_color": "Color of Primary",
+      "secondary_color": "Color of Secondary",
+      "accent_color": "Color of Accent",
+      "positive_color": "Color of Positive",
+      "negative_color": "Color of Negative",
+      "info_color": "Color of Info",
+      "warning_color": "Color of Warning",
+      "dark_color": "Color of Dark",
+      "light_color": "Color of Light",
+      "main1_color": "Color of Main 1",
+      "main2_color": "Color of Main 2",
+      "main3_color": "Color of Main 3"
+    },
+    "db_connections": {
+      "title": "DB Connections",
+      "title_register": "Register a new DB Connection",
+      "title_update": "Update registration of DB Connection",
+      "id": "ID",
+      "name": "Name",
+      "db_type": "Product name",
+      "host": "Host",
+      "port": "Port",
+      "default_database_name": "Default DB name",
+      "login_name": "Login user",
+      "password" : "Password",
+      "description":"Description",
+      "timeout": "timeout (ms)",
+      "use_ssl": "Using ssl"
+    },
+    "watch_points": {
+      "title": "fixed point observation"
+    },
+    "authority": {
+      "title": "Authority"
+    },
+    "users": {
+      "title": "Users"
+    },
+    "configurations": {
+      "title": "App Config"
+    },
+    "external_services": {
+      "title": "Exernal services"
+    },
+    "queries": {
+      "title": "SQL shortcuts"
+    },
+    "dashboard": {
+      "title": "dashboard"
+    }
+  },
+  "errors": {
+	  "page_not_found": "Oops. Nothing here..."
+  },
+  "validate": {
+    "required" : "Input is required",
+    "numeric": "Please enter numerical values",
+    "ascii" : "Please use alphanumeric symbols",
+    "email" : "Please enter email address",
+    "hiragana" : "Please enter in hiragana",
+    "katakana" : "Please enter in katakana",
+    "zenkaku" : "Please enter in zenkaku",
+    "length_from_to" : "Please enter {0} to {1} characters",
+    "length_from" : "Please enter at least {0} characters",
+    "length_to" : "Please enter up to {0} characters",
+    "length_exactly":"Please enter exactly {0} characters",
+    "range_from_to" : "Please enter from {0} to {1}",
+    "range_from" : "Please enter at least {0}",
+    "range_to": "Please enter less than or equal to {0}"
+  },
+  "metadata": {
+    "catalog_name": "catalog_name",
+    "system_catalog": "catalog_name",
+    "schema_name": "database_name",
+    "default_character_set_name": "default_character_set_name",
+    "default_collation_name": "default_collation_name",
+    "sql_path": "sql_path",
+    "default_encryption": "default_encryption",
+    "options": "options",
+    "connections_limit": "connections_limit",
+    "belongs_space":"belongs_space",
+    "owner_name": "owner_name",
+    "grantee": "grantee",
+    "table_catalog": "table_catalog",
+    "table_schema": "table_schema",
+    "privilege_type": "privilege_type",
+    "is_grantable": "is_grantable",
+    "table_name": "table_name",
+    "column_name": "column_name",
+    "privileges": "privileges",
+    "engine": "engine",
+    "support": "support",
+    "comment": "comment",
+    "transactions": "transactions",
+    "xa": "xa",
+    "savepoints": "savepoints",
+    "character_set_name": "character_set_name",
+    "default_collate_name": "default_collate_name",
+    "description": "description",
+    "maxlen": "maxlen",
+    "auto_increment": "auto_increment", 
+    "table_rows": "table_rows", 
+    "data_length": "data_length", 
+    "index_length": "index_length", 
+    "avg_row_length": "avg_row_length", 
+    "max_data_length": "max_data_length", 
+    "table_collation": "table_collation", 
+    "check_time": "check_time", 
+    "table_comment": "table_comment", 
+    "table_type": "table_type", 
+    "create_options": "create_options", 
+    "row_format": "row_format", 
+    "data_free": "data_free", 
+    "checksum": "checksum", 
+    "update_time": "update_time", 
+    "version": "version",
+    "collation_name":"collation_name",
+    "encoding": "encoding"
+  }
+}

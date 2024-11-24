@@ -1,0 +1,6 @@
+#!/bin/bash
+source /usr/local/nvm/nvm.sh
+rm -rf /tmp/nitro/*
+rm -rf /app/static/*
+
+supervisord -c /etc/supervisor/supervisord.conf

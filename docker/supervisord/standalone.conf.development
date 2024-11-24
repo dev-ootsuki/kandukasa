@@ -1,0 +1,30 @@
+[program:frontend]
+command=/bin/bash -c "cd /app/frontend; yarn dev"
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=130
+
+[program:backend]
+command=/bin/bash -c "/etc/init.d/rails.sh"
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=140
+
+[program:nginx]
+command=/usr/sbin/nginx -g 'daemon off;'
+user=nginx
+stdout_logfile=/var/log/nginx/access.log
+stdout_logfile_maxbytes=0
+stderr_logfile=/var/log/nginx/error.log
+stderr_logfile_maxbytes=0
+priority=170
+
+[program:postgresql]
+command=/usr/local/bin/docker-entrypoint.sh postgres
+user=postgres
+priority=110
+

@@ -1,0 +1,15 @@
+# setup rails
+cd /app/backend
+rm -rf ./tmp/pids/*
+chmod +x ./bin/*
+# wait for local database
+USE_LOCAL_DB=`printenv | grep "DB_HOST" | egrep "^DB_HOST=localhost$" | wc -l`
+if [ $USE_LOCAL_DB -eq 1 ]; then
+  dockerize -wait tcp://localhost:5432 -timeout 20s
+fi
+bundle install
+# create database and rake db:seeds
+bundle exec rails db:prepare
+# migration
+bundle exec rake db:migrate
+RAILS_ENV=production ./bin/rails s -p 3000 -b '0.0.0.0'

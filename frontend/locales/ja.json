@@ -1,0 +1,143 @@
+{
+  "langs": {
+    "en": "英語",
+    "ja": "日本語"
+  },
+  "app_name": "DB管理ツール",
+  "link_name":"DB一覧",
+  "go_home": "ホームに戻る",
+  "common": {
+    "no_record": "データがありません",
+    "not_use": "未使用",
+    "new_registration_exec": "新規登録",
+    "exec_confirm": "{0}を実行します。よろしいですか？", 
+    "exec": "実行",
+    "update_exec": "更新",
+    "delete_exec" : "削除",
+    "truncate_exec": "データ全削除",
+    "dark_mode": "ダークモード",
+    "yes": "はい",
+    "no" : "いいえ",
+    "cancel" : "キャンセル",
+    "close": "閉じる",
+    "operation": "操作",
+    "required": "必須",
+    "home": "ホーム"
+  },
+  "leftmenu": {
+    "all": "全て",
+    "tables": "テーブル",
+    "views" : "ビュー",
+    "triggers": "トリガー",
+    "events": "イベント",
+    "routines": "ルーチン"
+  },
+  "db_instance": {
+    "info": "情報",
+    "info_title" : "DB接続情報",
+    "schemas_title" : "スキーマ",
+    "engine_title" : "データベースエンジン",
+    "privilege_title" : "ユーザー権限",
+    "character_sets_title" : "利用可能な文字セット",
+    "collations_title": "利用可能な照合順序セット"
+  },
+  "schemas": {
+    "info": "情報",
+    "maintenance" : "メンテナンス",
+    "query": "SQL",
+    "design": "ER図",
+    "table_total": "テーブルデータの総量",
+    "index_total": "インデックスの総量",
+    "num_of_tables" : "テーブル総数",
+    "num_of_views": "ビュー総数",
+    "num_of_triggers": "トリガー総数",
+    "num_of_routines": "ルーチン総数",
+    "num_of_events": "イベント総数",
+    "engines": "使用エンジン一覧"
+  },  
+  "settings": {
+    "summary": "設定一覧",
+    "summary_of_design": "明/暗の切り替え、言語設定、各種色の変更などを管理する機能",
+    "summary_of_db_connections": "このアプリケーションで使用するデータベースの接続先を管理する機能",
+    "summary_of_watch_points": "定期的にクエリを実行した結果の数値を観測するための機能",
+    "summary_of_authority": "ユーザーに対して許可する権限を管理する機能",
+    "summary_of_users": "アプリケーションを利用するユーザーを管理する機能",
+    "summary_of_configurations": "アプリケーション全体の設定",
+    "summary_of_external_services": "外部のサービスについての設定",
+    "summary_of_queries": "個人で保存したSQLショートカットを管理する機能",
+    "summary_of_dashboard": "個人のホーム画面に表示するダッシュボードを管理する機能",
+    "design": {
+      "title": "デザイン設定",
+      "lang": "言語",
+      "dark_mode": "ダークモード",
+      "primary_color": "primaryカラー",
+      "secondary_color": "secondaryカラー",
+      "accent_color": "accentカラー",
+      "positive_color": "positiveカラー",
+      "negative_color": "negativeカラー",
+      "info_color": "infoカラー",
+      "warning_color": "warningカラー",
+      "dark_color": "darkカラー",
+      "light_color": "lightカラー",
+      "main1_color": "main(1)のカラー",
+      "main2_color": "main(2)のカラー",
+      "main3_color": "main(3)のカラー"
+    },
+    "db_connections": {
+      "title": "DB接続先設定",
+      "title_register": "DB接続先 - 新規登録",
+      "title_update": "DB接続先 - 更新",
+      "id": "ID",
+      "name": "接続名",
+      "db_type": "製品名",
+      "host": "ホスト名",
+      "port": "ポート",
+      "default_database_name": "デフォルト接続先DB名",
+      "login_name": "ログインユーザー",
+      "password" : "パスワード",
+      "description":"説明",
+      "timeout": "タイムアウト(ミリ秒)",
+      "use_ssl": "SSL接続"
+    },
+    "watch_points": {
+      "title": "定点観測"
+    },
+    "authority": {
+      "title": "権限管理"
+    },
+    "users": {
+      "title": "ユーザー管理"
+    },
+    "configurations": {
+      "title": "アプリケーション設定"
+    },
+    "external_services": {
+      "title": "外部サービス設定"
+    },
+    "queries": {
+      "title": "SQLショートカット管理"
+    },
+    "dashboard": {
+      "title": "ダッシュボード設定"
+    }
+  },
+  "errors": {
+	  "page_not_found": "お探しのページは見つかりませんでした。"
+  },
+  "validate": {
+    "required" : "入力は必須です",
+    "numeric": "数値で入力してください",
+    "ascii" : "英数記号で入力してください",
+    "email" : "メールアドレスを入力してください",
+    "hiragana" : "ひらがなで入力してください",
+    "katakana" : "カタカナで入力してください",
+    "zenkaku" : "全角で入力してください",
+    "length_from_to" : "{0}～{1}文字で入力してください",
+    "length_from" : "{0}文字以上で入力してください",
+    "length_to" : "{0}文字以下で入力してください",
+    "length_exactly":"{0}文字で入力してください",
+    "range_from_to" : "{0}～{1}で入力してください",
+    "range_from" : "{0}以上で入力してください",
+    "range_to": "{0}以下で入力してください"
+  }
+}

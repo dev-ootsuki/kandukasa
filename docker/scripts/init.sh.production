@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# setup supervisor
+USE_LOCAL_DB=`printenv | grep "DB_HOST" | egrep "^DB_HOST=localhost$" | wc -l`
+if [ $USE_LOCAL_DB -eq 1 ]; then
+    echo "************ use local database server ************"
+    rm -rf /etc/supervisor/conf.d/other_db.conf
+else
+    echo "************ use $DB_HOST server ************"
+    rm -rf /etc/supervisor/conf.d/standalone.conf
+fi
+
+supervisord -c /etc/supervisor/supervisord.conf

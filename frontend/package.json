@@ -1,0 +1,38 @@
+{
+  "name": "db_admin_tool",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 54001 --host",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.7.0",
+    "@quasar/extras": "^1.16.13",
+    "@types/reflect-metadata": "^0.1.0",
+    "date-fns": "^4.1.0",
+    "nuxt": "^3.14.159",
+    "nuxt-quasar-ui": "^2.1.6",
+    "pinia": "^2.2.6",
+    "quasar": "^2.17.2",
+    "reflect-metadata": "^0.2.2",
+    "vue": "latest",
+    "vue-router": "latest"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "devDependencies": {
+    "@nuxt/kit": "^3.14.159",
+    "@nuxt/test-utils": "^3.14.4",
+    "@quasar/vite-plugin": "^1.8.1",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^15.11.0",
+    "msw": "^2.6.2",
+    "playwright-core": "^1.48.2",
+    "sass": "^1.33.0",
+    "vitest": "^2.1.4",
+    "vue-i18n": "^10.0.4"
+  }
+}

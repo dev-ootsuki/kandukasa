@@ -1,0 +1,65 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        RUBY_VERSION: 3.3.6
+        PG_VERSION: 17.1
+        APP_ENV: development
+        BUNDLE_DEPLOYMENT: 0
+        BUNDLE_WITHOUT: 
+        STAGE_BASE: nuxt
+        MASTER_KEY: b3d7339d3b50fa706ae8813358435331
+    container_name: app
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+    ports:
+      - "443:443"
+      - "12345:12345" # ruby debug
+    depends_on:
+      - "test-mysql"
+    stdin_open: true
+    tty: true
+    environment:
+      DB_HOST: localhost
+      DB_ADAPTER: postgresql
+      DB_PORT: 5432
+      DB_USER: kandukasa
+      DB_PASSWORD: kandukasa
+
+  # db server
+  test-mysql:
+    image: mysql:8.4
+    hostname: test-mysql
+    container_name: test-mysql
+    environment:
+      MYSQL_USER: test
+      MYSQL_ROOT_PASSWORD: test
+    volumes:
+      - test-mysql-data:/var/lib/mysql
+      - ./tests-integration/db/test-mysql/init:/docker-entrypoint-initdb.d
+      - ./tests-integration/db/test-mysql/my.cnf:/etc/my.cnf
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    stdin_open: true
+    tty: true
+  
+  test-postgresql:
+    image: postgres:17.1
+    hostname: test-postgresql
+    container_name: test-postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kandukasa
+    volumes:
+      - test-postgresql-data:/var/lib/postgresql/data
+      - ./tests-integration/db/test-postgresql/init:/docker-entrypoint-initdb.d
+    stdin_open: true
+    tty: true
+volumes:
+  test-mysql-data:
+    driver: local
+  test-postgresql-data:
+    driver: local

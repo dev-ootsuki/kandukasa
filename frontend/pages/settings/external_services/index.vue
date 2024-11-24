@@ -1,0 +1,3 @@
+<template>
+    external services
+</template>
