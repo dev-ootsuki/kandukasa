@@ -30,4 +30,61 @@ Rails.application.routes.draw do
       end
     end
   end
+  resource :settings, only:[] do
+    resource :design do
+      member do
+        get "", to: "designs#get"
+      end
+    end
+
+    resource :authority do
+      member do
+        get "", to: "authorities#get"
+      end
+    end
+
+    resource :configuration, only:[:show, :update] do
+    end
+
+    resource :user do
+      member do
+        get "", to: "users#get"
+      end
+    end
+
+    resource :watch_point do
+      member do
+        get "", to:"watch_points#get"
+      end
+    end
+
+    resource :dashboard do
+      member do
+        get "", to:"dashboards#get"
+      end
+    end
+
+    resource :query do
+      member do
+        get "", to:"queries#get"
+      end
+    end
+
+    resource :external_service do
+      member do
+        get "", to:"external_services#get"
+      end
+    end
+  end
+
+  resource :auth, only:[] do
+    get "/login", to: "auth#login"
+    get "/sso", to: "auth#sso"
+    get "/logout", to: "auth#logout"
+    get "/init", to: "auth#init"
+  end
+  
+  resource :home, only:[:show] do
+    
+  end
 end

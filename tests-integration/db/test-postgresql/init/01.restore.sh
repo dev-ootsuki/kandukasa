@@ -1,11 +1,8 @@
 #!/bin/bash
-cp -f dvdrental.zip /tmp/
-cp -f world-1.0.tar.gz /tmp/
-cd /tmp
-tar zxvf usda-r18-1.0.tar.gz
-tar xfv dvdrental.zip
+tar zxvf world-1.0.tar.gz
 
-createdb -U postgres usda
-psql -U postgres -f ./usda-r18-1.0/usda.sql usda
+createdb -U postgres world
+psql -U postgres -f dbsamples-0.1/world-1.0/world.sql world
 createdb -U postgres dvdrental
-pg_restore -h localhost -p 5432 -U postgres -d dvdrental ./dvdrental.tar
+pg_restore -h localhost -p 5432 -U postgres -d dvdrental dvdrental.tar
+rm -rf dbsamples-0.1/

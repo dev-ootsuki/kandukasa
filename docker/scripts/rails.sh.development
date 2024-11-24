@@ -1,6 +1,6 @@
 # setup rails
 cd /app/backend
-rm -rf ./tmp/pids/*
+rm -rf /app/backend/tmp/pids/*
 chmod +x ./bin/*
 # wait for local database
 USE_LOCAL_DB=`printenv | grep "DB_HOST" | egrep "^DB_HOST=localhost$" | wc -l`
