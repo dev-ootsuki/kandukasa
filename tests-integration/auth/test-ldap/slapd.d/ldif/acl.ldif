@@ -1,0 +1,7 @@
+changetype: modify
+replace: access
+access: to attrs=userPassword
+  by dn="uid=*,dc=kandukasa-ldap" auth
+  by self write
+  by anonymous auth
+  by * none

@@ -14,7 +14,7 @@
         <template v-slot:body-cell="props">
             <q-td :props="props">
                 <span v-if="props.col.name == 'id'">
-                    <q-btn icon="edit" color="primary" size="8px" class="btn-inner-tables q-mr-sm" />
+                    <q-btn icon="shortcut" color="primary" size="8px" class="btn-inner-tables q-mr-sm" @click="onSelectTable(props.row)" />
                     <q-btn icon="edit_off" color="negative" size="8px" class="btn-inner-tables q-mr-sm" @click="onEraseTableData(props.row)" />
                     <q-btn icon="delete_forever" color="negative" size="8px" class="btn-inner-tables" @click="onDeleteTable(props.row)" />
                 </span>
@@ -29,7 +29,13 @@
 <script lang="ts" setup>
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
-import { type UIMode } from '~/types/Const'
+import { type Design } from '~/types/Types'
+import { UiHelper } from '~/utils/UiHelper';
+
+const props = defineProps<{
+    connection: string | number,
+    schema: string
+}>()
 
 const store = useDbConnectionsStore()
 const tables = store.selectedSchema?.tables
@@ -39,7 +45,16 @@ const defaultPagination = ref({ rowsPerPage: design.tablesPageSize })
 const confirmDialog = ref(false)
 let rowDomain = ref({})
 const multiSelected = ref([])
-const operation = ref<UIMode>("register")
+const operation = ref<Design.UIMode>("register")
+
+const onSelectTable = (target: any) => {
+    store.outerSlectedNodeId = [
+        props.connection, 
+        props.schema, 
+        UiHelper.getSchemaSummary("tables").mode,
+        target.table_id
+    ].join(".")
+}
 
 const onEraseTableData = (target:any) => {
     rowDomain = target

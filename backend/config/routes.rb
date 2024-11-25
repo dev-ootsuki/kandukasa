@@ -20,13 +20,14 @@ Rails.application.routes.draw do
         get ":schema_id", to: "schemas#get"
         post ":schema_id/query", to: "schemas#query"
     end
-      resource :tables, path: ":schema_id", only:[:show] do
+      resource :tables, path: ":schema_id", only:[:show, :update, :create, :destroy] do
         member do
           get ":table_id", to: "tables#get"
+          post ":table_id/query", to: "tables#query"
+          delete "bulk_truncate", to: "tables#bulk_truncate"
+          delete "bulk_drop", to: "tables#bulk_drop"
         end
-        resource :column, path:":table_id", only:[:show] do
-          get ":column_id", to: "column#get"
-        end
+        resource :column, path:":table_id", only:[:create,:update, :destroy]
       end
     end
   end

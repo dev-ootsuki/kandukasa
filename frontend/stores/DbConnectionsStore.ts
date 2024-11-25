@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, TableConditions, DbData } from '~/types/Domain.class'
 import type { WebAPI } from '@/types/Types'
 
 type State = {
@@ -11,7 +11,8 @@ type State = {
     selectedView: DbView | null,
     selectedRoutine: DbRoutine | null,
     selectedEvent: DbEvent | null
-    node: any[]
+    node: any[],
+    outerSlectedNodeId: string | null
 }
 
 export const useDbConnectionsStore = defineStore('dbConnections', {
@@ -25,7 +26,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
       selectedView: null,
       selectedRoutine: null,
       selectedEvent: null,
-      node: []
+      node: [],
+      outerSlectedNodeId: null
     }),
     getters: {
         selected(state: State){
@@ -108,14 +110,24 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             })
         },
         async getTableInfo(conId:number, schemaId:string, tableId: string) : Promise<DbTable>{
-            const con = await this.selected
-            return webapi()<WebAPI.WebAPISuccess<DbSchema[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}/${tableId}`)
+            const con = this.selected
+            return webapi()<WebAPI.WebAPISuccess<DbTable[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}/${tableId}`)
             .then(data => {
                 const table = con?.db_instance?.schemas.find(e => e.schema_id == schemaId)?.tables.find(e => e.table_id == tableId)!
                 table.columns = data?.data.columns
                 return table
             })
         },
+        async getTableData(conId:number, schemaId:string, tableId: string, conditions?: TableConditions) : Promise<DbData[]>{
+            const con = this.selected
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}/${tableId}/query`, {
+                method:"POST"                
+            })
+            .then(data => {
+                return data.data
+            })
+        },
+
         setSelectedDb(id: number) : DbConnection | null{
             this.selectedDb = this.dbConnections.find(e => e.id == id)!
             this.selectedEvent = null
