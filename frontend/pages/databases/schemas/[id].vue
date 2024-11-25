@@ -5,7 +5,6 @@
     </q-toolbar>
     <div class="content-main q-pa-sm">
       <q-card class="bg-eins text-eins" v-if="selectedSchema">
-
         <q-tabs
           v-model="tab"
           dense
@@ -15,7 +14,6 @@
           class="bg-secondary text-white shadow-2"
           :breakpoint="0"
         >
-
         <q-tab name="info" :label="$t('schemas.info')" icon="info" v-if="mode == 'all'"/>
         <q-tab name="tables" :label="$t('leftmenu.tables')" icon="newspaper" v-if="mode == 'all' || mode == 'tables'"/>
         <q-tab name="query" :label="$t('schemas.query')" icon="edit_note" v-if="mode == 'all'"/>
@@ -60,7 +58,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="tables" v-if="mode == 'all' || mode == 'tables'">
-          <tables />
+          <tables :connection="selectedSchema.id!" :schema="selectedSchema.schema_id!" />
         </q-tab-panel>
 
         <q-tab-panel name="query" v-if="mode == 'all'">
@@ -99,20 +97,19 @@ import { UiHelper } from '~/utils/UiHelper'
 import { byteToLargeUnit } from '~/composables/UnitConverter'
 
 // sub pages
-import Maintenance from './maintenance.vue'
-import Query from './query.vue'
-import Tables from './tables.vue'
-import Views from './views.vue'
-import Events from './events.vue'
-import Routines from './routines.vue'
-import Triggers from './triggers.vue'
+import Maintenance from '~/pages/databases/schemas/maintenance.vue'
+import Query from '~/pages/databases/schemas/query.vue'
+import Tables from '~/pages/databases/schemas/tables.vue'
+import Views from '~/pages/databases/schemas/views.vue'
+import Events from '~/pages/databases/schemas/events.vue'
+import Routines from '~/pages/databases/schemas/routines.vue'
+import Triggers from '~/pages/databases/schemas/triggers.vue'
 
 const dbStore = useDbConnectionsStore()
 const { selectedSchema } = storeToRefs(dbStore)
 if(selectedSchema.value == null)
-  navigateTo('/')
+  navigateTo(`/databases/${dbStore?.selectedDb?.id}`)
 const schema = selectedSchema.value!
-console.log(schema)
 const route = useRoute()
 
 const mode = ref<string>(UiHelper.getSchemaSummary("none").mode)

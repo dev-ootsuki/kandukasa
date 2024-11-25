@@ -15,7 +15,7 @@
           <!-- name -->
           <pf-input icon="label" :label="$t('settings.db_connections.name')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.name" />
           <!-- db_type -->
-          <pf-select require icon="settings_applications" :label="$t('settings.db_connections.db_type')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.db_type" :options="products"/>
+          <pf-select require icon="settings_applications" :label="$t('settings.db_connections.db_type')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.db_type" :options="Domain.DatabaseProducts.filter(e => e.enable)"/>
           <!-- host -->
           <pf-input icon="dns" :label="$t('settings.db_connections.host')" :validate="[qRequired, qLengthTo128]" :model="input" ref="input.host" />
           <!-- port -->
@@ -70,7 +70,6 @@ const onSubmit = () => {
     })
 }
 
-const products = [{label: "MySQL", value: "MySQL"},{label:"postgreSQL", value: "postgreSQL"}]
 
 const onRegistration = () => {
   if(input.isValid()){

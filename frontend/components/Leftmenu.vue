@@ -70,7 +70,7 @@ import { QTree } from 'quasar'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const store = useDbConnectionsStore()
-const { qnode } = storeToRefs(store)
+const { qnode, outerSlectedNodeId } = storeToRefs(store)
 
 const selected = ref('')
 const leftTree = ref<InstanceType<typeof QTree>>()
@@ -136,6 +136,11 @@ const onOpenTreeNode = (newval:any) => {
     // table | view | trigger | event
     else if(keys.length == 4){
         // data is exists!
+
+        // when outerSlectedNodeId changed, parent is not expand
+        const parentKey = [keys[0], keys[1], keys[2]].join(".")
+        if(!leftTree.value?.isExpanded(parentKey))
+            leftTree.value?.setExpanded(parentKey, true)
         handler[node.header].navi(node, newval)
     }
     // others select? == error?
@@ -144,7 +149,11 @@ const onOpenTreeNode = (newval:any) => {
     }
 }
 
-// TODO 外から呼べるようにexposeする？
+watch(outerSlectedNodeId, (newval, oldval) =>{
+    outerSlectedNodeId.value = newval
+    if(newval != null)
+        selected.value = newval
+})
 
 const onCloseTreeNode = (oldval:any) => {
     const node = leftTree.value?.getNodeByKey(oldval)
@@ -191,7 +200,8 @@ const handler = {
                         label:"table_name",
                         header:"table",
                         lazy:false
-                    })
+                    }),
+                    lazy:false
                 }
                 const views = {
                     label:t('leftmenu.views'),
@@ -202,7 +212,8 @@ const handler = {
                         label:"table_name",
                         header:"view",
                         lazy:false
-                    })
+                    }),
+                    lazy:false
                 }
                 const triggers = {
                     label:t('leftmenu.triggers'),
@@ -213,29 +224,32 @@ const handler = {
                         label:"trigger_name",
                         header:"trigger",
                         lazy:false
-                    })
+                    }),
+                    lazy:false
                 }
                 const events = {
                     label:t('leftmenu.events'),
                     key:`${key}.events`,
                     header:"eventsummary",
-                    children:UiHelper.createNode(data.triggers, {
+                    children:UiHelper.createNode(data.events, {
                         keys:["id", "schema_id", "events", "event_name"],
                         label:"event_name",
                         header:"event",
                         lazy:false
-                    })
+                    }),
+                    lazy:false
                 }
                 const routines = {
                     label:t('leftmenu.routines'),
                     key:`${key}.routines`,
                     header:"routinesummary",
-                    children:UiHelper.createNode(data.triggers, {
+                    children:UiHelper.createNode(data.routines, {
                         keys:["id", "schema_id", "routines", "routine_name"],
                         label:"routine_name",
                         header:"routine",
                         lazy:false
-                    })
+                    }),
+                    lazy:false
                 }
                 done([tables, views, triggers, routines, events])
                 return data
@@ -244,7 +258,7 @@ const handler = {
         navi: (node:any,key:any,show?:string) => {
             const keys = key.split(".")
             store.setSelectedSchema(parseInt(keys[0]),keys[1])
-            navigateTo(`/schemas/${keys[1]}?show=${show !== undefined ? show : "all"}`)
+            navigateTo(`/databases/schemas/${keys[1]}?show=${show !== undefined ? show : "all"}`)
         }
     },
     table: {
@@ -252,13 +266,7 @@ const handler = {
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
             store.setSelectedTable(parseInt(keys[0]), keys[1], keys[3])
-            if(store.selectedTable?.columns === undefined){
-                store.getTableInfo(parseInt(keys[0]), keys[1], keys[3])
-                .then(data => {
-                    navigateTo(`/tables/${keys[3]}`)
-                })
-            }
-            navigateTo(`/tables/${keys[3]}`)
+            navigateTo(`/databases/tables/${keys[3]}`)
         }
     },
     trigger: {
@@ -266,7 +274,31 @@ const handler = {
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
             store.setSelectedTrigger(parseInt(keys[0]), keys[1], keys[3])
-            navigateTo(`/triggers/${keys[3]}`)
+            navigateTo(`/databases/triggers/${keys[3]}`)
+        }
+    },
+    routine: {
+        exec: emptyHandler,
+        navi: (node:any, key:any, show?:string) => {
+            const keys = key.split(".")
+            store.setSelectedRoutine(parseInt(keys[0]), keys[1], keys[3])
+            navigateTo(`/databases/routines/${keys[3]}`)
+        }
+    },
+    event: {
+        exec: emptyHandler,
+        navi: (node:any, key:any, show?:string) => {
+            const keys = key.split(".")
+            store.setSelectedEvent(parseInt(keys[0]), keys[1], keys[3])
+            navigateTo(`/databases/events/${keys[3]}`)
+        }
+    },
+    view: {
+        exec: emptyHandler,
+        navi: (node:any, key:any, show?:string) => {
+            const keys = key.split(".")
+            store.setSelectedView(parseInt(keys[0]), keys[1], keys[3])
+            navigateTo(`/databases/views/${keys[3]}`)
         }
     }
     // TODO add event, routine, view

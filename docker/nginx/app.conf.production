@@ -9,8 +9,8 @@ server {
 	root /app/web;
 
 	ssl on;
-	ssl_certificate     /etc/ssl/pki/app.crt;
-	ssl_certificate_key /etc/ssl/pki/app.key;	
+	ssl_certificate     /etc/ssl/pki/DOMAIN_NAME.crt;
+	ssl_certificate_key /etc/ssl/pki/DOMAIN_NAME.key;	
 
 	location /api/ {
 		try_files $uri $uri/index.html @backend;

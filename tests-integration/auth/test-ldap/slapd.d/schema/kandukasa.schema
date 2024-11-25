@@ -1,0 +1,3 @@
+attributeTypes ( 1.1.2.1.1 NAME 'objectCategory' DESC 'Custom AD emulate' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+attributeTypes ( 1.1.2.1.2 NAME 'kandukasaId' DESC 'extended filed' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+objectclass ( 1.1.2.2.1 NAME 'kandukasaUser' DESC 'custom filed' SUP 'inetOrgPerson' STRUCTURAL MUST ( objectCategory $ kandukasaId ) ) 

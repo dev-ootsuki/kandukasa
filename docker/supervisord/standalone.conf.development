@@ -1,5 +1,5 @@
 [program:frontend]
-command=/bin/bash -c "cd /app/frontend; yarn dev"
+command=/bin/bash -c "cd /app/frontend; yarn install && yarn dev"
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr

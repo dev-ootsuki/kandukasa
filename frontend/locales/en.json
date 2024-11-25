@@ -57,6 +57,10 @@
     "num_of_events": "Number of events",
     "engines": "Engines in used"
   },
+  "tables": {
+    "info": "Info",
+    "data": "Data"
+  },
   "settings": {
     "summary": "List of settings",
     "summary_of_design": "Functions to manage light/dark switching, language settings, various color changes, etc.",
@@ -188,7 +192,22 @@
     "checksum": "checksum", 
     "update_time": "update_time", 
     "version": "version",
-    "collation_name":"collation_name",
-    "encoding": "encoding"
+    "encoding": "encoding",
+    "ordinal_position": "ordinal_position", 
+    "data_type": "data_type", 
+    "is_nullable": "is_nullable", 
+    "column_default" : "column_default", 
+    "character_maximum_length": "character_maximum_length", 
+    "character_octet_length" : "character_octet_length", 
+    "numeric_precision" : "numeric_precision", 
+    "numeric_scale": "numeric_scale", 
+    "datetime_precision": "datetime_precision", 
+    "collation_name" : "collation_name", 
+    "column_type": "column_type", 
+    "column_key": "column_key", 
+    "extra": "extra", 
+    "column_comment": "column_comment", 
+    "generation_expression": "generation_expression", 
+    "srs_id": "srs_id"
   }
 }
