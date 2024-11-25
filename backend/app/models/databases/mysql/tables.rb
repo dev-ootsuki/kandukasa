@@ -1,6 +1,7 @@
 module Databases
   module Mysql
     class Tables < Databases::Auto::Tables
+      BLOB_STRING = "** Blob data **"
       def initialize connection_id, schema_id, table_id
         @connection_id = connection_id
         @schema_id = schema_id
@@ -15,18 +16,19 @@ module Databases
 
       def find_data base, condition
         columns = find_columns base
-        column = columns.map{|each| each["column_name"] }.join(", ")
+        column = columns.map{|each|
+          # // TODO json, binary, enum ?
+          if each["data_type"].downcase == "geometry"
+            "ST_AsText(#{each['column_name']}) AS #{each['column_name']}"
+          elsif each["data_type"].downcase == "blob"
+            "'#{BLOB_STRING}' AS #{each['column_name']}"
+          else
+            each["column_name"] 
+          end
+        }.join(", ")
         # // TODO さにたいずする
         query = "SELECT #{column} FROM #{@schema_id}.#{@table_id}"
-        targets = columns.select{|each| each["data_type"] == "varchar" || each["data_type"] == "text" }
-        base.connection.select_all(query).to_a.map{|each|
-          # // TODO 文字列で\xの文字が入っているデータを補正しないとjsonにできない
-          
-          # targets.each{|target| 
-          #   each[target["column_name"]] = each[target["column_name"]]&.chars&.map{|b| b.unpack 'C' }&.join('.')
-          # }
-          each
-        }
+        base.connection.select_all(query).to_a
       end
 
       def find_columns base
