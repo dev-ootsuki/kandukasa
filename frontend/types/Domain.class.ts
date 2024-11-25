@@ -184,6 +184,14 @@ export class DbTable extends DomainObject{
     }
 }
 
+export class TableConditions{
+    
+}
+
+export class DbData{
+    [K:string]:any
+}
+
 export class DbColumn extends DomainObject{
     
     attributes: DbColumnAttribute[] = []
@@ -198,3 +206,10 @@ export class DbColumnAttribute extends DomainObject{
         super()
     }
 }
+
+export const DatabaseProducts = [
+    {label: "MySQL", value: "MySQL"},
+    {label:"postgreSQL", value: "postgreSQL"},
+    {label: "RDS Aurora MySQL", value:"RDSAuroraMySQL"},
+    {label:"RDS Aurora postgreSQL", value:"RDSAuroraPostgreSQL"}
+]

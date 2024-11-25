@@ -55,6 +55,15 @@ class DbStrategy
     ret
   end
 
+  def table_data condition
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.find_data con, condition
+    }
+    clonse_connection
+    ret
+  end
+
   def establish
     ActiveRecord::Base.establish_connection @config
     @connection = ActiveRecord::Base

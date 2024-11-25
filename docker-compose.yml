@@ -2,15 +2,16 @@ services:
   app:
     build: 
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
       args:
         RUBY_VERSION: 3.3.6
-        PG_VERSION: 17.1
+        PG_VERSION: 17.2
         APP_ENV: development
         BUNDLE_DEPLOYMENT: 0
         BUNDLE_WITHOUT: 
         STAGE_BASE: nuxt
         MASTER_KEY: b3d7339d3b50fa706ae8813358435331
+        DOMAIN_NAME: localhost
     container_name: app
     volumes:
       - ./backend:/app/backend
@@ -18,18 +19,16 @@ services:
     ports:
       - "443:443"
       - "12345:12345" # ruby debug
-    depends_on:
-      - "test-mysql"
     stdin_open: true
     tty: true
     environment:
       DB_HOST: localhost
       DB_ADAPTER: postgresql
       DB_PORT: 5432
-      DB_USER: kandukasa
-      DB_PASSWORD: kandukasa
+      DB_USER: postgres
+      DB_PASSWORD: postgres
 
-  # db server
+  # db servers
   test-mysql:
     image: mysql:8.4
     hostname: test-mysql
@@ -44,9 +43,11 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     stdin_open: true
     tty: true
+    profiles:
+      - db
   
   test-postgresql:
-    image: postgres:17.1
+    image: postgres:17.2-alpine
     hostname: test-postgresql
     container_name: test-postgresql
     environment:
@@ -58,8 +59,31 @@ services:
       - ./tests-integration/db/test-postgresql/init:/docker-entrypoint-initdb.d
     stdin_open: true
     tty: true
+    profiles:
+      - db
+
+  # auth servers
+  test-ldap:
+    build: 
+      context: ./tests-integration/auth/test-ldap
+      dockerfile: Dockerfile
+    container_name: test-ldap
+    hostname: test-ldap
+    ports:
+      - "636"
+      - "389"
+    volumes:
+      - test-ldap-data:/var/lib/ldap
+      - test-slapd-data:/etc/ldap/slapd.d
+    profiles:
+      - auth
+
 volumes:
   test-mysql-data:
     driver: local
   test-postgresql-data:
+    driver: local
+  test-ldap-data:
+    driver: local
+  test-slapd-data:
     driver: local

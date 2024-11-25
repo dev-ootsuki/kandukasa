@@ -3,14 +3,16 @@
 # base image postgresql (17)
 # install rbenv and path rbenv/bin (ruby, gem, bundler...etc)
 #############################################################
-ARG PG_VERSION=17.1
+ARG PG_VERSION=17.2
 ARG STAGE_BASE="nuxt"
 ARG MASTER_KEY=""
-FROM docker.io/library/postgres:${PG_VERSION}-bookworm as ruby
-LABEL maintainer="d-ootsuki"
+FROM docker.io/library/postgres:${PG_VERSION}-bullseye as ruby
+LABEL maintainer="dev-ootsuki"
 ARG RUBY_VERSION=3.3.6
 ARG APP_ENV="production"
 ENV LANG C.UTF-8
+
+# // TODO timezone
 
 # install package (base & needed to application)
 RUN apt-get update && \
@@ -115,6 +117,7 @@ RUN apt-get update && apt-get install -y procps vim
 #############################################################
 FROM $STAGE_BASE AS server
 
+ARG DOMAIN_NAME="localhost"
 # install server software
 RUN apt-get update -qq && apt-get install -y nginx supervisor sudo && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
@@ -145,9 +148,10 @@ COPY ./docker/nginx/app.conf.$APP_ENV /etc/nginx/conf.d/app.conf
 ENV CERT_PATH="/etc/ssl/pki"
 RUN mkdir -p $CERT_PATH && \
     cd $CERT_PATH && \
-    openssl req -x509 -days 36500 -newkey rsa:2048 -nodes -out app.crt -keyout app.key -subj "/C=JP/ST=Tokyo/L=null/O=null/OU=null/CN=${URLNAME}/" && \
+    openssl req -x509 -days 36500 -newkey rsa:2048 -nodes -out $DOMAIN_NAME.crt -keyout $DOMAIN_NAME.key -subj "/C=JP/ST=Tokyo/L=null/O=null/OU=null/CN=$DOMAIN_NAME/" && \
 	chown -R nginx:nginx $CERT_PATH && \
-	chmod 777 $CERT_PATH/*
+	chmod 777 $CERT_PATH/* && \
+    sed -i "s|DOMAIN_NAME|$DOMAIN_NAME|g" /etc/nginx/conf.d/app.conf
 
 # settings supervisor
 COPY ./docker/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
@@ -169,7 +173,6 @@ RUN groupadd --system --gid 1000 rails && \
 COPY ./docker/postgresql/init /docker-entrypoint-initdb.d
 RUN chmod +x /docker-entrypoint-initdb.d/*.sh && \
     chown -R postgres:postgres /docker-entrypoint-initdb.d
-#    echo "host    all             all             localhost               trust" >> /var/lib/postgresql/data/pg_hba.conf
 
 # init script
 COPY ./docker/scripts/init.sh.$APP_ENV /etc/init.d/init.sh
