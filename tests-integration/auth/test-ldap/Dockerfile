@@ -15,9 +15,9 @@ RUN apt-get update && apt-get install -y wget
 
 # slapdが起動したあとにユーザーを登録したいのでdockerizeで待てるようにする
 ENV DOCKERIZE_VERSION="v0.8.0"
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # osixiaと追加分の環境変数を設定
 ENV CERT_PATH="/container/service/slapd/assets/certs"
@@ -37,15 +37,16 @@ ENV LDAP_SEED_INTERNAL_SCHEMA_PATH="$LDAP_DATA_PATH/slapd.d/schema"
 COPY ./scripts/ /usr/local/bin
 
 # certを作る
-RUN mkdir -p $CERT_PATH \
- && /usr/local/bin/ssl.sh $LDAP_DOMAIN $LDAP_CONFIG_PASSWORD $CERT_PATH
+RUN mkdir -p $CERT_PATH && \
+    chmod +x /usr/local/bin/*.sh && \
+    /usr/local/bin/ssl.sh $LDAP_DOMAIN $LDAP_CONFIG_PASSWORD $CERT_PATH
 
 # カスタムスキーマとユーザ追加用設定
-RUN mkdir -p $LDAP_DATA_PATH \ 
- && echo "100000" >> $LDAP_DATA_PATH/userid_counter \ 
- && chmod -R +x /usr/local/bin/ \ 
- && groupadd -g 5000 kandukasa \ 
- && mkdir -p /container/service/slapd/assets/config/bootstrap/schema/custom
+RUN mkdir -p $LDAP_DATA_PATH && \ 
+    echo "100000" >> $LDAP_DATA_PATH/userid_counter && \ 
+    chmod -R +x /usr/local/bin/ && \ 
+    groupadd -g 5000 kandukasa && \ 
+    mkdir -p /container/service/slapd/assets/config/bootstrap/schema/custom
 
 ADD ./users.txt $LDAP_DATA_PATH/user_list.txt
 ADD ./slapd.d/ $LDAP_DATA_PATH/slapd.d
