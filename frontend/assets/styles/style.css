@@ -122,10 +122,20 @@
  * 
  */
 .sticky-header-table{
-    max-height: 740px
+    max-height: 72vh
+}
+@media (min-height:1080px){
+    .sticky-header-table{
+        max-height: 80vh
+    }
+}
+@media (min-height:1500px){
+    .sticky-header-table{
+        max-height: 85vh
+    }
 }
 .min-sticky-header-table{
-    max-height: 300px;
+    max-height: 28vh;
 }
 .body--dark .sticky-header-table > div > table.q-table > thead > tr:first-child > th{
     background-color: var(--q-dark) !important;

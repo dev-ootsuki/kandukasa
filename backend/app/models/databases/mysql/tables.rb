@@ -15,7 +15,7 @@ module Databases
         }
       end
 
-      def find_data base, condition
+      def find_data base, pagination, condition
         columns = find_columns base
         primaries = find_primary_keys base
         column = columns.map{|each|
@@ -30,8 +30,14 @@ module Databases
         }.join(", ")
 
         # // TODO 一応サニタイズしたい
-        query = "SELECT #{column} FROM #{@schema_id}.#{@table_id}"
-        base.connection.select_all(query).to_a.map{|each|
+        query = "SELECT count(#{columns.first["column_name"]}) AS count FROM #{@schema_id}.#{@table_id}"
+        total = base.connection.select_all(query).to_a.first["count"]
+
+        orders = pagination[:sortBy].nil? ? "" : "ORDER BY #{pagination[:sortBy]} #{pagination[:descending] ? 'DESC' : ''}"
+        limits = "LIMIT #{pagination[:rowsPerPage]} OFFSET #{(pagination[:page] - 1) * pagination[:rowsPerPage]}"
+
+        query = "SELECT #{column} FROM #{@schema_id}.#{@table_id} #{orders} #{limits}"
+        ret = base.connection.select_all(query).to_a.map{|each|
           unless primaries.empty?
             each["_internal_kandukasa_exchange_id_"] = primaries.map{|primary|
               each[primary["column_name"]]
@@ -42,6 +48,16 @@ module Databases
             }.join(",")
           end
           each
+        }
+        {
+          :results => ret,
+          :pagination => {
+            :rowsNumber => total,
+            :page => pagination[:page],
+            :rowsPerPage => pagination[:rowsPerPage],
+            :sortBy => pagination[:sortBy],
+            :descending => pagination[:descending]
+          }
         }
       end
 

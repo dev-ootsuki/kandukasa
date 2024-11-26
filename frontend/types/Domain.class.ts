@@ -1,4 +1,5 @@
 import type { Domain, ProxyForm } from '@/types/Types'
+import { renderToStream } from 'vue/server-renderer'
 
 export class ByteUnit implements Domain.Unit{
     name:string = ''
@@ -179,41 +180,50 @@ export class DbTable extends DomainObject{
     update_time?:Date
     version:number = 0
     columns: DbColumn[] = []
+    primaries: DbPrimaryKey[] = []
     constructor(){
         super()
     }
 }
 
-export class TableSearchConditions{
-    connection_id: number = 0
-    schema_id: string = ''
-    table_id: string = ''
-    page: number = 0
-    page_size: number = 0
-    sort_key: string = ''
-    sort_descending: number = 0
-    conditions: any[] = []
-    constructor(args: {} ){
-        Object.getOwnPropertyNames(args).forEach(e => {
-            (this as any)[e] = (args as any)[e]
+export class DbPrimaryKey{
+    column_name?:string
+}
+export class Pagination{
+    rowsPerPage:number = 0
+    page: number = 1
+    rowsNumber: number = 0
+    sortBy?: string
+    descending: boolean = false
+    constructor(pageSize: number){
+        this.rowsPerPage = pageSize
+    }
+    setSort(sortKey:string, descending?:boolean) : Pagination{
+        this.sortBy = sortKey
+        if(descending === true)
+            this.descending = true
+        return this
+    }
+    setPageInfo(page:number, rowsNumber: number) : Pagination{
+        this.page = page
+        this.rowsNumber =rowsNumber
+        return this
+    }
+    toPlain() : Pagination{
+        const ret = new Pagination(this.rowsPerPage)
+        Object.getOwnPropertyNames(this).map(e => {
+            (ret as any)[e] = (this as any)[e]
         })
+        return ret
     }
 }
+
 
 export class DbData{
     [K:string]:any
 }
 
 export class DbColumn extends DomainObject{
-    
-    attributes: DbColumnAttribute[] = []
-    constructor(){
-        super()
-    }
-}
-
-export class DbColumnAttribute extends DomainObject{
-    name: string | undefined
     constructor(){
         super()
     }

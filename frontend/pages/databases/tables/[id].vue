@@ -93,7 +93,6 @@
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
-import { TableSearchConditions } from '~/types/Domain.class'
 const { t } = useI18n() 
 const store = useDbConnectionsStore()
 const design = useSystemStore().design
@@ -101,48 +100,43 @@ const dialog = useTemplateRef<any>("dialog")
 const alert = useTemplateRef<any>("alert")
 const { selectedTable } = storeToRefs(store)
 const tab = ref('info')
-const pagination = ref(design.createTablePagination())
 
 if(selectedTable?.value == null)
     navigateTo('/')
+
+if(store.selectedTable?.columns === undefined){
+  await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
+}
+
+const pagination = ref(design.createTablePagination())
+pagination.value.sortBy = selectedTable.value!.primaries.at(0)?.column_name
+
+const columns = selectedTable.value != null ? selectedTable.value!.columns : []
+const dataColumns = UiHelper.createDataColumns(t, columns)
+const visibleColumns = ref(dataColumns.map(e => e.name))
 
 const data = ref<any[]>([])
 const multiSelected = ref<any[]>([])
 
 const onSearch = (props?: any) => {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination
-  const condition = new TableSearchConditions({
-    connection_id: selectedTable.value!.id,
-    schema_id: selectedTable.value!.schema_id,
-    table_id: selectedTable.value!.table_id,
-    page: page ? page : pagination.value.pageNumber,
-    page_size: rowsPerPage ? rowsPerPage : pagination.value.rowsPerPage,
-    sort_key: sortBy,
-    sort_descending: descending,
+  const condition = {
+    pagination: props?.pagination !== undefined ? props.pagination : pagination.value.toPlain(),
     conditions: []
-  })
-  
+  }
   store
-    .getTableData(condition)
+    .getTableData(selectedTable.value?.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!, condition)
     .then(res => {
-      data.value = res
+      data.value = res.results
+      pagination.value = design.toPagination(res.pagination)
     })
 }
 
 watch(tab, (newval, oldval) => {
   tab.value = newval
   if(newval == 'data' && data.value.length == 0){
-    onSearch({pagination})
+    onSearch()
   }
 })
-
-if(store.selectedTable?.columns === undefined){
-  await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
-}
-const columns = selectedTable.value != null ? selectedTable.value!.columns : []
-const dataColumns = UiHelper.createDataColumns(t, columns)
-
-const visibleColumns = ref(dataColumns.map(e => e.name))
 
 const onEditRecord = (row: any) => {
 
