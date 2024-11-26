@@ -56,10 +56,7 @@
                         <div class="q-tree-header-label">{{prop.node.label}}</div>
                     </div>
                 </template>
-
             </q-tree>
-            
-
         </q-item>
     </q-list>
 </template>
@@ -72,7 +69,6 @@ const { t } = useI18n()
 const store = useDbConnectionsStore()
 const { qnode, selectedNode } = storeToRefs(store)
 
-const selected = ref('')
 const leftTree = ref<InstanceType<typeof QTree>>()
 
 watch(selectedNode, async (newval:any, oldval:any) => {
@@ -299,6 +295,7 @@ const handler = {
 } as {[K:string]:{exec:Function, navi:Function}}
 
 const onLazyLoad  = ({ node, key, done, fail }:{node:any,key:string,done:(children:any[]) => any, fail:any}) => {
+    console.log("onLazyLoad ")
     handler[node.header].exec(node, key, done, fail)
     .finally(() => handler[node.header].navi(node, key))
 }

@@ -26,7 +26,7 @@ export class UiHelper{
                 children:null,
                 expandable: config.expandable !== undefined ? config.expandable : true,
                 selectable: config.selectable !== undefined ? config.selectable : true,
-                lazy: config.lazy !== undefined ? config.lazy : true
+                lazy: config.lazy !== undefined ? config.lazy : true,
             }
         })
         return nodes
@@ -86,7 +86,7 @@ export class UiHelper{
         return this.tablesOrderDifinitions.map(each => {
             return {
                 name: each,
-                required: true,
+                required: false,
                 label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
                 field: (row:any) => row[each],
                 format: (val:any) => `${val}`,
@@ -108,18 +108,24 @@ export class UiHelper{
         })
     }
 
-    static createDataColumns(columns:any[]) : any[]{
+    static createDataColumns($t:Function, columns:any[]) : any[]{
         const ret = columns.map(each => {
             return {
                 name: each["column_name"],
-                required: true,
+                required: false,
                 label: each["column_name"],
                 field: (row:any) => row[each["column_name"]],
                 format: (val:any) => `${val}`,
-                sortable:false
+                sortable:true
             }
         })
-        return ret
+        return [{
+            name: "_internal_kandukasa_exchange_id_",
+            label: $t('common.operation'),
+            field:(row:any) => '',
+            format: (val:any) => '',
+            sortable: false
+        }].concat(ret)
     }
 
     /**
