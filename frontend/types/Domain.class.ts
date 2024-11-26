@@ -101,7 +101,7 @@ export class DbCharacters extends DomainObject{
 
 export class DbSchema extends DomainObject{
     schema_name?: string
-    catalog_name?: string
+    system_catalog?: string
     default_character_set_name?: string
     default_collation_name?:string
     sql_path?: string | null
@@ -184,8 +184,20 @@ export class DbTable extends DomainObject{
     }
 }
 
-export class TableConditions{
-    
+export class TableSearchConditions{
+    connection_id: number = 0
+    schema_id: string = ''
+    table_id: string = ''
+    page: number = 0
+    page_size: number = 0
+    sort_key: string = ''
+    sort_descending: number = 0
+    conditions: any[] = []
+    constructor(args: {} ){
+        Object.getOwnPropertyNames(args).forEach(e => {
+            (this as any)[e] = (args as any)[e]
+        })
+    }
 }
 
 export class DbData{

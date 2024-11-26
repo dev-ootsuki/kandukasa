@@ -32,4 +32,15 @@ export class Config{
     isTouch(): boolean{
         return this.before?.id !== this.id
     }
+    createTablePagination(): Pagination {
+        return new Pagination(this.tablesPageSize)
+    }
+}
+
+export class Pagination{
+    rowsPerPage:number = 0
+    pageNumber: number = 1
+    constructor(pageSize: number){
+        this.rowsPerPage = pageSize
+    }
 }

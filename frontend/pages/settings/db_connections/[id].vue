@@ -1,5 +1,5 @@
 <template>
-  <execution-confirmation-dialog :mode="mode" v-model="confirmDialog" @submit="onSubmit" />
+  <confirmation-dialog ref="dialog" />
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
       <span class="content-title text-eins bg-eins">{{$t('settings.db_connections.title_'+mode)}}</span>
@@ -58,22 +58,17 @@ const input = useProxyForm<Domain.DbConnection>(
   "input"
 )
 const mode:Design.UIMode = input.id !== undefined && input.id > 0 ? "update" : "register"
-const confirmDialog = ref(false)
-const onSubmit = () => {
-  let promise = null
-    if(mode == "register")
-      promise = store.saveDbConnection(input)
-    else
-      promise = store.modifyDbConnection(input)
-    promise.then(data => {
-      navigateTo('/settings/db_connections/')
-    })
-}
-
+const dialog = useTemplateRef<any>("dialog")
 
 const onRegistration = () => {
   if(input.isValid()){
-    confirmDialog.value = true
+    dialog.value!.onConfirm(mode, () => {
+      if(mode == "register")
+        return store.saveDbConnection(input)
+      return store.modifyDbConnection(input)
+    }, () => {
+      navigateTo('/settings/db_connections/')
+    })
   }
 }
 </script>
