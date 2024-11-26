@@ -12,7 +12,7 @@ type State = {
     selectedRoutine: DbRoutine | null,
     selectedEvent: DbEvent | null
     node: any[],
-    outerSlectedNodeId: string | null
+    selectedNode: string | null
 }
 
 export const useDbConnectionsStore = defineStore('dbConnections', {
@@ -27,7 +27,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
       selectedRoutine: null,
       selectedEvent: null,
       node: [],
-      outerSlectedNodeId: null
+      selectedNode: null
     }),
     getters: {
         selected(state: State){
@@ -36,6 +36,9 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
         qnode(state: State){
             return state.node
         },
+        selectedNodeId(state: State){
+            return state.selectedNode
+        }
     },
     actions: {
         async findDbConnectionsAll() : Promise<DbConnection[]>{
