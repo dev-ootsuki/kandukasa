@@ -1,6 +1,6 @@
 class DbStrategy
   DB_DATA_PRIMARY_KEY = "_internal_kandukasa_exchange_id_"
-  MULTI_PRIMARY_KEY_SEPARATOR = ""
+  MULTI_PRIMARY_KEY_SEPARATOR = "_internal_kandukasa_multi_pkey_separator"
   @@database_config = {
     :MySQL => {
       :type_id => 0,
