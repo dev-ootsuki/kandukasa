@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, TableSearchConditions, DbData } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination } from '~/types/Domain.class'
 import type { WebAPI } from '@/types/Types'
 
 type State = {
@@ -123,12 +123,13 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             .then(data => {
                 const table = con?.db_instance?.schemas.find(e => e.schema_id == schemaId)?.tables.find(e => e.table_id == tableId)!
                 table.columns = data?.data.columns
+                table.primaries = data?.data.primaries
                 return table
             })
         },
-        async getTableData(conditions: TableSearchConditions) : Promise<DbData[]>{
-            const con = this.selected
-            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${conditions.connection_id}/${conditions.schema_id}/${conditions.table_id}/query`, {
+        async getTableData(id:number, schema_id:string, table_id: string, conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
+            console.log(conditions)
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/query`, {
                 method:"POST",
                 body: conditions  
             })
@@ -243,17 +244,6 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedTable = null
             this.selectedView = null            
             return this.selectedRoutine
-        },
-        updateSchemaInfo(id:number, schemaId: string){
-            this.setSelectedDb(id)
-            const _selectedSchema = this.selectedDb?.db_instance?.schemas.find(e => e.schema_id == schemaId)
-            if(_selectedSchema != null){
-                _selectedSchema!.events = []
-                _selectedSchema!.triggers = []
-                _selectedSchema!.views = []
-                _selectedSchema!.tables = []
-                _selectedSchema!.events = []
-            }
         }
     }
 })
