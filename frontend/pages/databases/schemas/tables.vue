@@ -48,7 +48,7 @@ const multiSelected = ref([])
 const operation = ref<Design.UIMode>("register")
 
 const onSelectTable = (target: any) => {
-    store.outerSlectedNodeId = [
+    store.selectedNode = [
         props.connection, 
         props.schema, 
         UiHelper.getSchemaSummary("tables").mode,

@@ -57,9 +57,19 @@ if(selectedTable?.value == null)
     navigateTo('/')
 
 const data = ref<any[]>([])
+
+watch(tab, (newval, oldval) => {
+  tab.value = newval
+  console.log(tab.value)
+  if(newval == 'data'){
+    store.getTableData(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
+    .then(res => {
+      data.value = res
+    })
+  }
+})
 if(store.selectedTable?.columns === undefined){
-    await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
-    data.value = await store.getTableData(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
+  await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
 }    
 const columns = selectedTable.value != null ? selectedTable.value!.columns : []
 </script>
