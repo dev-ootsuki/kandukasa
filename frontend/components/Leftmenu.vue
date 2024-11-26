@@ -291,11 +291,9 @@ const handler = {
             navigateTo(`/databases/views/${keys[3]}`)
         }
     }
-    // TODO add event, routine, view
 } as {[K:string]:{exec:Function, navi:Function}}
 
 const onLazyLoad  = ({ node, key, done, fail }:{node:any,key:string,done:(children:any[]) => any, fail:any}) => {
-    console.log("onLazyLoad ")
     handler[node.header].exec(node, key, done, fail)
     .finally(() => handler[node.header].navi(node, key))
 }

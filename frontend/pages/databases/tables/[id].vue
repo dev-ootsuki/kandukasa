@@ -76,7 +76,7 @@
                         <q-btn icon="edit" color="primary" size="8px" class="btn-inner-tables q-mr-sm" @click="onEditRecord(props.row)" />
                         <q-btn icon="delete_forever" color="negative" size="8px" class="btn-inner-tables q-mr-sm" @click="onDeleteRecord(props.row)" />
                     </span>
-                    <p v-if="props.col.name != '_internal_kandukasa_exchange_id_'">
+                    <p v-if="props.col.name != system.dbDataPrimaryKey">
                         {{props.value}}
                     </p>
                 </q-td>
@@ -93,9 +93,11 @@
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
+import * as Domain from '~/types/Domain.class'
 const { t } = useI18n() 
 const store = useDbConnectionsStore()
-const design = useSystemStore().design
+const system = useSystemStore().systemSetting
+const design = useSystemStore().designSetting
 const dialog = useTemplateRef<any>("dialog")
 const alert = useTemplateRef<any>("alert")
 const { selectedTable } = storeToRefs(store)
@@ -142,7 +144,13 @@ const onEditRecord = (row: any) => {
 
 }
 const onDeleteRecord = (row:any) => {
-
+  dialog.value!.onConfirm("delete", () : Promise<any> => {
+        const keys = [row[system.dbDataPrimaryKey!]]
+        return store.deleteTableData(selectedTable.value!.id!,selectedTable.value?.schema_id!, selectedTable.value?.table_id!, keys)
+    }, () => {
+        multiSelected.value = []
+        onReload()
+  })  
 }
 
 const onBulkDeleteData = () => {
@@ -150,12 +158,17 @@ const onBulkDeleteData = () => {
     return alert.value.show(t('validate.no_select'))
   }
   dialog.value!.onConfirm("bulk_delete", () : Promise<any> => {
-        return new Promise<any>((resolve) => {
-            resolve(null)
-        })
+        const keys = multiSelected.value.map(e => e[system.dbDataPrimaryKey!])
+        return store.deleteTableData(selectedTable.value!.id!,selectedTable.value?.schema_id!, selectedTable.value?.table_id!, keys)
     }, () => {
         multiSelected.value = []
+        onReload()
   })  
+}
+
+const onReload = () => {
+  pagination.value = design.createTablePagination()
+  onSearch()
 }
 
 const onCreateNewData = () => {

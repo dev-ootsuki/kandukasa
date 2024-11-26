@@ -26,6 +26,7 @@ Rails.application.routes.draw do
           post ":table_id/query", to: "tables#query"
           delete "bulk_truncate", to: "tables#bulk_truncate"
           delete "bulk_drop", to: "tables#bulk_drop"
+          delete ":table_id/bulk_record_delete", to:"tables#bulk_record_delete"
         end
         resource :column, path:":table_id", only:[:create,:update, :destroy]
       end

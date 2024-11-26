@@ -41,15 +41,18 @@ const title = computed(() => {
 const callbackSubmit = ref<() => Promise<any>>()
 const callbackCancel = ref<Function>()
 const callbackComplete = ref<Function>()
+const callbackFailed = ref<Function>()
 const mode = ref<Design.UIMode>("register")
 const phaseComplete = ref<boolean>(false)
+const phaseError = ref<boolean>(false)
 
 defineExpose({
-  onConfirm: (m:Design.UIMode, submit:() => Promise<any>, complete?: Function, cancel?:Function) : void => {
+  onConfirm: (m:Design.UIMode, submit:() => Promise<any>, complete?: Function, failed?:Function, cancel?:Function) : void => {
     mode.value = m 
     callbackSubmit.value = submit
     callbackCancel.value = cancel
     callbackComplete.value = complete
+    callbackFailed.value = failed
     visible.value = true
   }
 })
@@ -59,8 +62,17 @@ const onCancel = () => {
   onHide()
 }
 const onSubmit = () => {
-  callbackSubmit.value?.().finally(() => {
-    phaseComplete.value = true
+  callbackSubmit.value?.()
+  .catch(data => {
+    phaseError.value = true
+  })
+  .finally(() => {
+    if(phaseError.value !== true)
+      phaseComplete.value = true
+    else{
+      callbackFailed.value?.()
+      onHide()
+    }
   })
 }
 const onComplete = () => {
@@ -70,8 +82,10 @@ const onComplete = () => {
 const onHide = () => {
   visible.value = false
   phaseComplete.value = false
+  phaseError.value = false
   callbackSubmit.value = undefined
   callbackCancel.value = undefined
   callbackComplete.value = undefined
+  callbackFailed.value = undefined
 }
 </script>

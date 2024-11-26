@@ -128,7 +128,6 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             })
         },
         async getTableData(id:number, schema_id:string, table_id: string, conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
-            console.log(conditions)
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/query`, {
                 method:"POST",
                 body: conditions  
@@ -137,7 +136,18 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
+        async deleteTableData(id:number, schema_id:string, table_id:string, keys:any[]) : Promise<void>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/bulk_record_delete`, {
+                method:"DELETE",
+                body: {
+                    keys:keys
+                }
+            })
+            .then(data => {
+                return data.data
+            })
 
+        },
         setSelectedDb(id: number) : DbConnection | null{
             this.selectedDb = this.dbConnections.find(e => e.id == id)!
             this.selectedEvent = null
