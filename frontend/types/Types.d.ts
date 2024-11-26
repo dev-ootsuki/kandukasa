@@ -111,7 +111,7 @@ export declare namespace WebAPI{
  * Types of Design
  * ---------------------------------------------------------- */
 export declare namespace Design{
-    type UIMode = "register" | "update" | "delete" | "truncate" | "bulk_delete" | "bulk_truncate"
+    type UIMode = "register" | "update" | "delete" | "truncate" | "bulk_delete" | "bulk_truncate" | "complete"
 
     type Lang = {
         name:string,

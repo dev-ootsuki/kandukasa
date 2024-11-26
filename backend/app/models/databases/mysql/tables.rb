@@ -10,12 +10,14 @@ module Databases
 
       def find_info base
         {
-          :columns => find_columns(base)
+          :columns => find_columns(base),
+          :primaries => find_primary_keys(base)
         }
       end
 
       def find_data base, condition
         columns = find_columns base
+        primaries = find_primary_keys base
         column = columns.map{|each|
           # // TODO json, binary, enum ?
           if each["data_type"].downcase == "geometry"
@@ -26,9 +28,21 @@ module Databases
             each["column_name"] 
           end
         }.join(", ")
-        # // TODO さにたいずする
+
+        # // TODO 一応サニタイズしたい
         query = "SELECT #{column} FROM #{@schema_id}.#{@table_id}"
-        base.connection.select_all(query).to_a
+        base.connection.select_all(query).to_a.map{|each|
+          unless primaries.empty?
+            each["_internal_kandukasa_exchange_id_"] = primaries.map{|primary|
+              each[primary["column_name"]]
+            }.join(",")
+          else
+            each["_internal_kandukasa_exchange_id_"] = each.map{|k, v|
+              v
+            }.join(",")
+          end
+          each
+        }
       end
 
       def find_columns base
@@ -39,6 +53,8 @@ module Databases
             information_schema.columns 
           where
             table_schema = ? and table_name = ?
+          order by
+            ordinal_position
         EOS
         query = base.sanitize_sql_array([query,@schema_id, @table_id])
         base.connection.select_all(query)
@@ -48,6 +64,24 @@ module Databases
           record["table_id"] = @table_id
           record["column_id"] = record["COLUMN_NAME"]
           record.transform_keys(&:downcase)
+        }
+      end
+
+      def find_primary_keys base
+        query = <<-"EOS"
+          select 
+            *
+          from 
+            information_schema.key_column_usage
+          where
+            constraint_schema = ? and
+            table_schema = ? and
+            table_name = ? and 
+            constraint_name = 'PRIMARY'
+        EOS
+        query = base.sanitize_sql_array([query, @schema_id, @schema_id, @table_id])
+        base.connection.select_all(query).to_a.map{|each|
+          each.transform_keys(&:downcase)
         }
       end
     end

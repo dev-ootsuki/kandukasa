@@ -25,7 +25,7 @@ type State = {
 
 const createDefaultDesign = () => {
     const ret = new DesignClass.Config()
-    ret.lang = langs[0]
+    ret.lang = langs[1]
     ret.primary = getPaletteColor("primary")
     ret.secondary = getPaletteColor("secondary")
     ret.accent = getPaletteColor("accent")

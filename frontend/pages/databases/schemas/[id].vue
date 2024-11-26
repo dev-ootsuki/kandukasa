@@ -4,7 +4,7 @@
       <databases-breadcrumbs />
     </q-toolbar>
     <div class="content-main q-pa-sm">
-      <q-card class="bg-eins text-eins" v-if="selectedSchema">
+      <q-card v-if="selectedSchema">
         <q-tabs
           v-model="tab"
           dense
@@ -29,7 +29,7 @@
           <!-- schema name -->
           <row-label-value :label="$t('metadata.schema_name')" :value="selectedSchema?.schema_name" />
           <!-- catalog name -->
-          <row-label-value :label="$t('metadata.catalog_name')" :value="selectedSchema?.catalog_name" />
+          <row-label-value :label="$t('metadata.system_catalog')" :value="selectedSchema?.system_catalog" />
           <!-- default character set -->
           <row-label-value :label="$t('metadata.default_character_set_name')" :value="selectedSchema?.default_character_set_name" />
           <!-- default_collation_name -->

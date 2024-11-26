@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <execution-confirmation-dialog mode="delete" v-model="confirmDialog" @submit="onSubmitDelete" />
+    <confirmation-dialog ref="dialog" />
     <q-toolbar class="content-header q-pa-sm">
       <span class="content-title text-eins bg-eins">{{$t('settings.db_connections.title')}}</span>
       <q-btn to="/settings/db_connections/0" glossy class="absolute-right" :label="$t('common.new_registration_exec')" icon="add_circle" />
@@ -32,7 +32,7 @@
             <td class="text-right">{{con.use_ssl ? $t('common.yes') : $t('common.no')}}</td>
             <td class="text-right">
               <q-btn glossy icon="edit" class="q-mr-md" :to="''+con.id" />
-              <q-btn glossy icon="delete" @click="onDelete(con.id!)" />
+              <q-btn glossy icon="delete" color="negative" @click="onDelete(con.id!)" />
             </td>
           </tr>
         </tbody>
@@ -44,16 +44,14 @@
 <script setup lang="ts">
   import { useDbConnectionsStore } from '@/stores/DbConnectionsStore'
   const store = useDbConnectionsStore()
-  const confirmDialog = ref(false)
-  const deleteId = ref(0)
-  store.findDbConnectionsAll()
+  await store.findDbConnectionsAll()
+
+  const dialog = useTemplateRef<any>("dialog")
+
   const onDelete = (id:number) => {
-    deleteId.value = id
-    confirmDialog.value = true
-  }
-  const onSubmitDelete = () => {
-    store.deleteDbConnection(deleteId.value)
-    .then(data => {
+    dialog.value!.onConfirm("delete", () => {
+      return store.deleteDbConnection(id)
+    }, () => {
       location.reload()
     })
   }
