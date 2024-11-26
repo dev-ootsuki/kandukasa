@@ -20,7 +20,7 @@ module Databases
 
       def delete_data base, ids
         primaries = find_primary_keys base
-        columns = find_columns base, primaries
+        columns = find_columns base, primaries.map{|e| e["column_name"]}
         wheres = to_unique_identifer_query base, primaries, columns, ids
         query = <<-"EOS"
           DELETE FROM #{table_name} WHERE #{wheres}
@@ -98,8 +98,8 @@ module Databases
         }
       end
 
-      def find_columns base, primaries = nil
-        wheres = primaries.nil? ? "" : "AND #{primaries.map{|e| "column_name = '#{e['column_name']}'"}.join(" OR ")}"
+      def find_columns base, column_names = nil
+        wheres = column_names.nil? ? "" : "AND #{column_names.map{|e| "column_name = '#{e}'"}.join(" OR ")}"
         query = <<-"EOS"
           select 
             * 
