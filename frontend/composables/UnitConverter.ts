@@ -1,6 +1,6 @@
 import * as DomainClass from '~/types/Domain.class'
 
-const TeraByteUnit = new DomainClass.ByteUnit("GB", Math.pow(1024,4), Math.pow(1024,5),2)
+const TeraByteUnit = new DomainClass.ByteUnit("TB", Math.pow(1024,4), Math.pow(1024,5),2)
 const GigaByteUnit = new DomainClass.ByteUnit("GB", Math.pow(1024,3), Math.pow(1024,4),2)
 const MegaByteUnit = new DomainClass.ByteUnit("MB", Math.pow(1024,2), Math.pow(1024,3),2)
 const KiroByteUnit = new DomainClass.ByteUnit("MB",          1024,    Math.pow(1024,2),2)
