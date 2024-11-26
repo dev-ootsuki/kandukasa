@@ -99,7 +99,7 @@ module Databases
       end
 
       def find_columns base, column_names = nil
-        wheres = column_names.nil? ? "" : "AND #{column_names.map{|e| "column_name = '#{e}'"}.join(" OR ")}"
+        wheres = column_names.nil? ? "" : "AND ( #{column_names.map{|e| "column_name = '#{e}'"}.join(" OR ")} )"
         query = <<-"EOS"
           select 
             * 
