@@ -138,6 +138,10 @@ export declare namespace Domain{
     }
 }
 
+export declare namespace System{
+    type DbProduct = {label:string, value:string, enable:boolean}
+}
+
 /* ----------------------------------------------------------
  * Types of Auth
  * ---------------------------------------------------------- */
@@ -176,5 +180,4 @@ export declare namespace Auth{
     interface Role{
         has(func:Auth.FunctionsType, perm: Auth.PermissionType) : boolean
     }
-    
 }

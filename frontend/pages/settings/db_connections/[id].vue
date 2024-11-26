@@ -15,7 +15,7 @@
           <!-- name -->
           <pf-input icon="label" :label="$t('settings.db_connections.name')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.name" />
           <!-- db_type -->
-          <pf-select require icon="settings_applications" :label="$t('settings.db_connections.db_type')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.db_type" :options="Domain.DatabaseProducts.filter(e => e.enable)"/>
+          <pf-select require icon="settings_applications" :label="$t('settings.db_connections.db_type')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.db_type" :options="system.databaseProducts.filter(e => e.enable)"/>
           <!-- host -->
           <pf-input icon="dns" :label="$t('settings.db_connections.host')" :validate="[qRequired, qLengthTo128]" :model="input" ref="input.host" />
           <!-- port -->
@@ -41,6 +41,7 @@
 
 <script setup lang="ts">
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
+import { useSystemStore } from '~/stores/SystemStore'
 import { UiHelper } from '~/utils/UiHelper'
 import { qRequired, qNumber, qRangeTo99999, qLengthTo500, qLengthTo128 } from '~/composables/ValidatorHelper' 
 import * as Domain from '~/types/Domain.class'
@@ -48,6 +49,7 @@ import { useProxyForm } from '~/composables/ProxyForm'
 import type { Design } from '@/types/Types'
 const store = useDbConnectionsStore()
 const route = useRoute()
+const system = useSystemStore().systemSetting
 
 if(!UiHelper.isNumberRouteId(route.params.id))
   await navigateTo('/')

@@ -228,10 +228,3 @@ export class DbColumn extends DomainObject{
         super()
     }
 }
-
-export const DatabaseProducts = [
-    {label: "MySQL", value: "MySQL", enable: true},
-    {label:"postgreSQL", value: "postgreSQL", enable: false},
-    {label: "RDS Aurora MySQL", value:"RDSAuroraMySQL", enable: true},
-    {label:"RDS Aurora postgreSQL", value:"RDSAuroraPostgreSQL", enable: false}
-]
