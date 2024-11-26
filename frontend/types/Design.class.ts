@@ -1,5 +1,5 @@
-import type { Design } from '@/types/Types'
-
+import type { Design } from '~/types/Types'
+import * as Domain from '~/types/Domain.class'
 
 export class Config{
     id:number = 0
@@ -30,17 +30,19 @@ export class Config{
             this.id++
     }
     isTouch(): boolean{
-        return this.before?.id !== this.id
+        return this.before?.id !== this.idz
     }
-    createTablePagination(): Pagination {
-        return new Pagination(this.tablesPageSize)
+    createTablePagination(): Domain.Pagination {
+        return new Domain.Pagination(this.tablesPageSize)
+    }
+    toPagination(arg:{[K:string]:any}) : Domain.Pagination{
+        const ret = new Domain.Pagination(this.tablesPageSize)
+        ret.page = arg.page
+        ret.rowsNumber = arg.rowsNumber
+        ret.rowsPerPage = arg.rowsPerPage
+        ret.descending = arg.descending
+        ret.sortBy = arg.sortBy
+        return ret
     }
 }
 
-export class Pagination{
-    rowsPerPage:number = 0
-    pageNumber: number = 1
-    constructor(pageSize: number){
-        this.rowsPerPage = pageSize
-    }
-}
