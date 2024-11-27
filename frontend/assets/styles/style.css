@@ -264,6 +264,24 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
 .select-table-filter-column{
     min-width: 150px;
 }
+.variable-conditions-key{
+    min-width: 15vw;
+    max-width: 25vw;
+}
+.variable-conditions-value{
+    min-width: 40vw;
+    max-width: 50vw;
+}
+
+.data-search-conditions-dialog{
+    min-width: 70vw;
+    max-width: 90vw;
+}
+.search-conditions-card{
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
 /* scrollber */
 ::-webkit-scrollbar-thumb {
     width: 10px;
