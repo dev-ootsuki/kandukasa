@@ -27,7 +27,10 @@
     "required": "必須",
     "home": "ホーム",
     "bulk_delete_exec": "一括削除",
-    "bulk_truncate_exec": "一括データ全削除"
+    "bulk_truncate_exec": "一括データ全削除",
+    "search_conditions": "検索条件",
+    "search_conditions_description": "検索条件を入力してください",
+    "clear": "クリア"
   },
   "leftmenu": {
     "all": "全て",
