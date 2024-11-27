@@ -27,7 +27,10 @@
     "required": "Required",
     "home": "Home",
     "bulk_delete_exec": "Bulk delete",
-    "bulk_truncate_exec": "Bulk truncate"
+    "bulk_truncate_exec": "Bulk truncate",
+    "search_conditions": "Search condition",
+    "search_conditions_description": "Please enter your search criteria",
+    "clear" : "Clear"
   },
   "leftmenu": {
     "all": "All",

@@ -55,6 +55,9 @@
               </template>
 
               <template v-slot:top-right>
+                <q-btn round flat icon="rule" text-color="primary" @click="showRules" />
+                <q-btn round flat icon="refresh" text-color="primary" @click="onReload" />
+                <q-space class="q-pl-md" />
                 <q-select
                     v-model="visibleColumns"
                     multiple
@@ -87,6 +90,50 @@
       </q-card>
     </div>
   </div>
+  <q-dialog v-model="rules" >
+    <div class="row q-pa-sm row-label-value data-search-conditions-dialog">
+      <q-card>
+        <q-bar>
+          <div>{{$t('common.search_conditions')}}</div>
+        </q-bar>
+
+        <q-space />
+
+        <q-card-section class="row items-center">
+          <q-avatar icon="rule" text-color="primary" flat size="6em" />
+          <span class="q-ml-sm">{{$t('common.search_conditions_description')}}</span>
+        </q-card-section>
+
+        <q-card-section class="scroll" style="max-height: 50vh">
+          <div class="row search-conditions-card" v-for="condition in searchConditions">
+              <q-select
+                :options="rulesColumns"
+                outlined
+                dense
+                options-dense
+                option-value="name"
+                options-cover
+                emit-value
+                map-options
+                class="variable-conditions-key"
+                v-model="condition.column"
+              />
+              ここに演算子がいる
+              <q-input v-model="condition.input" dense class="variable-conditions-value q-pl-md"/>
+              <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat round icon="add" color="accent" @click="onAppendSearchConditions" class="q-mr-sm" />
+        </q-card-actions>
+
+        <q-card-actions align="right">
+          <q-btn flat :label="$t('common.clear')" @click="onClearSearchConditions" />
+          <q-btn flat :label="$t('common.close')" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </div>
+  </q-dialog>
 </template>
   
 <script lang="ts" setup>
@@ -103,6 +150,7 @@ const alert = useTemplateRef<any>("alert")
 const { selectedTable } = storeToRefs(store)
 const tab = ref('info')
 
+// 初期表示前の設定
 if(selectedTable?.value == null)
     navigateTo('/')
 
@@ -110,16 +158,20 @@ if(store.selectedTable?.columns === undefined){
   await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
 }
 
+// データ表示のテーブルに関わる設定
 const pagination = ref(design.createTablePagination())
 pagination.value.sortBy = selectedTable.value!.primaries.at(0)?.column_name
-
+// infoのカラム定義情報
 const columns = selectedTable.value != null ? selectedTable.value!.columns : []
+// データ表示テーブルのカラム
 const dataColumns = UiHelper.createDataColumns(t, columns)
+// データ表示テーブルの表示カラム
 const visibleColumns = ref(dataColumns.map(e => e.name))
-
+// データ自体
 const data = ref<any[]>([])
+// データ表示テーブルで選択中のレコード
 const multiSelected = ref<any[]>([])
-
+// 検索時
 const onSearch = (props?: any) => {
   const condition = {
     pagination: props?.pagination !== undefined ? props.pagination : pagination.value.toPlain(),
@@ -132,17 +184,39 @@ const onSearch = (props?: any) => {
       pagination.value = design.toPagination(res.pagination)
     })
 }
-
+// 初回は表示しないでタブ移動でデータにいった時にロードする
 watch(tab, (newval, oldval) => {
   tab.value = newval
   if(newval == 'data' && data.value.length == 0){
     onSearch()
   }
 })
-
-const onEditRecord = (row: any) => {
-
+// 検索条件
+const rules = ref<boolean>(false)
+console.log(dataColumns)
+const rulesColumns = dataColumns.filter(e => e.name != system.dbDataPrimaryKey)
+const searchConditions = ref<{column:any, input:any, key:number}[]>([{column:null,input:null,key:0}])
+const showRules = () => {
+  rules.value = true
 }
+const onRemoveSearchConditionsAt = (key:number) => {
+  searchConditions.value = searchConditions.value.splice(key, 1)
+  // key = indexなので振り直す
+  searchConditions.value.forEach((e, idx) => {
+    e.key = idx
+  })
+  // 0件なら初回表示用に戻す
+  if(searchConditions.value.length == 0)
+    searchConditions.value.push({column:null, input:null, key:0})
+}
+const onAppendSearchConditions = () => {
+  searchConditions.value.push({column:null, input:null,key:searchConditions.value.length})
+}
+const onClearSearchConditions = () => {
+  searchConditions.value = [{column:null, input:null, key:0}]
+}
+
+// データテーブルで削除時@1レコード
 const onDeleteRecord = (row:any) => {
   dialog.value!.onConfirm("delete", () : Promise<any> => {
         const keys = [row[system.dbDataPrimaryKey!]]
@@ -152,7 +226,7 @@ const onDeleteRecord = (row:any) => {
         onReload()
   })  
 }
-
+// 複数削除
 const onBulkDeleteData = () => {
   if(multiSelected.value.length == 0){
     return alert.value.show(t('validate.no_select'))
@@ -169,6 +243,10 @@ const onBulkDeleteData = () => {
 const onReload = () => {
   pagination.value = design.createTablePagination()
   onSearch()
+}
+
+const onEditRecord = (row: any) => {
+
 }
 
 const onCreateNewData = () => {
