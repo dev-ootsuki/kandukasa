@@ -1,8 +1,8 @@
 <template>
-  <app-loading />
-  <error-dialog />
+  <SystemLoading />
+  <DialogError />
   <q-layout view="lHh Lpr lFf" class="bg-eins text-eins">
-    <Header @onCollapse="collapseLeftmenu" />
+    <LayoutHeader @onCollapse="collapseLeftmenu" />
     
     <q-drawer
       v-model="leftmenuOpen"
@@ -10,7 +10,7 @@
       class="bg-zwei text-zwei"
       :width="systemStore.design.leftmenuWitdh"
     >
-        <leftmenu />
+        <LayoutLeftmenu />
     </q-drawer>
 
     <q-page-container>

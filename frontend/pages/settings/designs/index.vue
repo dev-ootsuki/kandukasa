@@ -9,11 +9,11 @@
 		<!-- main -->
 		<div class="q-pa-md">
 			<!-- lang -->
-			<pf-element :label="$t('settings.design.lang')">
+			<PfElement :label="$t('settings.design.lang')">
 				<q-select class="q-pa-sm" filled v-model="langModel" :options="langOptions" :label="$t('settings.design.lang')" />
-			</pf-element>
+			</PfElement>
 			<!-- dark mode -->
-			<pf-element :label="$t('settings.design.dark_mode')">
+			<PfElement :label="$t('settings.design.dark_mode')">
 				<q-toggle
 					class="q-pa-sm"
 					v-model="$q.dark.mode"
@@ -23,29 +23,29 @@
 					@click="changeDarkMode"
 					color="primary"
 				/>
-			</pf-element>
+			</PfElement>
 			<!-- primary color -->
-			<pf-color-picker :model="input" ref="conf.primary" :label="$t('settings.design.primary_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.primary" :label="$t('settings.design.primary_color')" :validate="colorVlidate"/>
 			<!-- secondary color -->
-			<pf-color-picker :model="input" ref="conf.secondary" :label="$t('settings.design.secondary_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.secondary" :label="$t('settings.design.secondary_color')" :validate="colorVlidate"/>
 			<!-- accent color -->
-			<pf-color-picker :model="input" ref="conf.accent" :label="$t('settings.design.accent_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.accent" :label="$t('settings.design.accent_color')" :validate="colorVlidate"/>
 			<!-- positive color -->
-			<pf-color-picker :model="input" ref="conf.positive" :label="$t('settings.design.positive_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.positive" :label="$t('settings.design.positive_color')" :validate="colorVlidate"/>
 			<!-- negative color -->
-			<pf-color-picker :model="input" ref="conf.negative" :label="$t('settings.design.negative_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.negative" :label="$t('settings.design.negative_color')" :validate="colorVlidate"/>
 			<!-- info color -->
-			<pf-color-picker :model="input" ref="conf.info" :label="$t('settings.design.info_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.info" :label="$t('settings.design.info_color')" :validate="colorVlidate"/>
 			<!-- warning color -->
-			<pf-color-picker :model="input" ref="conf.warning" :label="$t('settings.design.warning_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.warning" :label="$t('settings.design.warning_color')" :validate="colorVlidate"/>
 			<!-- light color -->
-			<pf-color-picker :model="input" ref="conf.textLight" :label="$t('settings.design.light_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.textLight" :label="$t('settings.design.light_color')" :validate="colorVlidate"/>
 			<!-- main1 color -->
-			<pf-color-picker :model="input" ref="conf.textEins" :label="$t('settings.design.main1_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.textEins" :label="$t('settings.design.main1_color')" :validate="colorVlidate"/>
 			<!-- main2 color -->
-			<pf-color-picker :model="input" ref="conf.textZwei" :label="$t('settings.design.main2_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.textZwei" :label="$t('settings.design.main2_color')" :validate="colorVlidate"/>
 			<!-- main3 color -->
-			<pf-color-picker :model="input" ref="conf.textDrei" :label="$t('settings.design.main3_color')" :validate="colorVlidate"/>
+			<PfColorPicker :model="input" ref="conf.textDrei" :label="$t('settings.design.main3_color')" :validate="colorVlidate"/>
 		</div>
 		<!-- footer -->
 		<div class="q-pa-md">
@@ -58,12 +58,12 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
 import { useSystemStore, langs } from "~/stores/SystemStore"
-import { qRequired } from '@/composables/ValidatorHelper'
+import { qRequired } from '~/composables/ValidatorHelper'
 import { useProxyForm } from '~/composables/ProxyForm'
-import type { DesignConfig } from "~/types/Classes"
+import * as DesignClass from "~/types/Design.class"
 
 const store = useSystemStore()
-const input = useProxyForm<DesignConfig>(
+const input = useProxyForm<DesignClass.Config>(
   store.designSetting, 
   "conf"
 )

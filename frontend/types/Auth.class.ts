@@ -1,4 +1,4 @@
-import type { Auth } from '@/types/Types'
+import type { Auth } from '~/types/Types'
 
 class Role implements Auth.Role{
     availableFunctions:Auth.UserRoleMapping []  = []
@@ -24,7 +24,7 @@ const view: Role = new Role(
     { func: "connections", perm:["read"] },
     { func: "schemas", perm:["read", "bulk_read"] },
     { func: "tables", perm:["read", "bulk_read", "readtable"] },
-    { func: "columns", perm:["read", "bulk_read"] },
+    { func: "tabledatas", perm:["read", "bulk_read"] },
 )
 const maintenance: Role = new Role(
     { func: "users", perm:["read", "bulk_read"] },
@@ -35,7 +35,7 @@ const maintenance: Role = new Role(
     { func: "events", perm:["all"] },
     { func: "triggers", perm:["all"] },
     { func: "routines", perm:["all"] },
-    { func: "columns", perm:["all"] },
+    { func: "tabledatas", perm:["all"] },
 )
 
 const RoleMap = [admin, maintenance, view]

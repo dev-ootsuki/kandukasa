@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import type { Auth } from '@/types/Types'
-import * as AuthClass from '@/types/Auth.class'
+import type { Auth } from '~/types/Types'
+import * as AuthClass from '~/types/Auth.class'
 
 type State = {
     roleId: number,

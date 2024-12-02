@@ -1,5 +1,5 @@
-import { useLoadingStore } from '@/stores/LoadingStore'
-import { useErrorStore } from '@/stores/ErrorStore'
+import { useLoadingStore } from '~/stores/LoadingStore'
+import { useErrorStore } from '~/stores/ErrorStore'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const apiKey = ""

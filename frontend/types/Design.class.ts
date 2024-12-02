@@ -1,7 +1,7 @@
-import type { Design } from '~/types/Types'
+import type { Design, ProxyForm } from '~/types/Types'
 import * as Domain from '~/types/Domain.class'
 
-export class Config{
+export class Config implements ProxyForm.PF{
     id:number = 0
     before?: Config
     lang?: Design.Lang
@@ -44,5 +44,12 @@ export class Config{
         ret.sortBy = arg.sortBy
         return ret
     }
+    isValid(): boolean {
+        return true
+    }
+    toDomain(): {} {
+        return this
+    }
+
 }
 

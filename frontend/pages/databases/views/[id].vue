@@ -1,7 +1,7 @@
 <template>
     <div class="q-pa-md">
       <q-toolbar class="content-header q-pa-sm">
-        <databases-breadcrumbs />
+        <LayoutBreadcrumbsDatabase />
       </q-toolbar>
       <div class="content-main q-pa-sm">
         <q-card class="bg-eins text-eins">
@@ -28,7 +28,7 @@
   </template>
     
   <script lang="ts" setup>
-  import { useDbConnectionsStore } from '@/stores/DbConnectionsStore'
+  import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
   const store = useDbConnectionsStore()
   const { selectedView } = storeToRefs(store)
   const tab = ref('info')

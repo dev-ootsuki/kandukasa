@@ -21,7 +21,6 @@ const attr = UiHelper.getRefId()
 const origin = props.model.usePrimary()
 const innerInput = useTemplateRef("innerInput")
 
-// TODO あとで直す＠なんか微妙に動かない
 const validate = () : boolean => {
     const val:any = innerInput.value
     if(val.validate !== undefined)

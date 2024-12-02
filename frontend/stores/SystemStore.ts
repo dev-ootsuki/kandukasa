@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import en_US from 'quasar/lang/en-US.js'
 import ja from 'quasar/lang/ja.js'
-import type { Design, System } from '@/types/Types'
+import type { Design, System } from '~/types/Types'
 import * as DesignClass from '~/types/Design.class'
 import * as SystemClass from '~/types/System.class'
 import { colors } from 'quasar'

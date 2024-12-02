@@ -1,7 +1,5 @@
-/// <reference path="./Types.d.ts" />
-/// <reference types="date-fns" />
 import { format } from 'date-fns'
-import type { Validator } from '@/types/Types'
+import type { Validator } from '~/types/Types'
 
 export class ValidatorMessageAdapter implements Validator.MessageAdapter{
     settings: Validator.Settings
