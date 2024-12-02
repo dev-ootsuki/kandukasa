@@ -1,6 +1,6 @@
 <template>
-    <confirmation-dialog ref="dialog" />
-    <alert-dialog ref="alert" />
+    <DialogConfirm ref="dialog" />
+    <DialogAlert ref="alert" />
     <q-table
         flat bordered dense
         :rows="tables!"
@@ -16,11 +16,11 @@
         :filter="filterColumns"
     >
         <template v-slot:top-left>
-            <q-btn icon="add" color="primary" :label="$t('common.new_registration_exec')" @click="onCreateNewTable" />
+            <SystemBtnOperation mode="register" feature="dbfeatures" />
             <q-space class="q-pl-md" />
-            <q-btn icon="edit_off" color="negative" :label="$t('common.bulk_truncate_exec')" @click="onBulkTruncateTable" />
+            <SystemBtnOperation mode="bulk_truncate" feature="dbdata" @click="onBulkTruncateTable" />
             <q-space class="q-pl-md" />
-            <q-btn icon="delete_forever" color="negative" :label="$t('common.bulk_delete_exec')" @click="onBulkDeleteTable" />
+            <SystemBtnOperation mode="bulk_delete" feature="dbfeatures" @click="onBulkDeleteTable" />
         </template>
         <template v-slot:top-right>
             <q-input borderless dense debounce="300" v-model="filterColumns.table_name" :placeholder="$t('metadata.table_name')">
@@ -48,8 +48,8 @@
             <q-td :props="props">
                 <span v-if="props.col.name == 'id'">
                     <q-btn icon="shortcut" color="primary" size="8px" class="btn-inner-tables q-mr-sm" @click="onSelectTable(props.row)" />
-                    <q-btn icon="edit_off" color="negative" size="8px" class="btn-inner-tables q-mr-sm" @click="onEraseTableData(props.row)" />
-                    <q-btn icon="delete_forever" color="negative" size="8px" class="btn-inner-tables" @click="onDeleteTable(props.row)" />
+                    <SystemBtnOperation mode="truncate" feature="dbdata" mini @click="onEraseTableData(props.row)" class="q-mr-sm" />
+                    <SystemBtnOperation mode="delete" feature="dbfeatures" mini @click="onDeleteTable(props.row)" />
                 </span>
                 <p v-if="props.col.name != 'id'">
                     {{props.value}}

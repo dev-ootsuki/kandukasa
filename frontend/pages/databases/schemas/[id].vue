@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
-      <databases-breadcrumbs />
+      <LayoutBreadcrumbsDatabase />
     </q-toolbar>
     <div class="content-main q-pa-sm">
       <q-card v-if="selectedSchema">
@@ -27,33 +27,33 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="info">
           <!-- schema name -->
-          <row-label-value :label="$t('metadata.schema_name')" :value="selectedSchema?.schema_name" />
+          <LayoutRowLabelValue :label="$t('metadata.schema_name')" :value="selectedSchema?.schema_name" />
           <!-- catalog name -->
-          <row-label-value :label="$t('metadata.system_catalog')" :value="selectedSchema?.system_catalog" />
+          <LayoutRowLabelValue :label="$t('metadata.system_catalog')" :value="selectedSchema?.system_catalog" />
           <!-- default character set -->
-          <row-label-value :label="$t('metadata.default_character_set_name')" :value="selectedSchema?.default_character_set_name" />
+          <LayoutRowLabelValue :label="$t('metadata.default_character_set_name')" :value="selectedSchema?.default_character_set_name" />
           <!-- default_collation_name -->
-          <row-label-value :label="$t('metadata.default_collation_name')" :value="selectedSchema?.default_collation_name" />
+          <LayoutRowLabelValue :label="$t('metadata.default_collation_name')" :value="selectedSchema?.default_collation_name" />
           <!-- default_encryption -->
-          <row-label-value :label="$t('metadata.default_encryption')" :value="selectedSchema?.default_encryption" />
+          <LayoutRowLabelValue :label="$t('metadata.default_encryption')" :value="selectedSchema?.default_encryption" />
           <!-- grantee -->
-          <row-label-value :label="$t('metadata.grantee')" :value="schemaGrantee" />
+          <LayoutRowLabelValue :label="$t('metadata.grantee')" :value="schemaGrantee" />
           <!-- table size -->
-          <row-label-value :label="$t('schemas.table_total')" :value="tablesTotal" />
+          <LayoutRowLabelValue :label="$t('schemas.table_total')" :value="tablesTotal" />
           <!-- index size -->
-          <row-label-value :label="$t('schemas.index_total')" :value="indexesTotal" />
+          <LayoutRowLabelValue :label="$t('schemas.index_total')" :value="indexesTotal" />
           <!-- count of tables -->
-          <row-label-value :label="$t('schemas.num_of_tables')" :value="schema?.tables?.length || 0" />
+          <LayoutRowLabelValue :label="$t('schemas.num_of_tables')" :value="schema?.tables?.length || 0" />
           <!-- count of views -->
-          <row-label-value :label="$t('schemas.num_of_views')" :value="schema?.views?.length || 0" />
+          <LayoutRowLabelValue :label="$t('schemas.num_of_views')" :value="schema?.views?.length || 0" />
           <!-- count of triggers -->
-          <row-label-value :label="$t('schemas.num_of_triggers')" :value="schema?.triggers?.length || 0" />
+          <LayoutRowLabelValue :label="$t('schemas.num_of_triggers')" :value="schema?.triggers?.length || 0" />
           <!-- count of routines -->
-          <row-label-value :label="$t('schemas.num_of_routines')" :value="schema?.routines?.length || 0" />
+          <LayoutRowLabelValue :label="$t('schemas.num_of_routines')" :value="schema?.routines?.length || 0" />
           <!-- count of events -->
-          <row-label-value :label="$t('schemas.num_of_events')" :value="schema?.events?.length || 0" />
+          <LayoutRowLabelValue :label="$t('schemas.num_of_events')" :value="schema?.events?.length || 0" />
           <!-- engines -->
-          <row-label-value :label="$t('schemas.engines')" :value="engines" />
+          <LayoutRowLabelValue :label="$t('schemas.engines')" :value="engines" />
           
         </q-tab-panel>
 

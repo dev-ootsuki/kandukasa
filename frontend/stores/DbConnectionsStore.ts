@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination } from '~/types/Domain.class'
-import type { WebAPI } from '@/types/Types'
+import type { WebAPI } from '~/types/Types'
 
 type State = {
     dbConnections: DbConnection[],

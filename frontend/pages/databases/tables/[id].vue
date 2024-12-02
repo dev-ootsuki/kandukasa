@@ -1,9 +1,9 @@
 <template>
-  <confirmation-dialog ref="dialog" />
-  <alert-dialog ref="alert" />
+  <DialogConfirm ref="dialog" />
+  <DialogAlert ref="alert" />
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
-      <databases-breadcrumbs />
+      <LayoutBreadcrumbsDatabase />
     </q-toolbar>
     <div class="content-main q-pa-sm">
       <q-card class="bg-eins text-eins">
@@ -49,9 +49,9 @@
               @request="onSearch"
             >
               <template v-slot:top-left>
-                <q-btn icon="add" color="primary" :label="$t('common.new_registration_exec')" @click="onCreateNewData" />
+                <SystemBtnOperation mode="register" feature="dbdata" />
                 <q-space class="q-pl-md" />
-                <q-btn icon="delete_forever" color="negative" :label="$t('common.bulk_delete_exec')" @click="onBulkDeleteData" />
+                <SystemBtnOperation mode="bulk_delete" feature="dbdata" @click="onBulkDeleteData" />
               </template>
 
               <template v-slot:top-right>
@@ -76,8 +76,8 @@
               <template v-slot:body-cell="props">
                 <q-td :props="props">
                     <span v-if="props.col.name == '_internal_kandukasa_exchange_id_'">
-                        <q-btn icon="edit" color="primary" size="8px" class="btn-inner-tables q-mr-sm" @click="onEditRecord(props.row)" />
-                        <q-btn icon="delete_forever" color="negative" size="8px" class="btn-inner-tables q-mr-sm" @click="onDeleteRecord(props.row)" />
+                        <SystemBtnOperation mode="update" feature="dbdata" mini class="q-mr-sm" @click="onEditRecord(props.row)" />
+                        <SystemBtnOperation mode="delete" feature="dbdata" mini @click="onDeleteRecord(props.row)" />
                     </span>
                     <p v-if="props.col.name != system.dbDataPrimaryKey">
                         {{props.value}}
@@ -106,21 +106,8 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions">
-              <q-select
-                :options="rulesColumns"
-                outlined
-                dense
-                options-dense
-                option-value="name"
-                options-cover
-                emit-value
-                map-options
-                class="variable-conditions-key"
-                v-model="condition.column"
-              />
-              ここに演算子がいる
-              <q-input v-model="condition.input" dense class="variable-conditions-value q-pl-md"/>
-              <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
+            <condition :columns="dataColumns" :condition="condition" />
+            <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -140,7 +127,7 @@
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
-import * as Domain from '~/types/Domain.class'
+import type { Design } from '~/types/Types'
 const { t } = useI18n() 
 const store = useDbConnectionsStore()
 const system = useSystemStore().systemSetting
@@ -191,11 +178,11 @@ watch(tab, (newval, oldval) => {
     onSearch()
   }
 })
+
+
 // 検索条件
 const rules = ref<boolean>(false)
-console.log(dataColumns)
-const rulesColumns = dataColumns.filter(e => e.name != system.dbDataPrimaryKey)
-const searchConditions = ref<{column:any, input:any, key:number}[]>([{column:null,input:null,key:0}])
+const searchConditions = ref<Design.SearchCindition[]>([{column:null,input:null,key:0}])
 const showRules = () => {
   rules.value = true
 }
@@ -215,6 +202,7 @@ const onAppendSearchConditions = () => {
 const onClearSearchConditions = () => {
   searchConditions.value = [{column:null, input:null, key:0}]
 }
+
 
 // データテーブルで削除時@1レコード
 const onDeleteRecord = (row:any) => {

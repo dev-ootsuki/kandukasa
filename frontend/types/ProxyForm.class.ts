@@ -1,4 +1,4 @@
-import type { ProxyForm } from '@/types/Types'
+import type { ProxyForm } from '~/types/Types'
 import type { Reactive } from 'vue'
 
 const _logging = (message:string, ...args:any[]) :void => {
