@@ -35,7 +35,7 @@ const visible = ref(false)
 const title = computed(() => {
   if(props.title !== undefined)
     return props.title
-  return UiHelper.uiModeToTitleKey(mode.value!)
+  return UiHelper.findSystemOperaion(mode.value!).label
 })
 
 const callbackSubmit = ref<() => Promise<any>>()

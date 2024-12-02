@@ -1,8 +1,6 @@
-/// <reference path="../types/Types.d.ts" />
-/// <reference path="../types/Validator.class.ts" />
-import type { Validator } from '@/types/Types'
-import * as ValidatorClass from '@/types/Validator.class'
-import { useValidator } from '@/composables/Validator'
+import type { Validator } from '~/types/Types'
+import * as ValidatorClass from '~/types/Validator.class'
+import { useValidator } from '~/composables/Validator'
 export default defineNuxtPlugin((nuxtApp) : any => {
   let i18n: any = null
   nuxtApp.hook("vue:setup",() => {
