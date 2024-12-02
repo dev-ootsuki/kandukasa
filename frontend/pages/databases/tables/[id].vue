@@ -106,7 +106,7 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions">
-            <condition :columns="dataColumns" :condition="condition" />
+            <DbdataColumnLinkedCondition :columns="dataColumns" :condition="condition" />
             <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
