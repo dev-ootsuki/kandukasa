@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
-      <databases-breadcrumbs />
+      <LayoutBreadcrumbsDatabase />
     </q-toolbar>
     <div class="content-main q-pa-sm">
       <q-card class="bg-eins text-eins" v-if="selected?.db_instance">
@@ -16,17 +16,17 @@
         >
           <q-card-section>
             <!-- name -->
-            <row-label-value :label="$t('settings.db_connections.name')" :value="selected?.name" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.name')" :value="selected?.name" />
             <!-- db_type -->
-            <row-label-value :label="$t('settings.db_connections.db_type')" :value="selected?.db_type" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.db_type')" :value="selected?.db_type" />
             <!-- host -->
-            <row-label-value :label="$t('settings.db_connections.host')" :value="selected?.host" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.host')" :value="selected?.host" />
             <!-- port -->
-            <row-label-value :label="$t('settings.db_connections.port')" :value="selected?.port" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.port')" :value="selected?.port" />
             <!-- login user -->
-            <row-label-value :label="$t('settings.db_connections.login_name')" :value="selected?.login_name" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.login_name')" :value="selected?.login_name" />
             <!-- descriptions -->
-            <row-label-value :label="$t('settings.db_connections.description')" :value="selected?.description" />
+            <LayoutRowLabelValue :label="$t('settings.db_connections.description')" :value="selected?.description" />
             <!-- // TODO あとで権限とか認証方法を追加する？ -->
 
             <q-space />

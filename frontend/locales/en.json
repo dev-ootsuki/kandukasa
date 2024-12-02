@@ -11,20 +11,26 @@
     "not_use": "not use",
     "new_registration_exec": "New registration",
     "exec_confirm": "Execute {0}. Are you sure?", 
+    "exec_complete": "{0} has been executed",
     "exec": "Execute",
     "update_exec": "Update",
     "delete_exec": "Delete",
     "truncate_exec": "Truncate",
-    "bulk_delete_exec": "Bulk delete",
-    "bulk_truncate_exec": "Bulk truncate",
+    "dark_mode": "dark mode",
     "yes": "yes",
     "no" : "no",
     "cancel": "cancel",
     "close": "close",
     "operation": "operation",
     "encount_error": "Error",
+    "alert": "Alert",
     "required": "Required",
-    "home": "Home"
+    "home": "Home",
+    "bulk_delete_exec": "Bulk delete",
+    "bulk_truncate_exec": "Bulk truncate",
+    "search_conditions": "Search condition",
+    "search_conditions_description": "Please enter your search criteria",
+    "clear" : "Clear"
   },
   "leftmenu": {
     "all": "All",
@@ -131,6 +137,7 @@
 	  "page_not_found": "Oops. Nothing here..."
   },
   "validate": {
+    "no_select": "Please select one or more",
     "required" : "Input is required",
     "numeric": "Please enter numerical values",
     "ascii" : "Please use alphanumeric symbols",
@@ -147,7 +154,6 @@
     "range_to": "Please enter less than or equal to {0}"
   },
   "metadata": {
-    "catalog_name": "catalog_name",
     "system_catalog": "catalog_name",
     "schema_name": "database_name",
     "default_character_set_name": "default_character_set_name",

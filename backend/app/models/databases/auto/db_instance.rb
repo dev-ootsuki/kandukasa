@@ -43,19 +43,19 @@ module Databases
             :label => "collation_name",
             :mapping => [
               { :belong => "cll", :column => "collation_name"}, # mysql
-              { :belong => "cll", :column => "collname"} # postgresql
+              { :belong => "cll", :column => "collname"}, # postgresql
             ]
           },{
             :label => "description",
             :mapping => [
               { :belong => "cll", :column => "character_set_name"}, # mysql
-              { :belong => "cll", :column => "colllocale"} # postgresql
+              { :belong => "cll", :column => "colllocale"}, # postgresql
             ]            
           }],
           :table => {
             :mapping => [
               { :name => "information_schema.collations AS cll" }, # mysql
-              { :name => "pg_catalog.pg_collation cll" } # postgresql
+              { :name => "pg_catalog.pg_collation cll" }, # postgresql
             ]
           },
           :orders => ["collation_name"]
@@ -65,7 +65,7 @@ module Databases
               :label => "system_catalog",
               :mapping => [
                 { :belong => "schm", :column => "catalog_name" },     # MySQL
-                { :belong => nil, :column => Databases::Auto::QueryGenerator::UNSUPPORTED } # postgreSQL
+                { :belong => nil, :column => Databases::Auto::QueryGenerator::UNSUPPORTED }, # postgreSQL
               ]
             },{
               :label => "schema_id",
@@ -113,27 +113,33 @@ module Databases
               :label => "belongs_space",
               :mapping => [
                 { :belong => nil, :column => Databases::Auto::QueryGenerator::UNSUPPORTED }, # mysql
-                { :belong => "space", :column => "spcname"} # postgresql
+                { :belong => "space", :column => "spcname"}, # postgresql
+              ]
+            },{
+              :label => "default_encryption",
+              :mapping => [
+                { :belong => "schm", :column => "default_encryption" }, # mysql
+                { :belong => nil, :column => Databases::Auto::QueryGenerator::UNSUPPORTED }, # postgresql
               ]
             }
           ],
           :table => {
             :mapping => [
               { :name => "information_schema.schemata AS schm" }, # mysql
-              { :name => "pg_catalog.pg_database schm" } # postgresql
+              { :name => "pg_catalog.pg_database schm" }, # postgresql
             ]
           },
           :joins => [ {
               :shortcut => "auth",
               :mapping => [
                 { :name => nil }, # mysql
-                { :name => "pg_authid", :on => "auth.oid = schm.datdba"} # postgresql
+                { :name => "pg_authid", :on => "auth.oid = schm.datdba"}, # postgresql
               ]
             },{
               :shortcut => "space",
               :mapping => [
                 { :name => nil }, # mysql
-                { :name => "pg_tablespace", :on => "space.oid = schm.dattablespace"} # postgresql
+                { :name => "pg_tablespace", :on => "space.oid = schm.dattablespace"}, # postgresql
               ]
             }
           ],

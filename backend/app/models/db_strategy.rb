@@ -1,4 +1,6 @@
 class DbStrategy
+  DB_DATA_PRIMARY_KEY = "_internal_kandukasa_exchange_id_"
+  MULTI_PRIMARY_KEY_SEPARATOR = "_internal_kandukasa_multi_pkey_separator"
   @@database_config = {
     :MySQL => {
       :type_id => 0,
@@ -55,10 +57,19 @@ class DbStrategy
     ret
   end
 
-  def table_data condition
+  def table_data pagination, condition
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
-      db_table.find_data con, condition
+      db_table.find_data con, pagination, condition
+    }
+    clonse_connection
+    ret
+  end
+
+  def delete_data ids
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.delete_data con, ids
     }
     clonse_connection
     ret

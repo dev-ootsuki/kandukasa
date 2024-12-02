@@ -11,7 +11,7 @@
                 :nodes="qnode"
                 node-key="key"
                 selected-color="primary"
-                v-model:selected="selected"
+                v-model:selected="selectedNode"
                 @lazy-load="onLazyLoad"
             >
                 <template v-slot:header-connection="prop">
@@ -56,10 +56,7 @@
                         <div class="q-tree-header-label">{{prop.node.label}}</div>
                     </div>
                 </template>
-
             </q-tree>
-            
-
         </q-item>
     </q-list>
 </template>
@@ -70,13 +67,12 @@ import { QTree } from 'quasar'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const store = useDbConnectionsStore()
-const { qnode, outerSlectedNodeId } = storeToRefs(store)
+const { qnode, selectedNode } = storeToRefs(store)
 
-const selected = ref('')
 const leftTree = ref<InstanceType<typeof QTree>>()
 
-watch(selected, async (newval:any, oldval:any) => {
-    selected.value = newval
+watch(selectedNode, async (newval:any, oldval:any) => {
+    selectedNode.value = newval
     // expand
     if(newval !== undefined && newval != null){
         onOpenTreeNode(newval)
@@ -148,12 +144,6 @@ const onOpenTreeNode = (newval:any) => {
 
     }
 }
-
-watch(outerSlectedNodeId, (newval, oldval) =>{
-    outerSlectedNodeId.value = newval
-    if(newval != null)
-        selected.value = newval
-})
 
 const onCloseTreeNode = (oldval:any) => {
     const node = leftTree.value?.getNodeByKey(oldval)
@@ -301,7 +291,6 @@ const handler = {
             navigateTo(`/databases/views/${keys[3]}`)
         }
     }
-    // TODO add event, routine, view
 } as {[K:string]:{exec:Function, navi:Function}}
 
 const onLazyLoad  = ({ node, key, done, fail }:{node:any,key:string,done:(children:any[]) => any, fail:any}) => {

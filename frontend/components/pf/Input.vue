@@ -37,7 +37,7 @@ defineExpose({
         <q-input 
             ref="innerInput"
             v-model="origin[attr]" 
-            :dense="true" 
+            dense
             class="q-pa-sm" 
             :rules="validator" 
             lazy-rules 

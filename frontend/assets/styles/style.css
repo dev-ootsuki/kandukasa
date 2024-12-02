@@ -98,17 +98,11 @@
 
 /* Adapting unsupported qusar dark/light css */
 .body--light .q-toggle__label{
-    color: var(--q-fc-hi-1) !important;
-}
-.body--light .q-item__label{
-    color: var(--q-fc-hi-1) !important;
+    color: var(--q-fc-hi-1);
 }
 
 .body--dark .q-toggle__label{
-    color: var(--q-fc-hi-1-dark) !important;
-}
-.body--dark .q-item__label{
-    color: var(--q-fc-hi-1-dark) !important;
+    color: var(--q-fc-hi-1-dark);
 }
 
 /* HACK QUASAR CSS and HTML */
@@ -128,10 +122,20 @@
  * 
  */
 .sticky-header-table{
-    max-height: 680px
+    max-height: 72vh
+}
+@media (min-height:1080px){
+    .sticky-header-table{
+        max-height: 80vh
+    }
+}
+@media (min-height:1500px){
+    .sticky-header-table{
+        max-height: 85vh
+    }
 }
 .min-sticky-header-table{
-    max-height: 300px !important;
+    max-height: 28vh;
 }
 .body--dark .sticky-header-table > div > table.q-table > thead > tr:first-child > th{
     background-color: var(--q-dark) !important;
@@ -214,6 +218,9 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
     max-width: 80vw !important;
     width: 80vw !important;
 }
+.alert-dialog{
+    min-width: 20vw !important;
+}
 .pf-color-picker-col > div:nth-child(2){
     justify-content: flex-start;
     display: flex;
@@ -253,6 +260,26 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
 
 .btn-settings-anchor{
     width: 250px;
+}
+.select-table-filter-column{
+    min-width: 150px;
+}
+.variable-conditions-key{
+    min-width: 15vw;
+    max-width: 25vw;
+}
+.variable-conditions-value{
+    min-width: 40vw;
+    max-width: 50vw;
+}
+
+.data-search-conditions-dialog{
+    min-width: 70vw;
+    max-width: 90vw;
+}
+.search-conditions-card{
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 /* scrollber */

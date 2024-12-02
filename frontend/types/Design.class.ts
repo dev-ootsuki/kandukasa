@@ -1,7 +1,7 @@
-import type { Design } from '@/types/Types'
+import type { Design, ProxyForm } from '~/types/Types'
+import * as Domain from '~/types/Domain.class'
 
-
-export class Config{
+export class Config implements ProxyForm.PF{
     id:number = 0
     before?: Config
     lang?: Design.Lang
@@ -30,6 +30,26 @@ export class Config{
             this.id++
     }
     isTouch(): boolean{
-        return this.before?.id !== this.id
+        return this.before?.id !== this.idz
     }
+    createTablePagination(): Domain.Pagination {
+        return new Domain.Pagination(this.tablesPageSize)
+    }
+    toPagination(arg:{[K:string]:any}) : Domain.Pagination{
+        const ret = new Domain.Pagination(this.tablesPageSize)
+        ret.page = arg.page
+        ret.rowsNumber = arg.rowsNumber
+        ret.rowsPerPage = arg.rowsPerPage
+        ret.descending = arg.descending
+        ret.sortBy = arg.sortBy
+        return ret
+    }
+    isValid(): boolean {
+        return true
+    }
+    toDomain(): {} {
+        return this
+    }
+
 }
+

@@ -1,4 +1,4 @@
-import type { Domain, ProxyForm } from '@/types/Types'
+import type { Domain, ProxyForm } from '~/types/Types'
 
 export class ByteUnit implements Domain.Unit{
     name:string = ''
@@ -101,7 +101,7 @@ export class DbCharacters extends DomainObject{
 
 export class DbSchema extends DomainObject{
     schema_name?: string
-    catalog_name?: string
+    system_catalog?: string
     default_character_set_name?: string
     default_collation_name?:string
     sql_path?: string | null
@@ -179,37 +179,51 @@ export class DbTable extends DomainObject{
     update_time?:Date
     version:number = 0
     columns: DbColumn[] = []
+    primaries: DbPrimaryKey[] = []
     constructor(){
         super()
     }
 }
 
-export class TableConditions{
-    
+export class DbPrimaryKey{
+    column_name?:string
 }
+export class Pagination{
+    rowsPerPage:number = 0
+    page: number = 1
+    rowsNumber: number = 0
+    sortBy?: string
+    descending: boolean = false
+    constructor(pageSize: number){
+        this.rowsPerPage = pageSize
+    }
+    setSort(sortKey:string, descending?:boolean) : Pagination{
+        this.sortBy = sortKey
+        if(descending === true)
+            this.descending = true
+        return this
+    }
+    setPageInfo(page:number, rowsNumber: number) : Pagination{
+        this.page = page
+        this.rowsNumber =rowsNumber
+        return this
+    }
+    toPlain() : Pagination{
+        const ret = new Pagination(this.rowsPerPage)
+        Object.getOwnPropertyNames(this).map(e => {
+            (ret as any)[e] = (this as any)[e]
+        })
+        return ret
+    }
+}
+
 
 export class DbData{
     [K:string]:any
 }
 
 export class DbColumn extends DomainObject{
-    
-    attributes: DbColumnAttribute[] = []
     constructor(){
         super()
     }
 }
-
-export class DbColumnAttribute extends DomainObject{
-    name: string | undefined
-    constructor(){
-        super()
-    }
-}
-
-export const DatabaseProducts = [
-    {label: "MySQL", value: "MySQL", enable: true},
-    {label:"postgreSQL", value: "postgreSQL", enable: false},
-    {label: "RDS Aurora MySQL", value:"RDSAuroraMySQL", enable: true},
-    {label:"RDS Aurora postgreSQL", value:"RDSAuroraPostgreSQL", enable: false}
-]

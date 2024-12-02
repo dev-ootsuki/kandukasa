@@ -27,16 +27,41 @@ class TablesController < ApplicationController
 
   # URLに指定された接続先ID/スキーマIDに所属するテーブルに対して検索を行う
   def query
-    id = params.require(:con_id)
-    sid = params.require(:schema_id)
-    tid = params.require(:table_id)
+    id = params[:con_id]
+    sid = params[:schema_id]
+    tid = params[:table_id]
+    conditions = params[:conditions]
+    pagination = params[:pagination]
     begin
       strategy = DbStrategy.new id, sid, tid
-      success strategy.table_data nil
+      success strategy.table_data pagination, conditions
     rescue StandardError => error 
       logger.error $! if $!
       logger.error $!.backtrace.join("\n") if $!
       failed error
     end
+  end
+
+  def bulk_truncate
+    p params
+  end
+
+  def bulk_drop
+    
+  end
+
+  def bulk_record_delete
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    ids = params.require(:keys)
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.delete_data ids
+    rescue StandardError => error 
+      logger.error $! if $!
+      logger.error $!.backtrace.join("\n") if $!
+      failed error
+    end    
   end
 end

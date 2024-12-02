@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, TableConditions, DbData } from '~/types/Domain.class'
-import type { WebAPI } from '@/types/Types'
+import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination } from '~/types/Domain.class'
+import type { WebAPI } from '~/types/Types'
 
 type State = {
     dbConnections: DbConnection[],
@@ -12,7 +12,7 @@ type State = {
     selectedRoutine: DbRoutine | null,
     selectedEvent: DbEvent | null
     node: any[],
-    outerSlectedNodeId: string | null
+    selectedNode: string | null
 }
 
 export const useDbConnectionsStore = defineStore('dbConnections', {
@@ -27,7 +27,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
       selectedRoutine: null,
       selectedEvent: null,
       node: [],
-      outerSlectedNodeId: null
+      selectedNode: null
     }),
     getters: {
         selected(state: State){
@@ -36,14 +36,22 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
         qnode(state: State){
             return state.node
         },
+        selectedNodeId(state: State){
+            return state.selectedNode
+        }
     },
     actions: {
+        createRootNode() : any[] {
+            this.node = []
+            this.node = UiHelper.createNode(this.dbConnections, {keys:["id"],label:"name", header:"connection"})
+            return this.node
+        },
         async findDbConnectionsAll() : Promise<DbConnection[]>{
             return webapi()<WebAPI.WebAPISuccess<DbConnection[]> | WebAPI.WebAPIFailed>
                 ('/db_connection')
                 .then(res => {
                     this.dbConnections = res.data
-                    this.node = UiHelper.createNode(res.data, {keys:["id"],label:"name", header:"connection"})
+                    this.createRootNode()
                     return this.dbConnections
                 })
                 .catch(res => {
@@ -115,19 +123,31 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             .then(data => {
                 const table = con?.db_instance?.schemas.find(e => e.schema_id == schemaId)?.tables.find(e => e.table_id == tableId)!
                 table.columns = data?.data.columns
+                table.primaries = data?.data.primaries
                 return table
             })
         },
-        async getTableData(conId:number, schemaId:string, tableId: string, conditions?: TableConditions) : Promise<DbData[]>{
-            const con = this.selected
-            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}/${tableId}/query`, {
-                method:"POST"                
+        async getTableData(id:number, schema_id:string, table_id: string, conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/query`, {
+                method:"POST",
+                body: conditions  
             })
             .then(data => {
                 return data.data
             })
         },
+        async deleteTableData(id:number, schema_id:string, table_id:string, keys:any[]) : Promise<void>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/bulk_record_delete`, {
+                method:"DELETE",
+                body: {
+                    keys:keys
+                }
+            })
+            .then(data => {
+                return data.data
+            })
 
+        },
         setSelectedDb(id: number) : DbConnection | null{
             this.selectedDb = this.dbConnections.find(e => e.id == id)!
             this.selectedEvent = null
@@ -234,6 +254,6 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedTable = null
             this.selectedView = null            
             return this.selectedRoutine
-        },        
+        }
     }
 })

@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import en_US from 'quasar/lang/en-US.js'
 import ja from 'quasar/lang/ja.js'
-import type { Design } from '@/types/Types'
-import * as DesignClass from '@/types/Design.class'
+import type { Design, System } from '~/types/Types'
+import * as DesignClass from '~/types/Design.class'
+import * as SystemClass from '~/types/System.class'
 import { colors } from 'quasar'
 const { getPaletteColor } = colors
 
@@ -21,11 +22,22 @@ export const langs:Design.Lang[] = [{
 
 type State = {
     design:DesignClass.Config
+    system:SystemClass.Config
 }
+
+const defaultSystem = new SystemClass.Config()
+defaultSystem.databaseProducts = [
+    {label: "MySQL", value: "MySQL", enable: true},
+    {label:"postgreSQL", value: "postgreSQL", enable: false},
+    {label: "RDS Aurora MySQL", value:"RDSAuroraMySQL", enable: true},
+    {label:"RDS Aurora postgreSQL", value:"RDSAuroraPostgreSQL", enable: false}
+]
+defaultSystem.dbDataPrimaryKey = "_internal_kandukasa_exchange_id_"
+defaultSystem.dbMultiSelectedKeySeparator = "_#_kandukasa_#_#_key_#_#_separator_#_"
 
 const createDefaultDesign = () => {
     const ret = new DesignClass.Config()
-    ret.lang = langs[0]
+    ret.lang = langs[1]
     ret.primary = getPaletteColor("primary")
     ret.secondary = getPaletteColor("secondary")
     ret.accent = getPaletteColor("accent")
@@ -45,11 +57,15 @@ defaultDesign.before = createDefaultDesign()
 export const useSystemStore = defineStore('system', {
     // convert to a function
     state: (): State => ({
-        design: defaultDesign
+        design: defaultDesign,
+        system: defaultSystem
     }),
     getters: {
         designSetting(state : State) : DesignClass.Config{
             return state.design
+        },
+        systemSetting(state: State) : SystemClass.Config{
+            return state.system
         }
     },
     actions: {

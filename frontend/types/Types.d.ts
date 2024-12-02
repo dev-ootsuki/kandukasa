@@ -111,7 +111,7 @@ export declare namespace WebAPI{
  * Types of Design
  * ---------------------------------------------------------- */
 export declare namespace Design{
-    type UIMode = "register" | "update" | "delete" | "truncate" | "bulk_delete" | "bulk_truncate"
+    type UIMode = "register" | "update" | "delete" | "truncate" | "bulk_delete" | "bulk_truncate" | "complete"
 
     type Lang = {
         name:string,
@@ -122,6 +122,10 @@ export declare namespace Design{
     }
 
     type SummaryType = {label:string, icon:string, show:boolean, mode:string}
+    type SearchCindition = {column:any, input:any, key:number}
+    type DataColumn = {name: string, required: boolean, label: string, field: (row:any) => any, format: (val:any) => string, sortable:boolean, data_type: string}
+    type DatabaseTreeNodeHeaderType = "connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event"
+    type SystemOperation = {label:string, icon:string, mode:Design.UIMode, danger:boolean}
 }
 
 /* ----------------------------------------------------------
@@ -136,6 +140,10 @@ export declare namespace Domain{
         exchange(val:number | undefined) : number
         exchangeToString(val:number | undefined) : string
     }
+}
+
+export declare namespace System{
+    type DbProduct = {label:string, value:string, enable:boolean}
 }
 
 /* ----------------------------------------------------------
@@ -159,14 +167,10 @@ export declare namespace Auth{
     
     export const FunctionsMap = {
         users:1,
-        connections:2,
-        schemas:3,
-        tables:4,
-        events:5,
-        triggers:6,
-        views:7,
-        routines:8,
-        columns:9,
+        dbconnections:2,
+        dbschemas:3,
+        dbfeatures:4,
+        dbdata:5,
     }
     
     export type FunctionsType = keyof typeof FunctionsMap
@@ -176,5 +180,4 @@ export declare namespace Auth{
     interface Role{
         has(func:Auth.FunctionsType, perm: Auth.PermissionType) : boolean
     }
-    
 }

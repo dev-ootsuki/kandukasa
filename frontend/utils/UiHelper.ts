@@ -1,4 +1,5 @@
-import type { Design } from '@/types/Types'
+import type { Design } from '~/types/Types'
+import { useSystemStore } from '~/stores/SystemStore'
 export class UiHelper{
     /**
      * Get current instance's ref ID
@@ -15,7 +16,7 @@ export class UiHelper{
      * @param config id set. finalize ids.join(".")
      * @returns QNode
      */
-    static createNode(elems: any[], config:{keys:string[], label: string, header:"connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event", expandable?:boolean, selectable?:boolean, lazy?:boolean}) : any[]{
+    static createNode(elems: any[], config:{keys:string[], label: string, header:Design.DatabaseTreeNodeHeaderType, expandable?:boolean, selectable?:boolean, lazy?:boolean}) : any[]{
         if(elems == null)
             return []
         const nodes = elems?.map(e => {
@@ -26,7 +27,7 @@ export class UiHelper{
                 children:null,
                 expandable: config.expandable !== undefined ? config.expandable : true,
                 selectable: config.selectable !== undefined ? config.selectable : true,
-                lazy: config.lazy !== undefined ? config.lazy : true
+                lazy: config.lazy !== undefined ? config.lazy : true,
             }
         })
         return nodes
@@ -86,7 +87,7 @@ export class UiHelper{
         return this.tablesOrderDifinitions.map(each => {
             return {
                 name: each,
-                required: true,
+                required: false,
                 label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
                 field: (row:any) => row[each],
                 format: (val:any) => `${val}`,
@@ -108,18 +109,28 @@ export class UiHelper{
         })
     }
 
-    static createDataColumns(columns:any[]) : any[]{
+    static createDataColumns($t:Function, columns:any[]) : Design.DataColumn[]{
+        const system = useSystemStore().systemSetting
         const ret = columns.map(each => {
             return {
                 name: each["column_name"],
-                required: true,
+                required: false,
                 label: each["column_name"],
                 field: (row:any) => row[each["column_name"]],
                 format: (val:any) => `${val}`,
-                sortable:false
+                sortable:true,
+                data_type: each["data_type"]
             }
         })
-        return ret
+        return [{
+            name: system.dbDataPrimaryKey!,
+            required: false,
+            label: $t('common.operation'),
+            field:(row:any) => '',
+            format: (val:any) => '',
+            sortable: false,
+            data_type: "system_primary"
+        }].concat(ret)
     }
 
     /**
@@ -135,28 +146,49 @@ export class UiHelper{
         "events":{label:'leftmenu.events', icon:"calendar_month", show:true, "mode":"events"},
         "all":{label:'leftmenu.all',icon:"summarize",show:true, "mode":"all"}
     } as {[K:string]:Design.SummaryType}
+
     static getSchemaSummary(mode: string) : Design.SummaryType {
         return this.SchemaSummaries[mode]
     }
-    static uiModeToTitleKey(mode:Design.UIMode) : string{
-        if(mode == "register")
-            return 'common.new_registration_exec'
-        if(mode == "update")
-            return 'common.update_exec'
-        if(mode == "delete")
-            return 'common.delete_exec'
-        if(mode == "truncate")
-            return 'common.truncate_exec'
-        if(mode == "bulk_delete")
-            return 'common.bulk_delete_exec'
-        if(mode == 'bulk_truncate')
-            return 'common.bulk_truncate_exec'
-        return ''
+
+    private static SystemOperations:Design.SystemOperation[] = [{
+            mode: "register",
+            label: 'common.new_registration_exec',
+            icon: "add",
+            danger:false
+        },{
+            mode: "update",
+            label: 'common.update_exec',
+            icon: "edit",
+            danger:false
+        },{
+            mode:"delete",
+            label: "common.delete_exec",
+            icon: "delete_forever",
+            danger:true
+        },{
+            mode:"truncate",
+            label:"common.truncate_exec",
+            icon:"edit_off",
+            danger:true
+        },{
+            mode:"bulk_delete",
+            label:"common.bulk_delete_exec",
+            icon:"delete_forever",
+            danger:true
+        },{
+            mode:"bulk_truncate",
+            label:"common.bulk_truncate_exec",
+            icon:"edit_off",
+            danger:true
+        }
+    ]
+    static findSystemOperaion(mode:Design.UIMode) : Design.SystemOperation{
+        const ret = this.SystemOperations.find(e => e.mode == mode)
+        if(ret != null)
+            return ret
+        return this.SystemOperations[0]
     }
 }
-/**
- * leftmenu depth3 types
- */
-
 
 
