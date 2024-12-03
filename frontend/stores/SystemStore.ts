@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import en_US from 'quasar/lang/en-US.js'
 import ja from 'quasar/lang/ja.js'
-import type { Design, System } from '~/types/Types'
+import type { Design } from '~/types/Types'
 import * as DesignClass from '~/types/Design.class'
-import * as SystemClass from '~/types/System.class'
+import * as DomainClass from '~/types/Domain.class'
 import { colors } from 'quasar'
 const { getPaletteColor } = colors
 
@@ -22,10 +22,10 @@ export const langs:Design.Lang[] = [{
 
 type State = {
     design:DesignClass.Config
-    system:SystemClass.Config
+    system:DomainClass.Config
 }
 
-const defaultSystem = new SystemClass.Config()
+const defaultSystem = new DomainClass.Config()
 defaultSystem.databaseProducts = [
     {label: "MySQL", value: "MySQL", enable: true},
     {label:"postgreSQL", value: "postgreSQL", enable: false},

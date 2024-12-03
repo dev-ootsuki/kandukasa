@@ -4,30 +4,32 @@
     outlined
     dense
     options-dense
-    option-value="name"
+    option-label="column_name"
     options-cover
     emit-value
     map-options
     class="variable-conditions-key"
     v-model="props.condition.column"
     />
-    <DbdataColumnLinkedOperator />
-    <DbdataColumnLinkedInput />
-    ここに演算子がいる
-    <q-input v-model="props.condition.input" dense class="variable-conditions-value q-pl-md" />
+    <DbdataColumnLinkedOperator :column="props.condition.column" :operator="props.condition.operator" @select="onSelectOperator" />
+    <DbdataColumnLinkedInput :column="props.condition.column" :operator="props.condition.operator" />
 </template>
 
 <script lang="ts" setup>
 import type { Design } from '~/types/Types'
-import { useSystemStore } from '~/stores/SystemStore'
-const system = useSystemStore().systemSetting
+import { DbColumn } from '~/types/Domain.class'
 
 const props = defineProps<{
-    columns: Design.DataColumn[],
-    condition: Design.SearchCindition,
+    columns: DbColumn[],
+    condition: Design.SearchCondition,
     all?:boolean
 }>()
 
-const conditionColumns = props.columns.filter(e => e.name != system.dbDataPrimaryKey)
+const onSelectOperator = (id:number) => {
+    console.log("set operator ", id)
+    props.condition.operator = id
+}
+
+const conditionColumns = props.columns
 
 </script>

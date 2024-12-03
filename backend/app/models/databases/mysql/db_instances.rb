@@ -1,10 +1,30 @@
 module Databases
   module Mysql
     class DbInstances < Databases::Auto::DbInstance
+      UI_DATA_TYPES = {
+        :characters => ["char", "varchar"],
+        :enum => ["enum", "set"],
+        :text => ["text", "json"],
+        :date => ["date"],
+        :datetime => ["datetime", "timestamp"],
+        :time => ["time"],
+        :blob => ["blob"],
+        :bit => ["bit"],
+        :bool => ["tinyint"],
+        :numerics => ["numeric", "smallint", "mediumint", "int", "bigint", "year"],
+        :floats => ["float", "double", "decimal"],
+        :binaries => ["binary", "varbinary"],
+        :geometries => ["geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"]
+      }
+
       def initialize connection_id, type_id, hide_system_schema
         @type_id = type_id
         @connection_id = connection_id
         @hide_system_schema = hide_system_schema
+      end
+
+      def find_ui_db_data_mapping base
+        UI_DATA_TYPES
       end
 
       def find_character_sets base

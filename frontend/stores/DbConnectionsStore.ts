@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination, DbUiDataTypes } from '~/types/Domain.class'
 import type { WebAPI } from '~/types/Types'
 
 type State = {
@@ -101,6 +101,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             return webapi()<WebAPI.WebAPISuccess<{schemas:DbSchema[]}> | WebAPI.WebAPIFailed>(`/db_connection/${con.id}`)
             .then(data => {
                 con.db_instance = data.data.db_instance
+                con.db_instance!.ui_data_types = new DbUiDataTypes(data.data.db_instance.ui_data_types)
                 return con
             })
         },
