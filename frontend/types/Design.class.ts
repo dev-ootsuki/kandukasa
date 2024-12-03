@@ -30,7 +30,7 @@ export class Config implements ProxyForm.PF{
             this.id++
     }
     isTouch(): boolean{
-        return this.before?.id !== this.idz
+        return this.before?.id !== this.id
     }
     createTablePagination(): Domain.Pagination {
         return new Domain.Pagination(this.tablesPageSize)

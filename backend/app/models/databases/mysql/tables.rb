@@ -2,9 +2,19 @@ module Databases
   module Mysql
     class Tables < Databases::Auto::Tables
       BLOB_STRING = "** Blob data **"
-      STRING_TYPE = ["char", "varchar", "text", "enum", "date", "time", "datetime", "timestamp", "year"]
-      NUMBER_TYPE = ["tinyint", "smallint", "mediumint", "int", "bigint"]
-      FLOAT_TYPE = ["float", "double", "decimal", "numeric"]
+      STRING_TYPE = [
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:characters], 
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:enum], 
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:date],
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:datetime],
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:time],
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:binaries]
+      ].flatten
+      NUMBER_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:numbers]
+      FLOAT_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:floats]
+      GEOMETRY_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:geometries]
+      BLOB_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:blob]
+
       def initialize connection_id, schema_id, table_id
         @connection_id = connection_id
         @schema_id = schema_id
@@ -42,7 +52,7 @@ module Databases
               "#{col_name} = #{id.to_i}"
             elsif FLOAT_TYPE.include? col_dtype
               "#{col_name} = #{id.to_f}"
-            elsif col_dtype == "geometry"
+            elsif GEOMETRY_TYPE.include? col_dtype
               "#{col_name} = ST_GeomFromText('#{id}')"
             else
               "#{col_name} = '#{id}'"
@@ -57,9 +67,9 @@ module Databases
         primaries = find_primary_keys base
         column = columns.map{|each|
           # // TODO json, binary, enum ?
-          if each["data_type"].downcase == "geometry"
+          if GEOMETRY_TYPE.include? each["data_type"].downcase
             "ST_AsText(#{each['column_name']}) AS #{each['column_name']}"
-          elsif each["data_type"].downcase == "blob"
+          elsif BLOB_TYPE.include? each["data_type"].downcase
             "'#{BLOB_STRING}' AS #{each['column_name']}"
           else
             each["column_name"] 

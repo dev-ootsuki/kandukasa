@@ -106,7 +106,7 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions">
-            <DbdataSearchConditionElement :columns="dataColumns" :condition="condition" />
+            <DbdataSearchConditionElement :columns="columns" :condition="condition" />
             <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
@@ -185,7 +185,7 @@ const rules = ref<boolean>(false)
 const createSearchConditionDefault = () => {
   return {column:null,input:null,key:0, operator:0}
 }
-const searchConditions = ref<Design.SearchCindition[]>([createSearchConditionDefault()])
+const searchConditions = ref<Design.SearchCondition[]>([createSearchConditionDefault()])
 const showRules = () => {
   rules.value = true
 }

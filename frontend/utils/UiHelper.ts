@@ -1,6 +1,163 @@
-import type { Design } from '~/types/Types'
+import type { Design, Domain } from '~/types/Types'
 import * as DomainClass from '~/types/Domain.class'
 import { useSystemStore } from '~/stores/SystemStore'
+
+const OperatorTypeEq:Domain.CompareOperator = {
+    label:"dbdata.compare.eq",
+    id:0,
+    description:"dbdata.compare.eq_description",
+    type:"="
+}
+const OperatorTypeNotEq: Domain.CompareOperator = {
+    label:"dbdata.compare.not_eq",
+    id:1,
+    description: "dbdata.compare.not_eq_description",
+    type:"!="
+}
+const OperatorTypeGraterThanEq: Domain.CompareOperator = {
+    label:"dbdata.compare.gte",
+    id: 2,
+    description: "dbdata.compare.gte_description",
+    type: ">="
+}
+const OperatorTypeGreaterThan: Domain.CompareOperator = {
+    label:"dbdata.compare.gt",
+    id: 3,
+    description: "dbdata.compare.gt_description",
+    type:">"
+}
+const OperatorTypeLessThanEq: Domain.CompareOperator = {
+    label:"dbdata.compare.lte",
+    id:4,
+    description: "dbdata.compare.lte_description",
+    type: "<="
+}
+const OperatorTypeLessThan: Domain.CompareOperator = {
+    label:"dbdata.compare.lt",
+    id:5,
+    description: "dbdata.compare.lt_description",
+    type:"<"
+}
+const OperatorTypeIs: Domain.CompareOperator = {
+    label:"dbdata.compare.is",
+    id: 6,
+    description: "dbdata.compare.is_description",
+    type:"IS"
+}
+const OperatorTypeIsNot: Domain.CompareOperator = {
+    label: "dbdata.compare.is_not",
+    id: 7,
+    description: "dbdata.compare.is_not_description",
+    type: "IS NOT"
+}
+const OperatorTypeIsNull: Domain.CompareOperator = {
+    label: "dbdata.compare.is_null",
+    id: 8,
+    description: "dbdata.compare.is_null_description",
+    type:"IS NULL"
+}
+const OperatorTypeIsNotNull: Domain.CompareOperator = {
+    label: "dbdata.compare.is_not_null",
+    id: 9,
+    description: "dbdata.compare.is_not_null_description",
+    type: "IS NOT NULL"
+}
+const OperatorTypeIn: Domain.CompareOperator = {
+    label:"dbdata.compare.in",
+    id: 10,
+    description: "dbdata.compare.in_description",
+    type:"IN"
+}
+const OperatorTypeNotIn: Domain.CompareOperator = {
+    label:"dbdata.compare.in_not",
+    id:11,
+    description: "dbdata.compare.in_not_description",
+    type: "NOT IN"
+}
+const OperatorTypeBetween: Domain.CompareOperator = {
+    label: "dbdata.compare.between",
+    id: 12,
+    description: "dbdata.compare.between_description",
+    type: "BETWEEN"
+}
+const OperatorTypeNotBetween: Domain.CompareOperator = {
+    label: "dbdata.compare.between_not",
+    id: 13,
+    description: "dbdata.compare.between_not_description",
+    type: "NOT BETWEEN"
+}
+const OperatorTypeLike: Domain.CompareOperator = {
+    label: "dbdata.compare.like",
+    id: 14,
+    description: "dbdata.compare.like_description",
+    type: "LIKE"
+}
+const OperatorTypeNotLike: Domain.CompareOperator = {
+    label: "dbdata.compare.like_not",
+    id: 15,
+    description: "dbdata.compare.like_not_description",
+    type: "NOT LIKE"
+}
+
+const NullableOnlyOperatorTypes = [OperatorTypeIsNull, OperatorTypeIsNotNull]
+
+const UiDataTypeConfig: {[key in DomainClass.UiDataType]: { operators: Domain.CompareOperator[], input:string}} = {
+    characters:{
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input:""
+    },
+    enum: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input:""
+    },
+    text: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input:""
+    },
+    date: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+
+    },
+    datetime: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+    },
+    time: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+    },
+    blob: {
+        operators:[],
+        input:""
+    },
+    bit: {
+        operators:[],
+        input:""
+    },
+    bool: {
+        operators:[OperatorTypeIs, OperatorTypeIsNot],
+        input:""
+    },
+    numerics: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+
+    },
+    floats: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+    },
+    binaries: {
+        operators:[],
+        input:""
+    },
+    geometries: {
+        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input:""
+    }
+}
+
 
 /**
  * 操作全般
@@ -118,6 +275,16 @@ export class UiHelper{
             return ret
         return SystemOperations[0]
     }
+    static generateColumnAvailableOperators(t: Function, dataType: DomainClass.UiDataType, columnDef:DomainClass.DbColumn) : {name:string, value:number}[]{
+        let targets = []
+        if(columnDef.is_nullable == "NO")
+            targets = UiDataTypeConfig[dataType].operators
+        else
+            targets = UiDataTypeConfig[dataType].operators.concat(NullableOnlyOperatorTypes)
+        return targets.map(e => {
+            return { name: t(e.label), value:e.id}
+        })
+    }
 }
 
 export class TreeHelper{
@@ -209,9 +376,6 @@ export class TreeHelper{
 }
 
 export class TableHelper{
-    /**
-     * ignore [ information of spec to this apps ]
-     */
     /**
      * convert object to QTable Column
      * @param elem results of query
