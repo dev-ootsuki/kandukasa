@@ -2,7 +2,7 @@ services:
   app:
     build: 
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
       args:
         RUBY_VERSION: 3.3.6
         PG_VERSION: 17.2
@@ -43,6 +43,8 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     stdin_open: true
     tty: true
+    profiles:
+      - db
   
   test-postgresql:
     image: postgres:17.2-alpine
@@ -57,8 +59,31 @@ services:
       - ./tests-integration/db/test-postgresql/init:/docker-entrypoint-initdb.d
     stdin_open: true
     tty: true
+    profiles:
+      - db
+
+  # auth servers
+  test-ldap:
+    build: 
+      context: ./tests-integration/auth/test-ldap
+      dockerfile: Dockerfile
+    container_name: test-ldap
+    hostname: test-ldap
+    ports:
+      - "636"
+      - "389"
+    volumes:
+      - test-ldap-data:/var/lib/ldap
+      - test-slapd-data:/etc/ldap/slapd.d
+    profiles:
+      - auth
+
 volumes:
   test-mysql-data:
     driver: local
   test-postgresql-data:
+    driver: local
+  test-ldap-data:
+    driver: local
+  test-slapd-data:
     driver: local

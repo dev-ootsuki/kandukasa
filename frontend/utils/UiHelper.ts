@@ -81,9 +81,9 @@ export class UiHelper{
             }
         }).filter(e => e)
     }
-    private static tablesDifinitions = ["id", "table_name", "auto_increment", "table_rows", "data_length", "index_length", "avg_row_length", "max_data_length", "engine", "table_collation", "check_time", "table_comment", "table_catalog", "table_type", "create_options", "row_format", "data_free", "checksum", "update_time", "version"]
+    private static tablesOrderDifinitions = ["id", "table_name", "auto_increment", "table_rows", "data_length", "index_length", "avg_row_length", "max_data_length", "engine", "table_collation", "check_time", "table_comment", "table_catalog", "table_type", "create_options", "row_format", "data_free", "checksum", "update_time", "version"]
     static createTableColumn($t: Function) : any[]{
-        return this.tablesDifinitions.map(each => {
+        return this.tablesOrderDifinitions.map(each => {
             return {
                 name: each,
                 required: true,
@@ -93,6 +93,33 @@ export class UiHelper{
                 sortable:false
             }
         })
+    }
+    private static  columnsOrderDifinitions = ["column_name", "ordinal_position", "data_type", "is_nullable", "column_default", "character_maximum_length", "character_octet_length", "numeric_precision", "numeric_scale", "datetime_precision", "character_set_name", "collation_name", "column_type", "column_key", "extra", "privileges", "column_comment", "generation_expression", "srs_id"]
+    static createColumns($t: Function) : any[]{
+        return this.columnsOrderDifinitions.map(each => {
+            return {
+                name: each,
+                required: true,
+                label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
+                field: (row:any) => row[each],
+                format: (val:any) => `${val}`,
+                sortable:false
+            }
+        })
+    }
+
+    static createDataColumns(columns:any[]) : any[]{
+        const ret = columns.map(each => {
+            return {
+                name: each["column_name"],
+                required: true,
+                label: each["column_name"],
+                field: (row:any) => row[each["column_name"]],
+                format: (val:any) => `${val}`,
+                sortable:false
+            }
+        })
+        return ret
     }
 
     /**

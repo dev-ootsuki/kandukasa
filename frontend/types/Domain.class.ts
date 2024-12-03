@@ -184,6 +184,14 @@ export class DbTable extends DomainObject{
     }
 }
 
+export class TableConditions{
+    
+}
+
+export class DbData{
+    [K:string]:any
+}
+
 export class DbColumn extends DomainObject{
     
     attributes: DbColumnAttribute[] = []

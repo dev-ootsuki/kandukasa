@@ -36,7 +36,6 @@ watch(selected, (valnew,valold) => {
     if(valnew != null){
         selected.value = valnew
         origin[attr] = selected.value.value
-        console.log(selected.value)
     }
 })
 </script>

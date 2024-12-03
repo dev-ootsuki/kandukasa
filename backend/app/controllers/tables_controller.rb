@@ -26,7 +26,17 @@ class TablesController < ApplicationController
   end
 
   # URLに指定された接続先ID/スキーマIDに所属するテーブルに対して検索を行う
-  def search
-    
+  def query
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.table_data nil
+    rescue StandardError => error 
+      logger.error $! if $!
+      logger.error $!.backtrace.join("\n") if $!
+      failed error
+    end
   end
 end

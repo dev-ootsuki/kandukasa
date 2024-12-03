@@ -55,6 +55,10 @@
     "num_of_events": "イベント総数",
     "engines": "使用エンジン一覧"
   },  
+  "tables": {
+    "info": "情報",
+    "data": "データ"
+  },
   "settings": {
     "summary": "設定一覧",
     "summary_of_design": "明/暗の切り替え、言語設定、各種色の変更などを管理する機能",
