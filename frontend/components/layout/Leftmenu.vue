@@ -68,9 +68,11 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const store = useDbConnectionsStore()
 const { qnode, selectedNode } = storeToRefs(store)
-
 const leftTree = ref<InstanceType<typeof QTree>>()
 
+// 外から現在選択中のツリーのノードを選択できるようにstoreに放り込んでwatchしておく
+// A condition that is thrown into "DbConnectionsStore" and "watch" so 
+// that the node in the currently selected tree can be selected from the outside.
 watch(selectedNode, async (newval:any, oldval:any) => {
     selectedNode.value = newval
     // expand
@@ -92,14 +94,20 @@ const onOpenTreeNode = (newval:any) => {
     const node = leftTree.value?.getNodeByKey(newval)
     leftTree.value?.setExpanded(newval, true)
     const keys = newval.split(".")
+    // 接続自体を選択
     // keys.length == 1 == DBInstance
     if(keys.length == 1){
         if(node.children != null && node.children.length > 0){  // == lazyload is already over!
             handler[node.header].navi(node, newval)
         }
-        else{  
+        else{
+            // node.childrenが空 = スキーマがないかlazyloadされていない
+            // lazyloadされてないとき：setExpanded呼んだらonLazyLoadが走る
+            // lazyloadされているとき：
+            // スキーマがないので正常
+
             // not running onLazyLoad
-            // letter, run "onLazyLoad"
+            // after "setExpanded", run "onLazyLoad"
 
             // node.children.length == 0 
             // means no schema or not lazyload.
@@ -108,15 +116,22 @@ const onOpenTreeNode = (newval:any) => {
             // can't expand cause this node not have children
             // 2. not lazyload
             // OK! correct processing
-            // When QTree receives "expand" event, it call "onLazyLoad" if it has'nt yet been loaded 
+            // When QTree receives "expand" event, it call "onLazyLoad" if it hasn't yet been loaded 
         }
     }
+
+    // スキーマを選択
     // keys.length == 2 == schema
     else if(keys.length == 2){
+        // 大体は接続自体を選択したときと一緒
+        // Same as above for the most part.
         if(node.children != null && node.children.length > 0){ // == lazyload is already over!
             handler[node.header].navi(node, newval)
         }
-        else{  
+        else{
+            // スキーマ自体はlazyloadされたら絶対に5つ(tables/triggers/views/events/routines)が入るから
+            // node.childrenがない = lazyloadされてない
+
             // not running onLazyLoad
             // letter, run "onLazyLoad"
 
@@ -124,15 +139,23 @@ const onOpenTreeNode = (newval:any) => {
             // cause this node has summaries of "tables" "triggers" "views" "events" "routines"
         }
     }
+
+    // スキーマ以下機能を選択
     // summary of tables | views | triggers | routines | events
     else if(keys.length == 3){
+        // 以下機能ではデータは既にあって要素はロードされている
         // data is exists!
         handler["schema"].navi(node, newval, keys[2])
     }
+
+    // tables -> table名 選択みたいなとき
     // table | view | trigger | event
     else if(keys.length == 4){
-        // data is exists!
+        // データは既にあって要素はロードされている
+        // 外からノード開くようにstore操作した場合親(tables/views/triggers/routines/events)要素が開いてないない
+        // 場合があるので、閉じてたら開く
 
+        // data is exists!
         // when outerSlectedNodeId changed, parent is not expand
         const parentKey = [keys[0], keys[1], keys[2]].join(".")
         if(!leftTree.value?.isExpanded(parentKey))
@@ -150,18 +173,21 @@ const onCloseTreeNode = (oldval:any) => {
     leftTree.value?.setExpanded(oldval, false)
     // TODO purge store.selected* ?
 }
+
+// 何もしないデフォルトハンドラ
 const emptyHandler :(node:any,key:any,done:any,fail:any) => Promise<any> = () => {
     return new Promise<void>(resolve => {
         resolve()
     })
 }
+
 const handler = {
     connection: {
         exec: (node:any, key:any, done:any, fail:any) => {
             return store
             .getDbInstanceInfo(key)
             .then(db => {
-                const schemaNodes = UiHelper.createNode(db.db_instance!.schemas, {
+                const schemaNodes = TreeHelper.createNode(db.db_instance!.schemas, {
                     keys: ["id", "schema_id"],
                     label:"schema_name",
                     header:"schema"
@@ -181,67 +207,8 @@ const handler = {
             return store
             .getSchemaInfo(parseInt(keys[0]), keys[1])
             .then(data => {
-                const tables = {
-                    label: t('leftmenu.tables'),
-                    key:`${key}.tables`,
-                    header:"tablesummary",
-                    children:UiHelper.createNode(data.tables, {
-                        keys:["id", "schema_id", "tables", "table_name"],
-                        label:"table_name",
-                        header:"table",
-                        lazy:false
-                    }),
-                    lazy:false
-                }
-                const views = {
-                    label:t('leftmenu.views'),
-                    key:`${key}.views`,
-                    header:"viewsummary",
-                    children:UiHelper.createNode(data.views, {
-                        keys:["id", "schema_id", "views", "table_name"],
-                        label:"table_name",
-                        header:"view",
-                        lazy:false
-                    }),
-                    lazy:false
-                }
-                const triggers = {
-                    label:t('leftmenu.triggers'),
-                    key:`${key}.triggers`,
-                    header:"triggersummary",
-                    children:UiHelper.createNode(data.triggers, {
-                        keys:["id", "schema_id", "triggers", "trigger_name"],
-                        label:"trigger_name",
-                        header:"trigger",
-                        lazy:false
-                    }),
-                    lazy:false
-                }
-                const events = {
-                    label:t('leftmenu.events'),
-                    key:`${key}.events`,
-                    header:"eventsummary",
-                    children:UiHelper.createNode(data.events, {
-                        keys:["id", "schema_id", "events", "event_name"],
-                        label:"event_name",
-                        header:"event",
-                        lazy:false
-                    }),
-                    lazy:false
-                }
-                const routines = {
-                    label:t('leftmenu.routines'),
-                    key:`${key}.routines`,
-                    header:"routinesummary",
-                    children:UiHelper.createNode(data.routines, {
-                        keys:["id", "schema_id", "routines", "routine_name"],
-                        label:"routine_name",
-                        header:"routine",
-                        lazy:false
-                    }),
-                    lazy:false
-                }
-                done([tables, views, triggers, routines, events])
+                const children = TreeHelper.createSchemaChildren(t, key,data)
+                done(children)
                 return data
             })
         },
