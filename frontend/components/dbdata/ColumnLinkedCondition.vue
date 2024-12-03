@@ -22,7 +22,7 @@ const system = useSystemStore().systemSetting
 
 const props = defineProps<{
     columns: Design.DataColumn[],
-    condition: Design.SearchCindition,
+    condition: Design.SearchCondition,
     all?:boolean
 }>()
 

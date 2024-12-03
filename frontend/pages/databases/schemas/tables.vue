@@ -12,8 +12,6 @@
         v-model:selected="multiSelected"
         v-model:pagination="pagination"
         :visible-columns="visibleColumns"
-        :filter-method="filteringRows"
-        :filter="filterColumns"
     >
         <template v-slot:top-left>
             <SystemBtnOperation mode="register" feature="dbfeatures" />
@@ -23,7 +21,7 @@
             <SystemBtnOperation mode="bulk_delete" feature="dbfeatures" @click="onBulkDeleteTable" />
         </template>
         <template v-slot:top-right>
-            <q-input borderless dense debounce="300" v-model="filterColumns.table_name" :placeholder="$t('metadata.table_name')">
+            <q-input borderless dense debounce="300" v-model="filterTableName" :placeholder="$t('metadata.table_name')">
                 <template v-slot:append>
                     <q-icon name="search" />
                 </template>
@@ -74,21 +72,20 @@ const props = defineProps<{
 const store = useDbConnectionsStore()
 const dialog = useTemplateRef<any>("dialog")
 const alert = useTemplateRef<any>("alert")
-const tables = store.selectedSchema?.tables
 const design = useSystemStore().designSetting
 const pagination = ref(design.createTablePagination())
+const filterTableName = ref(null)
+const tables = computed(() => {
+    return store.selectedSchema?.tables.filter(e => {
+        if(filterTableName.value == null || filterTableName.value == "")
+            return true
+        return e.table_name!.indexOf(filterTableName.value!) >= 0
+    })
+})
 
 const multiSelected = ref([])
-const tableColumns = UiHelper.createTableColumn(t)
+const tableColumns = TableHelper.createTableColumn(t)
 const visibleColumns = ref(tableColumns.map(e => e.name))
-const filterColumns = reactive({table_name:null})
-const filteringRows = (rows: readonly any[], terms: any, cols: readonly any[], getCellValue: (col: any, row: any) => any) : readonly any[]  => {
-    return rows.filter(e => {
-        if(filterColumns.table_name == null || filterColumns.table_name == '')
-            return true
-        return e.table_name.indexOf(filterColumns.table_name) >= 0
-    })
-}
 
 const onCreateNewTable = () => {
 

@@ -13,7 +13,8 @@ module Databases
           :characters => find_character_sets(base),
           :privileges => find_users_privileges(base),
           :engines => find_available_engines(base),
-          :collations => find_collations(base)
+          :collations => find_collations(base),
+          :ui_data_types => find_ui_db_data_mapping(base)
         }
       end
 

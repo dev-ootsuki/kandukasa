@@ -25,7 +25,7 @@
             <q-table
               flat bordered dense
               :rows="columns!"
-              :columns="UiHelper.createColumns($t)"
+              :columns="TableHelper.createColumns($t)"
               row-key="column_name"
               virtual-scroll
               class="table-selected-delete sticky-header-table"
@@ -106,7 +106,7 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions">
-            <DbdataColumnLinkedCondition :columns="dataColumns" :condition="condition" />
+            <DbdataSearchConditionElement :columns="columns" :condition="condition" />
             <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
@@ -151,7 +151,7 @@ pagination.value.sortBy = selectedTable.value!.primaries.at(0)?.column_name
 // infoのカラム定義情報
 const columns = selectedTable.value != null ? selectedTable.value!.columns : []
 // データ表示テーブルのカラム
-const dataColumns = UiHelper.createDataColumns(t, columns)
+const dataColumns = TableHelper.createDataColumns(t, columns)
 // データ表示テーブルの表示カラム
 const visibleColumns = ref(dataColumns.map(e => e.name))
 // データ自体
@@ -182,7 +182,10 @@ watch(tab, (newval, oldval) => {
 
 // 検索条件
 const rules = ref<boolean>(false)
-const searchConditions = ref<Design.SearchCindition[]>([{column:null,input:null,key:0}])
+const createSearchConditionDefault = () => {
+  return {column:null,input:null,key:0, operator:0}
+}
+const searchConditions = ref<Design.SearchCondition[]>([createSearchConditionDefault()])
 const showRules = () => {
   rules.value = true
 }
@@ -194,13 +197,15 @@ const onRemoveSearchConditionsAt = (key:number) => {
   })
   // 0件なら初回表示用に戻す
   if(searchConditions.value.length == 0)
-    searchConditions.value.push({column:null, input:null, key:0})
+    searchConditions.value.push(createSearchConditionDefault())
 }
 const onAppendSearchConditions = () => {
-  searchConditions.value.push({column:null, input:null,key:searchConditions.value.length})
+  const appendElement = createSearchConditionDefault()
+  appendElement.key = searchConditions.value.length
+  searchConditions.value.push(appendElement)
 }
 const onClearSearchConditions = () => {
-  searchConditions.value = [{column:null, input:null, key:0}]
+  searchConditions.value = [createSearchConditionDefault()]
 }
 
 

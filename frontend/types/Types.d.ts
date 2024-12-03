@@ -122,7 +122,7 @@ export declare namespace Design{
     }
 
     type SummaryType = {label:string, icon:string, show:boolean, mode:string}
-    type SearchCindition = {column:any, input:any, key:number}
+    type SearchCondition = {column:any, input:any, key:number, operator: number}
     type DataColumn = {name: string, required: boolean, label: string, field: (row:any) => any, format: (val:any) => string, sortable:boolean, data_type: string}
     type DatabaseTreeNodeHeaderType = "connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event"
     type SystemOperation = {label:string, icon:string, mode:Design.UIMode, danger:boolean}
@@ -140,6 +140,10 @@ export declare namespace Domain{
         exchange(val:number | undefined) : number
         exchangeToString(val:number | undefined) : string
     }
+    type DbProduct = {label:string, value:string, enable:boolean}
+    type OperatorType = "=" | "!=" | ">=" | ">" | "<=" | "<" | "IS" | "IS NOT" | "IS NULL" | "IS NOT NULL" | "IN" | "NOT IN" | "BETWEEN" | "NOT BETWEEN" | "LIKE" | "NOT LIKE"
+    type CompareOperator = { type: OperatorType, label: string , id: number, description: string}
+
 }
 
 export declare namespace System{
@@ -166,11 +170,11 @@ export declare namespace Auth{
     export type PermissionType = keyof typeof PermissionMap
     
     export const FunctionsMap = {
-        users:1,
-        dbconnections:2,
-        dbschemas:3,
-        dbfeatures:4,
-        dbdata:5,
+        users:1,           // ユーザー管理
+        dbconnections:2,   // DB接続先管理
+        dbschemas:3,       // DBスキーマ自体
+        dbfeatures:4,      // DBスキーマ以下の機能（table/trigger/events/routine/view)
+        dbdata:5,          // DBのデータ自体
     }
     
     export type FunctionsType = keyof typeof FunctionsMap

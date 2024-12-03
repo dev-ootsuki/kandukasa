@@ -66,7 +66,38 @@ export class DbInstance extends DomainObject{
     characters:DbCharacters[] = []
     privileges:DbPrivileges[] = []
     collations:DbCollations[] = []
+    ui_data_types?: DbUiDataTypes
 }
+
+export class DbUiDataTypes{
+    characters:string[] = []
+    enum: string[] = []
+    text: string[] = []
+    date: string[] = []
+    datetime: string[] = []
+    time: string[] = []
+    blob: string[] = []
+    bit: string[] = []
+    bool: string[] = []
+    numerics: string[] = []
+    floats: string[] = []
+    binaries: string[] = []
+    geometries: string[] = []
+    constructor(base: DbUiDataTypes){
+        Object.getOwnPropertyNames(base).forEach(e => {
+            (this as any)[e] = (base as any)[e]
+        })
+    }
+    findUiDataTypeByDbColumn(column:DbColumn) : UiDataType{
+        for(const key in this){
+            if((this[key] as string[]).includes(column.data_type!))
+                return key as UiDataType
+        }
+        return "characters"
+    }
+}
+
+export type UiDataType = keyof DbUiDataTypes
 
 export class DbCollations extends DomainObject{
     collation_name?:string
@@ -223,7 +254,39 @@ export class DbData{
 }
 
 export class DbColumn extends DomainObject{
+    character_maximum_length?:number
+    character_octet_length?:number
+    character_set_name?:string
+    collation_name?:string
+    column_comment?:string
+    column_default?:any
+    column_id?:string
+    column_key?:string
+    column_name?:string
+    column_type?:string
+    data_type?:string
+    datetime_precision?:string
+    extra?:string
+    generation_expression?:string
+    id?:number
+    is_nullable?:string
+    numeric_precision?:number
+    numeric_scale?:number
+    ordinal_position?:number
+    privileges?:string
+    schema_id?:string
+    srs_id?:string
+    table_catalog?:string
+    table_id?:string
+    table_name?:string
+    table_schema?:string
     constructor(){
         super()
     }
+}
+
+export class Config{
+    databaseProducts:Domain.DbProduct[] = []
+    dbDataPrimaryKey?:string
+    dbMultiSelectedKeySeparator?:string
 }
