@@ -48,7 +48,7 @@
             <q-table
               flat bordered dense
               :rows="selected?.db_instance?.schemas!"
-              :columns="UiHelper.convertColumn(selected?.db_instance?.schemas.at(0), $t)"
+              :columns="TableHelper.convertColumn(selected?.db_instance?.schemas.at(0), $t)"
               row-key="name"
               virtual-scroll
               hide-bottom
@@ -72,7 +72,7 @@
             <q-table
               flat bordered dense
               :rows="selected?.db_instance?.privileges!"
-              :columns="UiHelper.convertColumn(selected?.db_instance?.privileges?.at(0), $t)"
+              :columns="TableHelper.convertColumn(selected?.db_instance?.privileges?.at(0), $t)"
               row-key="name"
               virtual-scroll
               hide-bottom
@@ -96,7 +96,7 @@
             <q-table
               flat bordered dense
               :rows="selected?.db_instance?.engines!"
-              :columns="UiHelper.convertColumn(selected?.db_instance?.engines?.at(0),$t)"
+              :columns="TableHelper.convertColumn(selected?.db_instance?.engines?.at(0),$t)"
               row-key="name"
               virtual-scroll
               hide-bottom
@@ -119,7 +119,7 @@
             <q-table
               flat bordered dense
               :rows="selected?.db_instance?.characters!"
-              :columns="UiHelper.convertColumn(selected?.db_instance?.characters?.at(0),$t)"
+              :columns="TableHelper.convertColumn(selected?.db_instance?.characters?.at(0),$t)"
               row-key="name"
               virtual-scroll
               hide-bottom
@@ -141,7 +141,7 @@
             <q-table
               flat bordered dense
               :rows="selected?.db_instance?.collations!"
-              :columns="UiHelper.convertColumn(selected?.db_instance?.collations?.at(0),$t)"
+              :columns="TableHelper.convertColumn(selected?.db_instance?.collations?.at(0),$t)"
               row-key="name"
               virtual-scroll
               hide-bottom

@@ -11,6 +11,8 @@
     class="variable-conditions-key"
     v-model="props.condition.column"
     />
+    <DbdataColumnLinkedOperator />
+    <DbdataColumnLinkedInput />
     ここに演算子がいる
     <q-input v-model="props.condition.input" dense class="variable-conditions-value q-pl-md" />
 </template>

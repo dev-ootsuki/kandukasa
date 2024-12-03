@@ -43,7 +43,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
     actions: {
         createRootNode() : any[] {
             this.node = []
-            this.node = UiHelper.createNode(this.dbConnections, {keys:["id"],label:"name", header:"connection"})
+            this.node = TreeHelper.createNode(this.dbConnections, {keys:["id"],label:"name", header:"connection"})
             return this.node
         },
         async findDbConnectionsAll() : Promise<DbConnection[]>{

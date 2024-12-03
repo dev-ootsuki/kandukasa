@@ -79,7 +79,7 @@ const design = useSystemStore().designSetting
 const pagination = ref(design.createTablePagination())
 
 const multiSelected = ref([])
-const tableColumns = UiHelper.createTableColumn(t)
+const tableColumns = TableHelper.createTableColumn(t)
 const visibleColumns = ref(tableColumns.map(e => e.name))
 const filterColumns = reactive({table_name:null})
 const filteringRows = (rows: readonly any[], terms: any, cols: readonly any[], getCellValue: (col: any, row: any) => any) : readonly any[]  => {
