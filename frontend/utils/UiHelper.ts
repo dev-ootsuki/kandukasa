@@ -102,59 +102,61 @@ const OperatorTypeNotLike: Domain.CompareOperator = {
 const NullableOnlyOperatorTypes = [OperatorTypeIsNull, OperatorTypeIsNotNull]
 
 const UiDataTypeConfig: {[key in DomainClass.UiDataType]: { operators: Domain.CompareOperator[], input:string}} = {
-    characters:{
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input:""
+    characters: {
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input: ""
     },
     enum: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input: ""
     },
     text: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
+        input: ""
     },
     date: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
-
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
     },
     datetime: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
     },
     time: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
     },
     blob: {
-        operators:[],
-        input:""
+        operators: [],
+        input: ""
     },
     bit: {
-        operators:[],
-        input:""
+        operators: [],
+        input: ""
     },
     bool: {
-        operators:[OperatorTypeIs, OperatorTypeIsNot],
-        input:""
+        operators: [OperatorTypeIs, OperatorTypeIsNot],
+        input: ""
     },
     numerics: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
-
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
     },
     floats: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
     },
     binaries: {
-        operators:[],
-        input:""
+        operators: [],
+        input: ""
     },
     geometries: {
-        operators:[OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input:""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
+        input: ""
+    },
+    findUiDataTypeByDbColumn: {
+        operators: [],
+        input: ''
     }
 }
 
@@ -444,5 +446,9 @@ export class TableHelper{
             sortable: false,
             data_type: "system_primary"
         }].concat(ret)
+<<<<<<< HEAD
+=======
+
+>>>>>>> b8e5e1c728758cc4013a571656991559b2437135
     }
 }

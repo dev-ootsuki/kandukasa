@@ -64,7 +64,7 @@ export const useSystemStore = defineStore('system', {
         designSetting(state : State) : DesignClass.Config{
             return state.design
         },
-        systemSetting(state: State) : SystemClass.Config{
+        systemSetting(state: State) : DomainClass.Config{
             return state.system
         }
     },

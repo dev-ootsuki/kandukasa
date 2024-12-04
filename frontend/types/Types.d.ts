@@ -146,6 +146,13 @@ export declare namespace Domain{
 
 }
 
+export declare namespace System{
+    type DbProduct = {label:string, value:string, enable:boolean}
+    type OperatorType = "=" | "!=" | ">=" | ">" | "<=" | "<" | "IS" | "IS NOT" | "IS NULL" | "IS NOT NULL" | "IN" | "NOT IN" | "BETWEEN" | "NOT BETWEEN" | "LIKE" | "NOT LIKE"
+    type CompareOperator = { type: OperatorType, label: string , id: number, description: string}
+
+}
+
 /* ----------------------------------------------------------
  * Types of Auth
  * ---------------------------------------------------------- */
