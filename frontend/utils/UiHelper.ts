@@ -446,9 +446,5 @@ export class TableHelper{
             sortable: false,
             data_type: "system_primary"
         }].concat(ret)
-<<<<<<< HEAD
-=======
-
->>>>>>> b8e5e1c728758cc4013a571656991559b2437135
     }
 }
