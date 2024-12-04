@@ -89,6 +89,8 @@ export class DbUiDataTypes{
         })
     }
     findUiDataTypeByDbColumn(column:DbColumn) : UiDataType{
+        if(column == null)
+            return "characters"
         for(const key in this){
             if((this[key] as string[]).includes(column.data_type!))
                 return key as UiDataType
@@ -96,8 +98,10 @@ export class DbUiDataTypes{
         return "characters"
     }
 }
-
-export type UiDataType = keyof DbUiDataTypes
+export type UiDataType = keyof Pick<
+    DbUiDataTypes,
+    {[K in keyof DbUiDataTypes]: DbUiDataTypes[K] extends (...args: any) => any ? never : K}[keyof DbUiDataTypes]
+>
 
 export class DbCollations extends DomainObject{
     collation_name?:string

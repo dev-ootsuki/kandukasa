@@ -16,22 +16,24 @@ import { DbColumn } from '~/types/Domain.class'
 const { t } = useI18n()
 const props = defineProps<{
     column:DbColumn,
-    operator:number
+    operator?:number
 }>()
 const store = useDbConnectionsStore()
-const selected = ref(props.operator)
+const selected = ref()
 const dbDataType = store.selectedDb!.db_instance?.ui_data_types
 const operators = computed(() => {
     const uiDataType = props.column != null ? dbDataType?.findUiDataTypeByDbColumn(props.column) : undefined
+    selected.value = undefined
     return props.column != null ? UiHelper.generateColumnAvailableOperators(t, uiDataType!, props.column) : undefined
 })
-// TODO expose validator
-// TODO default 0
+if(props.operator != null)
+    selected.value = operators.value?.find(e => e.value == props.operator)
+
+    // TODO expose validator
 const emits = defineEmits<{
-  (e: 'select', v: number): void;
+  (e: 'select', v: number | undefined): void;
 }>()
 const onSelect = () => {
-    console.log("emits")
-    emits('select', selected.value)
+    emits('select', selected.value?.value)
 }
 </script>

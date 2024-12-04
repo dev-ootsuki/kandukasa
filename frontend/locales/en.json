@@ -100,7 +100,8 @@
       "like": "LIKE",
       "like_description": "LIKE '%VALUE%'",
       "like_not": "NOT LIKE",
-      "like_not_description": "NOT LIKE '%VALUE%'"
+      "like_not_description": "NOT LIKE '%VALUE%'",
+      "compare_nullable": "If value comparison is NULL, input value can't be selected"
     }
   },  
   "settings": {

@@ -44,7 +44,7 @@ export declare namespace Validator{
         custom?: (input:string) => boolean,
         format?: string,
         rule: ValidateType,
-        message: keyof MessageType,
+        message: Message,
         overrideMessage?:string
     }
     
@@ -58,12 +58,12 @@ export declare namespace Validator{
     type Validation = (input: string) => boolean | string
     
     type Message = 
-        "required" | "numeric" | "ascii" | "email" | "hiragana" | "katakana" | "zenkaku" | 
+        "required" | "numeric" | "float" | "ascii" | "email" | "hiragana" | "katakana" | "zenkaku" | 
         "length_from_to" | "length_from" | "length_to" | "length_exactly" | "range_from_to" | "range_from" | "range_to"
     
     type Settings = {
         defaultDateFormat: string
-        messages: Map<MessageType, string>
+        messages: Map<Message, string>
         converter: Converter
     }
     
@@ -122,10 +122,11 @@ export declare namespace Design{
     }
 
     type SummaryType = {label:string, icon:string, show:boolean, mode:string}
-    type SearchCondition = {column:any, input:any, key:number, operator: number}
+    type SearchCondition = {column:any, input:any, key:number, operator?: number}
     type DataColumn = {name: string, required: boolean, label: string, field: (row:any) => any, format: (val:any) => string, sortable:boolean, data_type: string}
     type DatabaseTreeNodeHeaderType = "connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event"
     type SystemOperation = {label:string, icon:string, mode:Design.UIMode, danger:boolean}
+    type DbdataBindingInfo = { operators: Domain.CompareOperator[]}
 }
 
 /* ----------------------------------------------------------
@@ -188,3 +189,5 @@ export declare namespace Auth{
         has(func:Auth.FunctionsType, perm: Auth.PermissionType) : boolean
     }
 }
+
+type ClassPropKeys<T> = {[K in keyof T as T[K] extends (...args: any[]) => any ? never : K]: T[K]}

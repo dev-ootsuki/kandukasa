@@ -1,11 +1,20 @@
 import { type Validator } from '~/types/Types'
+export const RegexFloat = /[+-]?([0-9]*[.])?[0-9]+/
+export const RegexNumeric = /^\d*$/
+export const RegexAscii = /^[a-zA-Z0-9!-/:-@¥[-`{-~]*$/
+export const RegexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+export const RegexHiragana = /^[ぁ-んー]*$/
+export const RegexKatakana = /^[ァ-ンヴー]*$/
+export const RegexZenkaku = /^[^\x20-\x7e]*$/
+
 export const qRequired:                Validator.Rule = { rule: "required",                                       message: "required"        }
-export const qNumber:                  Validator.Rule = { rule: "regex",    regex: /^\d*$/,                       message: 'numeric'         }
-export const qAscii:                   Validator.Rule = { rule: "regex",    regex: /^[a-zA-Z0-9!-/:-@¥[-`{-~]*$/, message: 'ascii'           }
-export const qEmail:                   Validator.Rule = { rule: "regex",    regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'email' }
-export const qHiragana:                Validator.Rule = { rule: "regex",    regex: /^[ぁ-んー]*$/,                 message: 'hiragana'        } 
-export const qKatakana:                Validator.Rule = { rule: "regex",    regex: /^[ァ-ンヴー]*$/,               message: 'katakana'        }
-export const qZenkaku:                 Validator.Rule = { rule: "regex",    regex: /^[^\x20-\x7e]*$/,             message: 'zenkaku'         }
+export const qNumber:                  Validator.Rule = { rule: "regex",    regex: RegexNumeric,                  message: 'numeric'         }
+export const qFloat:                   Validator.Rule = { rule: "regex",    regex: RegexFloat,                    message: 'float'           }
+export const qAscii:                   Validator.Rule = { rule: "regex",    regex: RegexAscii,                    message: 'ascii'           }
+export const qEmail:                   Validator.Rule = { rule: "regex",    regex: RegexEmail,                    message: 'email'           }
+export const qHiragana:                Validator.Rule = { rule: "regex",    regex: RegexHiragana,                 message: 'hiragana'        } 
+export const qKatakana:                Validator.Rule = { rule: "regex",    regex: RegexKatakana,                 message: 'katakana'        }
+export const qZenkaku:                 Validator.Rule = { rule: "regex",    regex: RegexZenkaku,                  message: 'zenkaku'         }
 export const qLengthTo16:              Validator.Rule = { rule: "clength",                     to:16,             message: 'length_to'       }
 export const qLengthTo32:              Validator.Rule = { rule: "clength",                     to:32,             message: 'length_to'       }
 export const qLengthTo64:              Validator.Rule = { rule: "clength",                     to:64,             message: 'length_to'       }

@@ -281,6 +281,9 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
     padding-top: 4px;
     padding-bottom: 4px;
 }
+.dbdata-search-condition-value{
+    width: 370px;
+}
 
 /* scrollber */
 ::-webkit-scrollbar-thumb {

@@ -1,6 +1,7 @@
 import type { Design, Domain } from '~/types/Types'
 import * as DomainClass from '~/types/Domain.class'
 import { useSystemStore } from '~/stores/SystemStore'
+import * as Quasar from 'quasar'
 
 const OperatorTypeEq:Domain.CompareOperator = {
     label:"dbdata.compare.eq",
@@ -99,64 +100,47 @@ const OperatorTypeNotLike: Domain.CompareOperator = {
     type: "NOT LIKE"
 }
 
-const NullableOnlyOperatorTypes = [OperatorTypeIsNull, OperatorTypeIsNotNull]
+export const NullableOnlyOperatorTypes = [OperatorTypeIsNull, OperatorTypeIsNotNull]
 
-const UiDataTypeConfig: {[key in DomainClass.UiDataType]: { operators: Domain.CompareOperator[], input:string}} = {
+const UiDataTypeConfig: {[key in DomainClass.UiDataType]: Design.DbdataBindingInfo} = {
     characters: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn]
     },
     enum: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn]
     },
     text: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeLike, OperatorTypeNotLike, OperatorTypeIn, OperatorTypeNotIn]
     },
     date: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween]
     },
     datetime: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween]
     },
     time: {
-        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
+        operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween]
     },
     blob: {
         operators: [],
-        input: ""
     },
     bit: {
         operators: [],
-        input: ""
     },
     bool: {
         operators: [OperatorTypeIs, OperatorTypeIsNot],
-        input: ""
     },
     numerics: {
         operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
     },
     floats: {
         operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
     },
     binaries: {
         operators: [],
-        input: ""
     },
     geometries: {
         operators: [OperatorTypeEq, OperatorTypeNotEq, OperatorTypeIn, OperatorTypeNotIn, OperatorTypeGreaterThan, OperatorTypeGraterThanEq, OperatorTypeLessThan, OperatorTypeLessThanEq, OperatorTypeBetween, OperatorTypeNotBetween],
-        input: ""
-    },
-    findUiDataTypeByDbColumn: {
-        operators: [],
-        input: ''
     }
 }
 
@@ -286,6 +270,11 @@ export class UiHelper{
         return targets.map(e => {
             return { name: t(e.label), value:e.id}
         })
+    }
+    static findDbdataBindingInfo(dataType: DomainClass.UiDataType) : Design.DbdataBindingInfo{
+        if(dataType == null)
+            return UiDataTypeConfig.characters
+        return UiDataTypeConfig[dataType]
     }
 }
 

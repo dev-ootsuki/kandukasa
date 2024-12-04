@@ -53,6 +53,5 @@ defineExpose({
         </q-input>
 
         <q-icon :name="props.icon !== undefined ? props.icon : 'star'" :style="'color:' + origin[attr] + ';'" size="3em" class="pf-color-picker-icon" />
-        <q-badge color="eins" :style="'color:' + origin[attr] + ';'" >text color</q-badge>
     </pf-element>
 </template>

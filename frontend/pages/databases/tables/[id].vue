@@ -55,7 +55,7 @@
               </template>
 
               <template v-slot:top-right>
-                <q-btn round flat icon="rule" text-color="primary" @click="showRules" />
+                <q-btn round flat icon="rule" text-color="primary" @click="showSearchConditions" />
                 <q-btn round flat icon="refresh" text-color="primary" @click="onReload" />
                 <q-space class="q-pl-md" />
                 <q-select
@@ -90,7 +90,7 @@
       </q-card>
     </div>
   </div>
-  <q-dialog v-model="rules" >
+  <q-dialog v-model="openSearchConditions" >
     <div class="row q-pa-sm row-label-value data-search-conditions-dialog">
       <q-card>
         <q-bar>
@@ -106,7 +106,7 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions">
-            <DbdataSearchConditionElement :columns="columns" :condition="condition" />
+            <DbdataSearchConditionElement :columns="columns" :condition="condition" :ref="`searchCondition_${condition.key}`" />
             <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
@@ -116,7 +116,7 @@
 
         <q-card-actions align="right">
           <q-btn flat :label="$t('common.clear')" @click="onClearSearchConditions" />
-          <q-btn flat :label="$t('common.close')" v-close-popup />
+          <q-btn flat :label="$t('common.close')" @click="onConditionSearch" />
         </q-card-actions>
       </q-card>
     </div>
@@ -128,6 +128,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
 import type { Design } from '~/types/Types'
+import DbdataSearchConditionElement from '~/components/dbdata/SearchConditionElement.vue'
 const { t } = useI18n() 
 const store = useDbConnectionsStore()
 const system = useSystemStore().systemSetting
@@ -181,14 +182,16 @@ watch(tab, (newval, oldval) => {
 
 
 // 検索条件
-const rules = ref<boolean>(false)
+const openSearchConditions = ref<boolean>(false)
 const createSearchConditionDefault = () => {
-  return {column:null,input:null,key:0, operator:0}
+  return {column:null,input:null,key:0}
 }
 const searchConditions = ref<Design.SearchCondition[]>([createSearchConditionDefault()])
-const showRules = () => {
-  rules.value = true
+const showSearchConditions = () => {
+  openSearchConditions.value = true
 }
+
+// TODO バグってるので直す
 const onRemoveSearchConditionsAt = (key:number) => {
   searchConditions.value = searchConditions.value.splice(key, 1)
   // key = indexなので振り直す
@@ -206,6 +209,17 @@ const onAppendSearchConditions = () => {
 }
 const onClearSearchConditions = () => {
   searchConditions.value = [createSearchConditionDefault()]
+}
+const onConditionSearch = () => {
+  // TODO 取れてないので何とかする
+  const target:any[] = ref<InstanceType<typeof DbdataSearchConditionElement>[]>([]).value
+  const invalid = target.find(e => {
+    return !e.validate()
+  })
+  if(invalid == null){
+    openSearchConditions.value = false
+    // TODO 検索実行
+  }
 }
 
 

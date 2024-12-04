@@ -156,10 +156,10 @@ export class Executor{
     }
     createOk(rule: Validator.Rule): Validator.IsOk{
         return (input: string) : boolean => {
-            if(!this._validators.has(rule.rule))
-                return true
             if(rule.rule == "custom" && rule.custom !== undefined)
                 return rule.custom(input)
+            if(!this._validators.has(rule.rule))
+                return true
             return this._validators.get(rule.rule)!(input, rule.from, rule.to, rule.regex)
         }
     }

@@ -34,6 +34,10 @@ const createMechanizmByRules = (rules : Validator.Rule[]) : Validator.Mechanizm[
 }
 
 export const useValidator = (...rules: Validator.Rule[]) : Validator.Validation[] => {
+    if(rules == null || rules.length == 0)
+        return [(input:string) : boolean | string => {
+            return true
+        }]
     const adapter = new ValidatorClass.ValidatorMessageAdapter(getSettings())
     return createMechanizmByRules(rules).map(e => {
         return (input: string) : boolean | string => {

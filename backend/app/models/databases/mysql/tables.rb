@@ -10,7 +10,7 @@ module Databases
         Databases::Mysql::DbInstances::UI_DATA_TYPES[:time],
         Databases::Mysql::DbInstances::UI_DATA_TYPES[:binaries]
       ].flatten
-      NUMBER_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:numbers]
+      NUMBER_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:numerics]
       FLOAT_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:floats]
       GEOMETRY_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:geometries]
       BLOB_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:blob]
