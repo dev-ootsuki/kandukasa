@@ -12,10 +12,8 @@
         v-model="props.condition.column"
         @update:model-value="onChangeColumn"
     />
-    <q-separator class="q-pl-sm" />
-    <DbdataColumnLinkedOperator :condition-size="props.conditionSize" :column="props.condition.column" :operator="props.condition.operator" @select="onSelectOperator" ref="refOperator" />
-    <q-separator class="q-pl-sm" />
-    <DbdataColumnOperatorLinkedInput class="dbdata-search-condition-value" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input" @change="onChangeInput" ref="refInput" />
+    <DbdataColumnLinkedOperator class="q-pl-sm" :condition-size="props.conditionSize" :column="props.condition.column" :operator="props.condition.operator" @select="onSelectOperator" ref="refOperator" />
+    <DbdataColumnOperatorLinkedInput class="dbdata-search-condition-value q-pl-sm" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input" @change="onChangeInput" ref="refInput" />
 </template>
 
 <script lang="ts" setup>
@@ -48,8 +46,8 @@ const onChangeColumn = () => {
 const current = getCurrentInstance()
 const validate = () : boolean | Promise<boolean> | Promise<[boolean, boolean]> => {
     const children:any = current!.subTree.children!
-    const retOperator = children[2].component.exposed.validate() as boolean | Promise<boolean>
-    const retInput = children[4].component.exposed.validate() as boolean | Promise<boolean>
+    const retOperator = children[1].component.exposed.validate() as boolean | Promise<boolean>
+    const retInput = children[2].component.exposed.validate() as boolean | Promise<boolean>
     if(!(retOperator instanceof Promise) && !(retInput instanceof Promise))
         return retOperator && retInput
     const promiseOperator = retOperator instanceof Promise ? retOperator : new Promise<boolean>(resolve => resolve(retOperator))

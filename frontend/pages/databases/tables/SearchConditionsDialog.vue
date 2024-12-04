@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="visible">
-    <div class="row q-pa-sm row-label-value data-search-conditions-dialog">
+    <div class="row q-pa-sm data-search-conditions-dialog">
       <q-card>
         <q-bar>
           <div>{{$t('common.search_conditions')}}</div>
