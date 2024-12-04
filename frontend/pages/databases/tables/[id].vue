@@ -56,7 +56,7 @@
               </template>
 
               <template v-slot:top-right>
-                <q-btn round flat icon="rule" text-color="primary" @click="showSearchConditions" />
+                <q-btn :label="$t('common.search_conditions')" icon="rule" color="primary" @click="showSearchConditions" />
                 <q-btn round flat icon="refresh" text-color="primary" @click="onReload" />
                 <q-space class="q-pl-md" />
                 <q-select
@@ -156,6 +156,7 @@ watch(tab, (newval, oldval) => {
 
 const bindSearchConditions = (v:any) => {
   searchConditions = v
+  console.log(searchConditions)
 }
 
 // データテーブルで削除時@1レコード
