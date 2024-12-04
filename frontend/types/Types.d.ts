@@ -122,7 +122,7 @@ export declare namespace Design{
     }
 
     type SummaryType = {label:string, icon:string, show:boolean, mode:string}
-    type SearchCondition = {column:any, input:any, key:number, operator?: number}
+    type SearchCondition = {column:any, input:any, key:number, operator?: number, refs:any[]}
     type DataColumn = {name: string, required: boolean, label: string, field: (row:any) => any, format: (val:any) => string, sortable:boolean, data_type: string}
     type DatabaseTreeNodeHeaderType = "connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event"
     type SystemOperation = {label:string, icon:string, mode:Design.UIMode, danger:boolean}
@@ -141,13 +141,6 @@ export declare namespace Domain{
         exchange(val:number | undefined) : number
         exchangeToString(val:number | undefined) : string
     }
-    type DbProduct = {label:string, value:string, enable:boolean}
-    type OperatorType = "=" | "!=" | ">=" | ">" | "<=" | "<" | "IS" | "IS NOT" | "IS NULL" | "IS NOT NULL" | "IN" | "NOT IN" | "BETWEEN" | "NOT BETWEEN" | "LIKE" | "NOT LIKE"
-    type CompareOperator = { type: OperatorType, label: string , id: number, description: string}
-
-}
-
-export declare namespace System{
     type DbProduct = {label:string, value:string, enable:boolean}
     type OperatorType = "=" | "!=" | ">=" | ">" | "<=" | "<" | "IS" | "IS NOT" | "IS NULL" | "IS NOT NULL" | "IN" | "NOT IN" | "BETWEEN" | "NOT BETWEEN" | "LIKE" | "NOT LIKE"
     type CompareOperator = { type: OperatorType, label: string , id: number, description: string}

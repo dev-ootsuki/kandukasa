@@ -1,6 +1,7 @@
 <template>
   <DialogConfirm ref="dialog" />
   <DialogAlert ref="alert" />
+  <SearchConditionsDialog :columns="columns" ref="searchConditionsDialog" @close="bindSearchConditions"/>
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
       <LayoutBreadcrumbsDatabase />
@@ -75,7 +76,7 @@
               </template>            
               <template v-slot:body-cell="props">
                 <q-td :props="props">
-                    <span v-if="props.col.name == '_internal_kandukasa_exchange_id_'">
+                    <span v-if="props.col.name == system.dbDataPrimaryKey">
                         <SystemBtnOperation mode="update" feature="dbdata" mini class="q-mr-sm" @click="onEditRecord(props.row)" />
                         <SystemBtnOperation mode="delete" feature="dbdata" mini @click="onDeleteRecord(props.row)" />
                     </span>
@@ -90,37 +91,6 @@
       </q-card>
     </div>
   </div>
-  <q-dialog v-model="openSearchConditions" >
-    <div class="row q-pa-sm row-label-value data-search-conditions-dialog">
-      <q-card>
-        <q-bar>
-          <div>{{$t('common.search_conditions')}}</div>
-        </q-bar>
-
-        <q-space />
-
-        <q-card-section class="row items-center">
-          <q-avatar icon="rule" text-color="primary" flat size="6em" />
-          <span class="q-ml-sm">{{$t('common.search_conditions_description')}}</span>
-        </q-card-section>
-
-        <q-card-section class="scroll" style="max-height: 50vh">
-          <div class="row search-conditions-card" v-for="condition in searchConditions">
-            <DbdataSearchConditionElement :columns="columns" :condition="condition" :ref="`searchCondition_${condition.key}`" />
-            <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat round icon="add" color="accent" @click="onAppendSearchConditions" class="q-mr-sm" />
-        </q-card-actions>
-
-        <q-card-actions align="right">
-          <q-btn flat :label="$t('common.clear')" @click="onClearSearchConditions" />
-          <q-btn flat :label="$t('common.close')" @click="onConditionSearch" />
-        </q-card-actions>
-      </q-card>
-    </div>
-  </q-dialog>
 </template>
   
 <script lang="ts" setup>
@@ -128,7 +98,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
 import type { Design } from '~/types/Types'
-import DbdataSearchConditionElement from '~/components/dbdata/SearchConditionElement.vue'
+import SearchConditionsDialog from '~/pages/databases/tables/SearchConditionsDialog.vue'
 const { t } = useI18n() 
 const store = useDbConnectionsStore()
 const system = useSystemStore().systemSetting
@@ -145,7 +115,11 @@ if(selectedTable?.value == null)
 if(store.selectedTable?.columns === undefined){
   await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
 }
-
+let searchConditions:Design.SearchCondition[] = []
+const searchConditionsDialog = ref<InstanceType<typeof SearchConditionsDialog>>()
+const showSearchConditions = () => {
+  searchConditionsDialog.value!.show(searchConditions)
+}
 // データ表示のテーブルに関わる設定
 const pagination = ref(design.createTablePagination())
 pagination.value.sortBy = selectedTable.value!.primaries.at(0)?.column_name
@@ -180,48 +154,9 @@ watch(tab, (newval, oldval) => {
   }
 })
 
-
-// 検索条件
-const openSearchConditions = ref<boolean>(false)
-const createSearchConditionDefault = () => {
-  return {column:null,input:null,key:0}
+const bindSearchConditions = (v:any) => {
+  searchConditions = v
 }
-const searchConditions = ref<Design.SearchCondition[]>([createSearchConditionDefault()])
-const showSearchConditions = () => {
-  openSearchConditions.value = true
-}
-
-// TODO バグってるので直す
-const onRemoveSearchConditionsAt = (key:number) => {
-  searchConditions.value = searchConditions.value.splice(key, 1)
-  // key = indexなので振り直す
-  searchConditions.value.forEach((e, idx) => {
-    e.key = idx
-  })
-  // 0件なら初回表示用に戻す
-  if(searchConditions.value.length == 0)
-    searchConditions.value.push(createSearchConditionDefault())
-}
-const onAppendSearchConditions = () => {
-  const appendElement = createSearchConditionDefault()
-  appendElement.key = searchConditions.value.length
-  searchConditions.value.push(appendElement)
-}
-const onClearSearchConditions = () => {
-  searchConditions.value = [createSearchConditionDefault()]
-}
-const onConditionSearch = () => {
-  // TODO 取れてないので何とかする
-  const target:any[] = ref<InstanceType<typeof DbdataSearchConditionElement>[]>([]).value
-  const invalid = target.find(e => {
-    return !e.validate()
-  })
-  if(invalid == null){
-    openSearchConditions.value = false
-    // TODO 検索実行
-  }
-}
-
 
 // データテーブルで削除時@1レコード
 const onDeleteRecord = (row:any) => {

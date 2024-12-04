@@ -7,7 +7,8 @@
         :rules="validator" 
         :class="props.class"
         @update:model-value="onChange" 
-        v-if="uiDataType == 'datetime' || uiDataType == 'date' || uiDataType == 'time'" 
+        ref="datetime"
+        v-if="componentTypeName == 'datetime'" 
     >
         <template v-slot:prepend v-if="uiDataType == 'datetime' || uiDataType == 'date'">
             <q-icon name="event" class="cursor-pointer">
@@ -34,16 +35,6 @@
         </template>
     </q-input>
     
-    <!-- characters / text / numerics / giometries / floats / bit /binaries -->
-     <q-input 
-        v-model="input" 
-        dense 
-        :rules="validator" 
-        :class="props.class"
-        @update:model-value="onChange" 
-        v-if="uiDataType == 'characters' || uiDataType == 'text' || uiDataType == 'numerics' || uiDataType == 'geometries' || uiDataType == 'floats' || uiDataType == 'bit' || uiDataType == 'binaries'" 
-    />
-
     <!-- boolean -->
     <q-toggle
       :label="input == null ? 'FALSE' : input === 0 ? 'FALSE' : 'TRUE'"
@@ -54,7 +45,8 @@
       :rules="validator"
       @update:model-value="onChange"
       :class="props.class"
-      v-if="uiDataType == 'bool'"
+      ref="bool"
+      v-if="componentTypeName == 'bool'"
     />
 
     <!-- blob (file) -->
@@ -65,8 +57,21 @@
         :rules="validator"
         @update:model-value="onChange"
         :class="props.class"
-        v-if="uiDataType == 'blob'"
+        ref="file"
+        v-if="componentTypeName == 'file'"
     />
+    <!-- characters / text / numerics / giometries / floats / bit /binaries -->
+    <q-input 
+        v-model="input" 
+        dense 
+        :rules="validator" 
+        :class="props.class"
+        @update:model-value="onChange" 
+        ref="characters"
+        v-if="componentTypeName == 'characters'" 
+    />
+
+
 </template>
 
 <script lang="ts" setup>
@@ -74,6 +79,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { DbColumn } from '~/types/Domain.class'
 import type { Validator } from '~/types/Types'
 import * as DomainClass from '~/types/Domain.class'
+import { QInput, QToggle, QDate } from 'quasar'
 const props = defineProps<{
     column:DbColumn,
     value:any,
@@ -81,26 +87,36 @@ const props = defineProps<{
 }>()
 const store = useDbConnectionsStore()
 const dbDataType = store.selectedDb!.db_instance?.ui_data_types
-const emits = defineEmits<{
-  (e: 'change', v: any): void;
-}>()
-const onChange = () => {
-    emits("change", input.value)
-}
 const input = ref(props.value)
 
 const uiDataType = computed<DomainClass.UiDataType>(() => {
     input.value = props.value
     return dbDataType!.findUiDataTypeByDbColumn(props.column)
 })
+const componentTypeName = computed(() => {
+    if(uiDataType.value == 'datetime' || uiDataType.value == 'date' || uiDataType.value == 'time')
+        return "datetime"
+    if(uiDataType.value == 'bool')
+        return "bool"
+    if(uiDataType.value == "blob")
+        return "file"
+    // == uiDataType == 'characters' || uiDataType == 'text' || uiDataType == 'numerics' || 
+    // uiDataType == 'geometries' || uiDataType == 'floats' || uiDataType == 'bit' || uiDataType == 'binaries'
+    return "characters"
+})
+const datetime = ref<InstanceType<typeof QInput>>()
+const bool = ref<InstanceType<typeof QToggle>>()
+const characters = ref<InstanceType<typeof QInput>>()
+const file = ref<InstanceType<typeof QInput>>()
+const componentMap = { datetime, bool, characters, file }
 
 const validator = computed(() => {
     const rules:Validator.Rule[] = []
     if(props.column == null)
         return useValidator(...rules)
 
-    if(!props.column.is_nullable)
-        rules.push(qRequired)
+    // カラムがnullableでも検索条件としては必要
+    rules.push(qRequired)
 
     if(uiDataType.value == "numerics")
         rules.push(qNumber)
@@ -120,8 +136,21 @@ const validator = computed(() => {
     // TODO floatsとかの実装
     return useValidator(...rules)
 })
+const emits = defineEmits<{
+  (e: 'change', v: any): void;
+}>()
+const onChange = () => {
+    emits("change", input.value)
+}
 
-// TODO 外からvalidate呼べるようにする
 defineExpose({
+    validate: () : boolean | Promise<boolean> => {
+        const input = componentMap[componentTypeName.value]
+        if(input.value == null)
+            return true
+        if((input.value as any).validate !== undefined)
+            return (input.value as any).validate()
+        return true
+    }
 })
 </script>
