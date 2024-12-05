@@ -12,6 +12,7 @@
         v-model:selected="multiSelected"
         v-model:pagination="pagination"
         :visible-columns="visibleColumns"
+        :rows-per-page-options="system.rowPerPageOptions"
     >
         <template v-slot:top-left>
             <SystemBtnOperation mode="register" feature="dbfeatures" />
@@ -73,6 +74,7 @@ const store = useDbConnectionsStore()
 const dialog = useTemplateRef<any>("dialog")
 const alert = useTemplateRef<any>("alert")
 const design = useSystemStore().designSetting
+const system = useSystemStore().systemSetting
 const pagination = ref(design.createTablePagination())
 const filterTableName = ref(null)
 const tables = computed(() => {

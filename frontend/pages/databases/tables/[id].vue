@@ -48,6 +48,7 @@
               v-model:pagination="pagination"
               :visible-columns="visibleColumns"
               @request="onSearch"
+              :rows-per-page-options="system.rowPerPageOptions"
             >
               <template v-slot:top-left>
                 <SystemBtnOperation mode="register" feature="dbdata" />
@@ -95,27 +96,28 @@
   
 <script lang="ts" setup>
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
+const store = useDbConnectionsStore()
+const { selectedTable } = storeToRefs(store)
+// 初期表示前の設定
+if(selectedTable?.value == null)
+    navigateTo('/')
+
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
 import type { Design } from '~/types/Types'
 import SearchConditionsDialog from '~/pages/databases/tables/SearchConditionsDialog.vue'
 const { t } = useI18n() 
-const store = useDbConnectionsStore()
 const system = useSystemStore().systemSetting
 const design = useSystemStore().designSetting
 const dialog = useTemplateRef<any>("dialog")
 const alert = useTemplateRef<any>("alert")
-const { selectedTable } = storeToRefs(store)
 const tab = ref('info')
 
-// 初期表示前の設定
-if(selectedTable?.value == null)
-    navigateTo('/')
 
 if(store.selectedTable?.columns === undefined){
   await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
 }
-let searchConditions:Design.SearchCondition[] = []
+const searchConditions: { conditions: Design.SearchCondition[], andor:string} = { conditions:[], andor:"AND" }
 const searchConditionsDialog = ref<InstanceType<typeof SearchConditionsDialog>>()
 const showSearchConditions = () => {
   searchConditionsDialog.value!.show(searchConditions)
@@ -137,7 +139,16 @@ const multiSelected = ref<any[]>([])
 const onSearch = (props?: any) => {
   const condition = {
     pagination: props?.pagination !== undefined ? props.pagination : pagination.value.toPlain(),
-    conditions: []
+    andor: searchConditions.andor,
+    dbdata: {
+        conditions: searchConditions.conditions.map(e => {
+          return {
+            column: e.column.column_name,
+            operator: e.operator,
+            input: e.input
+          }
+      })
+    }
   }
   store
     .getTableData(selectedTable.value?.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!, condition)
@@ -153,10 +164,11 @@ watch(tab, (newval, oldval) => {
     onSearch()
   }
 })
-
+// 検索条件閉じたとき
 const bindSearchConditions = (v:any) => {
-  searchConditions = v
-  console.log(searchConditions)
+  searchConditions.andor = v.andor
+  searchConditions.conditions = v.conditions
+  onSearch()
 }
 
 // データテーブルで削除時@1レコード

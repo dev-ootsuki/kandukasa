@@ -1,7 +1,6 @@
 import type { Design, Domain } from '~/types/Types'
 import * as DomainClass from '~/types/Domain.class'
 import { useSystemStore } from '~/stores/SystemStore'
-import * as Quasar from 'quasar'
 
 const OperatorTypeEq:Domain.CompareOperator = {
     label:"dbdata.compare.eq",

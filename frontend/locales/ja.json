@@ -101,7 +101,9 @@
       "like_description": "LIKE '%VALUE%'",
       "like_not": "NOT LIKE",
       "like_not_description": "NOT LIKE '%VALUE%'",
-      "compare_nullable": "値の比較がNULLの時は入力値は選択できません"
+      "compare_nullable": "値の比較がNULLの時は入力値は選択できません",
+      "and_or_description_start": "（複数項目時の結合条件：",
+      "and_or_description_end":"）"
     }
   },
   "settings": {

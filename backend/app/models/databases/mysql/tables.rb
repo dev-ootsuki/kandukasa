@@ -62,7 +62,8 @@ module Databases
         }.join(" OR ")
       end
 
-      def find_data base, pagination, condition
+      def find_data base, pagination, conditions, andor
+        validate_data_search_params base, conditions unless conditions.empty?
         columns = find_columns base
         primaries = find_primary_keys base
         column = columns.map{|each|
@@ -75,15 +76,18 @@ module Databases
             each["column_name"] 
           end
         }.join(", ")
+        wheres = conditions.size == 0 ? '' : "WHERE " + conditions.map{|e| 
+          to_where_query base, e[:column], e[:operator], e[:input]
+        }.join(" #{andor} ")
 
-        # // TODO 一応サニタイズしたい
-        query = "SELECT count(#{columns.first["column_name"]}) AS count FROM #{table_name}"
+        # 外からSQLを直接叩ける機能がある以上、基本的に全てをサニタイズはしない
+        query = "SELECT count(#{columns.first["column_name"]}) AS count FROM #{table_name} #{wheres}"
         total = base.connection.select_all(query).to_a.first["count"]
 
         orders = pagination[:sortBy].nil? ? "" : "ORDER BY #{pagination[:sortBy]} #{pagination[:descending] ? 'DESC' : ''}"
         limits = "LIMIT #{pagination[:rowsPerPage]} OFFSET #{(pagination[:page] - 1) * pagination[:rowsPerPage]}"
 
-        query = "SELECT #{column} FROM #{table_name} #{orders} #{limits}"
+        query = "SELECT #{column} FROM #{table_name} #{wheres} #{orders} #{limits}"
         ret = base.connection.select_all(query).to_a.map{|each|
           unless primaries.empty?
             each[DbStrategy::DB_DATA_PRIMARY_KEY] = primaries.map{|primary|
@@ -108,8 +112,8 @@ module Databases
         }
       end
 
-      def find_columns base, column_names = nil
-        wheres = column_names.nil? ? "" : "AND ( #{column_names.map{|e| "column_name = '#{e}'"}.join(" OR ")} )"
+      def find_columns base, column_names = []
+        wheres = column_names.empty? ? "" : "AND ( #{column_names.map{|e| "column_name = '#{e}'"}.join(" OR ")} )"
         query = <<-"EOS"
           select 
             * 

@@ -34,6 +34,7 @@ defaultSystem.databaseProducts = [
 ]
 defaultSystem.dbDataPrimaryKey = "_internal_kandukasa_exchange_id_"
 defaultSystem.dbMultiSelectedKeySeparator = "_#_kandukasa_#_#_key_#_#_separator_#_"
+defaultSystem.rowPerPageOptions = [5, 10, 15, 20, 25, 50]
 
 const createDefaultDesign = () => {
     const ret = new DesignClass.Config()

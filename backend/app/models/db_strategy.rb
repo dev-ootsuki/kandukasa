@@ -57,10 +57,10 @@ class DbStrategy
     ret
   end
 
-  def table_data pagination, condition
+  def table_data pagination, condition, andor
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
-      db_table.find_data con, pagination, condition
+      db_table.find_data con, pagination, condition, andor
     }
     clonse_connection
     ret

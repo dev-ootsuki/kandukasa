@@ -293,4 +293,5 @@ export class Config{
     databaseProducts:Domain.DbProduct[] = []
     dbDataPrimaryKey?:string
     dbMultiSelectedKeySeparator?:string
+    rowPerPageOptions?:number[]
 }
