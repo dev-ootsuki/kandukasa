@@ -143,9 +143,9 @@ const onSearch = (props?: any) => {
     dbdata: {
         conditions: searchConditions.conditions.map(e => {
           return {
-            column: e.column.column_name,
+            column: e.column?.column_name,
             operator: e.operator,
-            input: e.input
+            input: e == null ? [null] : e.input == null ? [null] : e.input
           }
       })
     }

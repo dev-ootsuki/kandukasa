@@ -14,18 +14,12 @@ module Databases
       FLOAT_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:floats]
       GEOMETRY_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:geometries]
       BLOB_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:blob]
+      BOOL_TYPE = Databases::Mysql::DbInstances::UI_DATA_TYPES[:bool]
 
       def initialize connection_id, schema_id, table_id
         @connection_id = connection_id
         @schema_id = schema_id
         @table_id = table_id
-      end
-
-      def find_info base
-        {
-          :columns => find_columns(base),
-          :primaries => find_primary_keys(base)
-        }
       end
 
       def delete_data base, ids
@@ -40,44 +34,51 @@ module Databases
         end
       end
 
-      def to_unique_identifer_query base, primaries, columns, ids
-        ids.map.with_index{|id, idx|
-          ret = id.split(DbStrategy::MULTI_PRIMARY_KEY_SEPARATOR).map.with_index{|pkeys, pidx|
-            col = columns[pidx]
-            col_name = col["column_name"]
-            col_dtype = col["data_type"]
-            if STRING_TYPE.include? col_dtype
-              "#{col_name} = '#{id}'"
-            elsif NUMBER_TYPE.include? col_dtype
-              "#{col_name} = #{id.to_i}"
-            elsif FLOAT_TYPE.include? col_dtype
-              "#{col_name} = #{id.to_f}"
-            elsif GEOMETRY_TYPE.include? col_dtype
-              "#{col_name} = ST_GeomFromText('#{id}')"
-            else
-              "#{col_name} = '#{id}'"
-            end
-          }.join(" AND ")
-          "( #{ret} )"
-        }.join(" OR ")
+      def type_string? col_def
+        STRING_TYPE.include? col_def["data_type"]
+      end
+
+      def type_number? col_def
+        NUMBER_TYPE.include?(col_def["data_type"]) || (BOOL_TYPE.include?(col_def["data_type"]) && !type_bool?(col_def["data_type"]))
+      end
+
+      def type_float? col_def
+        FLOAT_TYPE.include? col_def["data_type"]
+      end
+
+      def type_geometry? col_def
+        GEOMETRY_TYPE.include? col_def["data_type"]
+      end
+      
+      def type_blob? col_def
+        BLOB_TYPE.include? col_def["data_type"]
+      end
+
+      def type_bool? col_def
+        BOOL_TYPE.include? col_def["data_type"] && col_def["numeric_precision"] == 1
+      end
+
+      def to_geometries_string column_name
+        "ST_AsText(#{column_name})"
       end
 
       def find_data base, pagination, conditions, andor
-        validate_data_search_params base, conditions unless conditions.empty?
+        empty = conditions_empty? conditions
+        validate_data_search_params base, conditions unless empty
         columns = find_columns base
         primaries = find_primary_keys base
         column = columns.map{|each|
           # // TODO json, binary, enum ?
-          if GEOMETRY_TYPE.include? each["data_type"].downcase
-            "ST_AsText(#{each['column_name']}) AS #{each['column_name']}"
-          elsif BLOB_TYPE.include? each["data_type"].downcase
+          if type_geometry? each
+            "#{to_geometries_string(each['column_name'])} AS #{each['column_name']}"
+          elsif type_blob? each
             "'#{BLOB_STRING}' AS #{each['column_name']}"
           else
             each["column_name"] 
           end
         }.join(", ")
-        wheres = conditions.size == 0 ? '' : "WHERE " + conditions.map{|e| 
-          to_where_query base, e[:column], e[:operator], e[:input]
+        wheres = empty ? '' : "WHERE " + conditions.map{|e| 
+          to_where_query base, e[:column], e[:operator], e[:input], columns.find{|coldef| coldef["column_name"] == e[:column]}
         }.join(" #{andor} ")
 
         # 外からSQLを直接叩ける機能がある以上、基本的に全てをサニタイズはしない
@@ -85,9 +86,9 @@ module Databases
         total = base.connection.select_all(query).to_a.first["count"]
 
         orders = pagination[:sortBy].nil? ? "" : "ORDER BY #{pagination[:sortBy]} #{pagination[:descending] ? 'DESC' : ''}"
-        limits = "LIMIT #{pagination[:rowsPerPage]} OFFSET #{(pagination[:page] - 1) * pagination[:rowsPerPage]}"
+        paging = "LIMIT #{pagination[:rowsPerPage]} OFFSET #{(pagination[:page] - 1) * pagination[:rowsPerPage]}"
 
-        query = "SELECT #{column} FROM #{table_name} #{wheres} #{orders} #{limits}"
+        query = "SELECT #{column} FROM #{table_name} #{wheres} #{orders} #{paging}"
         ret = base.connection.select_all(query).to_a.map{|each|
           unless primaries.empty?
             each[DbStrategy::DB_DATA_PRIMARY_KEY] = primaries.map{|primary|

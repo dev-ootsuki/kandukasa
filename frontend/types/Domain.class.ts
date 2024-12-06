@@ -92,8 +92,12 @@ export class DbUiDataTypes{
         if(column == null)
             return "characters"
         for(const key in this){
-            if((this[key] as string[]).includes(column.data_type!))
+            if((this[key] as string[]).includes(column.data_type!)){
+                // only mysql?
+                if(key == "bool" && column.numeric_precision !== undefined && column.numeric_precision > 1)
+                    return "numerics"
                 return key as UiDataType
+            }
         }
         return "characters"
     }
