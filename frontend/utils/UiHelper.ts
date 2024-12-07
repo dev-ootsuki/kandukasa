@@ -101,6 +101,7 @@ const OperatorTypeNotLike: Domain.CompareOperator = {
 
 export const NullableOnlyOperatorTypes = [OperatorTypeIsNull, OperatorTypeIsNotNull]
 export const DoubleParamsOperatorTypes = [OperatorTypeBetween, OperatorTypeNotBetween]
+export const MultiParamsOperatorTypes = [OperatorTypeIn, OperatorTypeNotIn]
 
 const UiDataTypeConfig: {[key in DomainClass.UiDataType]: Design.DbdataBindingInfo} = {
     characters: {

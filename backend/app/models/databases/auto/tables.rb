@@ -12,7 +12,7 @@ module Databases
           "#{col} #{op}"
         },
         :in => ->(base, col, op, val){
-          base.sanitize_sql_array ["#{col} #{op} (#{val[0].split(',').map{|e| '?'}.join(',')})", val[0].split(",").map(&:strip)]
+          base.sanitize_sql_array ["#{col} #{op} (#{val.map{|e| '?'}.join(',')})", *val]
         },
         :between => ->(base, col, op, val){
           base.sanitize_sql_array ["#{col} #{op} ? AND ?", val[0], val[1]]
@@ -64,7 +64,12 @@ module Databases
         op = OPERATORS.find{|k,v| v[:id] == operator_id}
         return '' if op.nil?
         op = OPERATORS[op[0]]
-        convert_val = value.map{|e| string_to_type_value col_def, e}
+        # IN or NOT IN
+        if(op[:id] == 10 || op[:id] == 11)
+          convert_val = value[0].split(",").map(&:strip).map{|e| string_to_type_value col_def, e}
+        else
+          convert_val = value.map{|e| string_to_type_value col_def, e}
+        end
         op[:fomatter].call base, column_name, op[:op], convert_val
       end
 

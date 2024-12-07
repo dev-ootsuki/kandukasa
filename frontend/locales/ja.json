@@ -190,7 +190,8 @@
     "length_exactly":"{0}文字で入力してください",
     "range_from_to" : "{0}～{1}で入力してください",
     "range_from" : "{0}以上で入力してください",
-    "range_to": "{0}以下で入力してください"
+    "range_to": "{0}以下で入力してください",
+    "in_comma": "複数入力の際はカンマで区切って入力してください"
   },
   "metadata": {
     "system_catalog": "カタログ名",

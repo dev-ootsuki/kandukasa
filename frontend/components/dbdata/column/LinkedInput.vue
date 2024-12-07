@@ -80,10 +80,13 @@ import { DbColumn } from '~/types/Domain.class'
 import type { Validator } from '~/types/Types'
 import * as DomainClass from '~/types/Domain.class'
 import { QInput, QToggle, QDate } from 'quasar'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const props = defineProps<{
     column:DbColumn,
     value:any,
-    class?:string
+    class?:string,
+    multiple:boolean
 }>()
 const store = useDbConnectionsStore()
 const dbDataType = store.selectedDbDataTypes
@@ -114,6 +117,17 @@ const validator = computed(() => {
     const rules:Validator.Rule[] = []
     if(props.column == null)
         return useValidator(...rules)
+    if(props.multiple)
+        return useValidator({
+            rule:"custom",
+            custom: (input: string) :boolean => {
+                if(input == null || input == "")
+                    return false
+                return input.indexOf(",") >= 0
+            },
+            message:"required",
+            overrideMessage: t("validate.in_comma")
+        })
 
     // カラムがnullableでも検索条件としては必要
     rules.push(qRequired)
