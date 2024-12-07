@@ -41,6 +41,10 @@ module Databases
       }
       OPERATOR_IDS = OPERATORS.map{|k,v| v[:id]}
 
+      def table_name
+        "#{@schema_id}.#{@table_id}"
+      end
+
       # TODO 最初にcontrollerでvalidateしてraise errorはやめる
       def validate_data_search_params base, conditions
         # カラムで条件指定がある場合はカラムが正しいかは確認する
@@ -78,6 +82,12 @@ module Databases
           :columns => find_columns(base),
           :primaries => find_primary_keys(base)
         }
+      end
+
+      def delete_pkey base
+        base.connection.transaction do
+          base.connection.execute "ALTER TABLE #{table_name} DROP PRIMARY KEY"
+        end
       end
 
       def to_unique_identifer_query base, primaries, columns, ids

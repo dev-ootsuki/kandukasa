@@ -87,6 +87,15 @@ class DbStrategy
     ret
   end
 
+  def delete_pkey
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.delete_pkey con
+    }
+    close_connection
+    ret
+  end
+
   def table_data pagination, condition, andor
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|

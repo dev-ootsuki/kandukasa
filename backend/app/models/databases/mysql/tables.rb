@@ -175,10 +175,6 @@ module Databases
           each.transform_keys(&:downcase)
         }
       end
-
-      def table_name
-        "#{@schema_id}.#{@table_id}"
-      end
     end
   end
 end

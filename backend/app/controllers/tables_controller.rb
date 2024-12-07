@@ -61,4 +61,16 @@ class TablesController < ApplicationController
       failed error
     end    
   end
+
+  def delete_pkey
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.delete_pkey
+    rescue StandardError => error 
+      failed error
+    end    
+  end
 end
