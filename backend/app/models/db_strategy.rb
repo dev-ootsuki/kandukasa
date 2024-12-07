@@ -7,21 +7,24 @@ class DbStrategy
       :rubygem => "mysql2",
       :db_instance => 'Databases::Mysql::DbInstances',
       :schema => 'Databases::Mysql::Schemas',
-      :table => 'Databases::Mysql::Tables'
+      :table => 'Databases::Mysql::Tables',
+      :column => 'Databases::Mysql::Columns'
     },
     :postgreSQL => {
       :type_id => 1,
       :rubygem => "postgresql",
       :db_instance => 'Databases::Postgresql::DbInstances',
       :schema => 'Databases::Postgresql::Schemas',
-      :table => 'Databases::Postgresql::Tables'
+      :table => 'Databases::Postgresql::Tables',
+      :column => 'Databases::Postgresql::Columns'
     }
   }
 
-  def initialize con_id, schema_id = nil, table_id = nil
+  def initialize con_id, schema_id = nil, table_id = nil, column_id = nil
     @connection_id = con_id
     @schema_id = schema_id
     @table_id = table_id
+    @column_id = column_id
     load_primary_config
   end
 
@@ -46,6 +49,24 @@ class DbStrategy
     }
     close_connection
     ret
+  end
+
+  def truncate_tables ids
+    db_schema = get_db_mapping[:schema].camelize.constantize.new(@connection_id, @schema_id)
+    ret = establish{|con|
+      db_schema.truncate_tables con, ids
+    }
+    close_connection
+    ret    
+  end
+
+  def delete_tables ids
+    db_schema = get_db_mapping[:schema].camelize.constantize.new(@connection_id, @schema_id)
+    ret = establish{|con|
+      db_schema.delete_tables con, ids
+    }
+    close_connection
+    ret    
   end
 
   def table_info
@@ -88,6 +109,15 @@ class DbStrategy
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
       db_table.delete_data con, ids
+    }
+    close_connection
+    ret
+  end
+
+  def delete_column
+    db_column = get_db_mapping[:column].camelize.constantize.new(@connection_id, @schema_id, @table_id, @column_id)
+    ret = establish{|con|
+      db_column.delete_column con
     }
     close_connection
     ret

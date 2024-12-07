@@ -66,7 +66,8 @@
   },  
   "tables": {
     "info": "情報",
-    "data": "データ"
+    "data": "データ",
+    "def_columns": "カラム定義"
   },
   "dbdata": {
     "compare": {

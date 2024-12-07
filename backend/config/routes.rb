@@ -19,7 +19,9 @@ Rails.application.routes.draw do
       member do
         get ":schema_id", to: "schemas#get"
         post ":schema_id/query", to: "schemas#query"
-    end
+        delete ":schema_id/bulk_truncate", to: "schemas#bulk_truncate"
+        delete ":schema_id/bulk_drop", to: "schemas#bulk_drop"
+  end
       resource :tables, path: ":schema_id", only:[:show, :update, :create, :destroy] do
         member do
           get ":table_id", to: "tables#get"
@@ -27,11 +29,16 @@ Rails.application.routes.draw do
           post ":table_id/create_data", to:"tables#create_data"
           put ":table_id/update_data", to:"tables#update_data"
           patch ":table_id/update_data", to:"tables#update_data"
-          delete "bulk_truncate", to: "tables#bulk_truncate"
-          delete "bulk_drop", to: "tables#bulk_drop"
           delete ":table_id/bulk_record_delete", to:"tables#bulk_record_delete"
         end
-        resource :column, path:":table_id", only:[:create, :update, :destroy]
+        resource :column, path:":table_id", only:[] do
+          member do
+            post "", to:"columns#create"
+            patch ":column_id", to:"columns#update"
+            put ":column_id", to:"columns#update"
+            delete ":column_id", to:"columns#destroy"
+          end
+        end
       end
     end
   end

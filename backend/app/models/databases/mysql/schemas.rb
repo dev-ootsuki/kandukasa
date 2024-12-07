@@ -1,6 +1,6 @@
 module Databases
   module Mysql
-    class Schemas
+    class Schemas < Databases::Auto::Schemas
       def initialize connection_id, schema_id
         @connection_id = connection_id
         @schema_id = schema_id

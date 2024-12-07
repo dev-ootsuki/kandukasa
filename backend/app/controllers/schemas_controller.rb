@@ -8,8 +8,6 @@ class SchemasController < ApplicationController
       strategy = DbStrategy.new id
       success strategy.db_server_info false
     rescue StandardError => error 
-      logger.error $! if $!
-      logger.error $!.backtrace.join("\n") if $!
       failed error
     end
   end
@@ -22,17 +20,35 @@ class SchemasController < ApplicationController
       strategy = DbStrategy.new id, sid
       success strategy.schema_info
     rescue StandardError => error 
-      logger.error $! if $!
-      logger.error $!.backtrace.join("\n") if $!
       failed error
     end
   end
 
-  # URLに指定された接続先ID/スキーマIDへSQLを発行する
-  def query
-    
+  def bulk_truncate
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    ids = params.require(:data).permit(tables: [])
+    begin
+      strategy = DbStrategy.new id, sid
+      success strategy.truncate_tables ids[:tables]
+    rescue StandardError => error 
+      failed error
+    end
   end
-  # URLに指定された接続先ID/スキーマIDのダンプを取得する
+
+  def bulk_drop
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    ids = params.require(:data).permit(tables: [])
+    begin
+      strategy = DbStrategy.new id, sid
+      success strategy.delete_tables ids[:tables]
+    rescue StandardError => error 
+      failed error
+    end
+  end
+    
+  # URLに指定された接続先ID/スキーマIDへSQLを発行する
   def query
     
   end

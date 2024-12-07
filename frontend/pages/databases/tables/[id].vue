@@ -1,6 +1,5 @@
 <template>
-  <DialogConfirm ref="dialog" @submit="onSubmitDelete" @complete="onCompleteDelete" />
-  <DialogAlert ref="alert" />
+  <DialogConfirm :handler="handler" ref="dialog" />
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
       <LayoutBreadcrumbsDatabase />
@@ -22,52 +21,65 @@
 
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="info">
-            <q-table
-              flat bordered dense
-              :rows="columns!"
-              :columns="defColumns"
-              row-key="column_name"
-              class="table-selected-delete sticky-header-table"
-              selection="multiple"
-              v-model:selected="multiDefSelected"
-              virtual-scroll
-              :visible-columns="defVisibleColumns"
+            <q-expansion-item
+              dense-toggle
+              default-opened
+              expand-separator
+              icon="settings"
+              class="text-weight-bold"
+              :label="$t('tables.def_columns')"
             >
-              <template v-slot:top-right>
-                  <q-space class="q-pl-md" />
-                  <q-select
-                      v-model="defVisibleColumns"
-                      multiple
-                      outlined
-                      dense
-                      options-dense
-                      :display-value="$q.lang.table.columns"
-                      emit-value
-                      map-options
-                      :options="defColumns"
-                      option-value="name"
-                      options-cover
-                      class="select-table-filter-column"
-                  />
-                </template>
-                <template v-slot:body-cell="props">
-                <q-td :props="props">
-                    <span v-if="props.col.name == system.dbDataPrimaryKey">
-                        <SystemBtnOperation mode="update" feature="dbfeatures" mini class="q-mr-sm" @click="onEditColDef(props.row)" />
-                        <SystemBtnOperation mode="delete" feature="dbfeatures" mini @click="onDeleteColDef(props.row)" />
-                    </span>
-                    <p v-if="props.col.name != system.dbDataPrimaryKey">
-                        {{props.value}}
-                    </p>
-                </q-td>
-              </template>
-            </q-table>
+              <q-card-section>
+                <q-table
+                  flat bordered dense
+                  :rows="columns!"
+                  :columns="defColumns"
+                  row-key="column_name"
+                  class="table-selected-delete sticky-header-table"
+                  virtual-scroll
+                  :visible-columns="defVisibleColumns"
+                >
+                  <template v-slot:top-left>
+                      <SystemBtnOperation mode="register" feature="dbfeatures" @click="onCreateColDef" />
+                  </template>
+
+                  <template v-slot:top-right>
+                      <q-space class="q-pl-md" />
+                      <q-select
+                          v-model="defVisibleColumns"
+                          multiple
+                          outlined
+                          dense
+                          options-dense
+                          :display-value="$q.lang.table.columns"
+                          emit-value
+                          map-options
+                          :options="defColumns"
+                          option-value="name"
+                          options-cover
+                          class="select-table-filter-column"
+                      />
+                    </template>
+                    <template v-slot:body-cell="props">
+                    <q-td :props="props">
+                        <span v-if="props.col.name == system.dbDataPrimaryKey">
+                            <SystemBtnOperation mode="update" feature="dbfeatures" mini class="q-mr-sm" @click="onEditColDef(props.row)" />
+                            <SystemBtnOperation mode="delete" feature="dbfeatures" mini @click="onDeleteColDef(props.row)" />
+                        </span>
+                        <p v-if="props.col.name != system.dbDataPrimaryKey">
+                            {{props.value}}
+                        </p>
+                    </q-td>
+                  </template>
+                </q-table>
+              </q-card-section>
+            </q-expansion-item>
           </q-tab-panel>
         </q-tab-panels>
 
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="data">
-            <DataView :columns="columns"/>
+            <DbDataView :columns="columns"/>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -77,8 +89,11 @@
   
 <script lang="ts" setup>
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
-import DataView from '~/pages/databases/tables/data.vue'
+import DbDataView from '~/pages/databases/tables/DbDataView.vue'
 import { useI18n } from 'vue-i18n'
+import { useSystemStore } from '~/stores/SystemStore'
+import type { Design } from '~/types/Types'
+
 const store = useDbConnectionsStore()
 const { selectedTable } = storeToRefs(store)
 const { t } = useI18n() 
@@ -87,12 +102,9 @@ const { t } = useI18n()
 if(selectedTable?.value == null)
     navigateTo('/')
 
-import { useSystemStore } from '~/stores/SystemStore'
-
 // 共通系の定義
 const system = useSystemStore().systemSetting
 const dialog = useTemplateRef<any>("dialog")
-const alert = useTemplateRef<any>("alert")
 const tab = ref('info')
 
 // カラム定義
@@ -101,15 +113,30 @@ if(store.selectedTable?.columns === undefined){
 }
 const defColumns = TableHelper.createColumns(t)
 const defVisibleColumns = ref(defColumns.map(e => e.name))
-const multiDefSelected = ref([])
 
 // infoのカラム定義情報
 const columns = selectedTable.value != null ? selectedTable.value!.columns : []
 
-const onSubmitDelete = () => {
+const selectedRow = ref()
+const onDeleteColDef = (row:any) => {
+  selectedRow.value = row
+  dialog.value.show("delete")
+}
+const onEditColDef = (row:any) => {
 
 }
-const onCompleteDelete = () => {
+const onCreateColDef = () => {
 
 }
+
+const handler:Design.MultiDialogHandler = {
+  delete: {
+    submit:() : Promise<any> => {
+      return store.deleteColumnDef(selectedRow.value)
+    },
+    complete: () => {
+    }
+  }
+}
+
 </script>

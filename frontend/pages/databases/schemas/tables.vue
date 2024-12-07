@@ -86,6 +86,7 @@ const tables = computed(() => {
     })
 })
 
+const selectedRow = ref()
 const multiSelected = ref([])
 const tableColumns = TableHelper.createTableColumn(t)
 const visibleColumns = ref(tableColumns.map(e => e.name))
@@ -93,39 +94,35 @@ const visibleColumns = ref(tableColumns.map(e => e.name))
 const dialogHandler: Design.MultiDialogHandler = {
     delete: {
         submit: () :Promise<any> => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
-            return new Promise<any>(resolve => resolve(true))
+            return store.deleteTables([selectedRow.value])
         },
         complete: () => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            // TODO 画面遷移？
         }
     },
     truncate: {
         submit : () : Promise<any> => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
-            return new Promise<any>(resolve => resolve(true))
+            return store.truncateTables([selectedRow.value])
         },
         complete: () => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            // TODO 画面遷移？
         }
     },
     bulk_delete: {
         submit: () : Promise<any> => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
-            return new Promise<any>(resolve => resolve(true))
+            return store.deleteTables(multiSelected.value)
         },
         complete: () => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            // TODO 画面遷移？
             multiSelected.value = []
         }
     },
     bulk_truncate: {
         submit: () : Promise<any> => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
-            return new Promise<any>(resolve => resolve(true))
+            return store.truncateTables(multiSelected.value)
         },
         complete: () => {
-            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            // TODO 画面遷移？
             multiSelected.value = []
         }
     }
@@ -145,9 +142,11 @@ const onSelectTable = (target: any) => {
 }
 
 const onEraseTableData = (target:any) => {
+    selectedRow.value = target
     dialog.value!.show("truncate")
 }
 const onDeleteTable = (target:any) => {
+    selectedRow.value = target
     dialog.value!.show("delete")
 }
 

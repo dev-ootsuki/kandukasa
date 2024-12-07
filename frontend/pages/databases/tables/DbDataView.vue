@@ -18,40 +18,40 @@
         :rows-per-page-options="system.rowPerPageOptions"
     >
         <template v-slot:top-left>
-        <SystemBtnOperation mode="register" feature="dbdata" @click="onCreateRecord" />
-        <q-space class="q-pl-md" />
-        <SystemBtnOperation mode="bulk_delete" feature="dbdata" @click="onBulkDeleteData" />
+            <SystemBtnOperation mode="register" feature="dbdata" @click="onCreateRecord" />
+            <q-space class="q-pl-md" />
+            <SystemBtnOperation mode="bulk_delete" feature="dbdata" @click="onBulkDeleteData" />
         </template>
 
         <template v-slot:top-right>
-        <q-btn :label="$t('common.search_conditions')" icon="rule" color="primary" @click="showSearchConditions" />
-        <q-btn round flat icon="refresh" text-color="primary" @click="onReload" />
-        <q-space class="q-pl-md" />
-        <q-select
-            v-model="visibleColumns"
-            multiple
-            outlined
-            dense
-            options-dense
-            :display-value="$q.lang.table.columns"
-            emit-value
-            map-options
-            :options="dataColumns"
-            option-value="name"
-            options-cover
-            class="select-table-filter-column"
-        />
+            <q-btn :label="$t('common.search_conditions')" icon="rule" color="primary" @click="showSearchConditions" />
+            <q-btn round flat icon="refresh" text-color="primary" @click="onReload" />
+            <q-space class="q-pl-md" />
+            <q-select
+                v-model="visibleColumns"
+                multiple
+                outlined
+                dense
+                options-dense
+                :display-value="$q.lang.table.columns"
+                emit-value
+                map-options
+                :options="dataColumns"
+                option-value="name"
+                options-cover
+                class="select-table-filter-column"
+            />
         </template>            
         <template v-slot:body-cell="props">
-        <q-td :props="props">
-            <span v-if="props.col.name == system.dbDataPrimaryKey">
-                <SystemBtnOperation mode="update" feature="dbdata" mini class="q-mr-sm" @click="onEditRecord(props.row)" />
-                <SystemBtnOperation mode="delete" feature="dbdata" mini @click="onDeleteRecord(props.row)" />
-            </span>
-            <p v-if="props.col.name != system.dbDataPrimaryKey">
-                {{props.value}}
-            </p>
-        </q-td>
+            <q-td :props="props">
+                <span v-if="props.col.name == system.dbDataPrimaryKey">
+                    <SystemBtnOperation mode="update" feature="dbdata" mini class="q-mr-sm" @click="onEditRecord(props.row)" />
+                    <SystemBtnOperation mode="delete" feature="dbdata" mini @click="onDeleteRecord(props.row)" />
+                </span>
+                <p v-if="props.col.name != system.dbDataPrimaryKey">
+                    {{props.value}}
+                </p>
+            </q-td>
         </template>
     </q-table>
 </template>

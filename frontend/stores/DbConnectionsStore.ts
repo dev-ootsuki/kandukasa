@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbData, Pagination, DbUiDataTypes } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbColumn, DbData, Pagination, DbUiDataTypes } from '~/types/Domain.class'
 import type { WebAPI } from '~/types/Types'
 
 type State = {
@@ -129,6 +129,40 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return table
             })
         },
+        async truncateTables(tables: DbTable[]) : Promise<DbTable[]> {
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/bulk_truncate`, {
+                method:"DELETE",
+                body:{
+                    data:{
+                        tables: tables.map(e => e.table_name)
+                    }
+                }
+            })
+            .then(data => {
+                return tables
+            })
+        },
+        async deleteTables(tables: DbTable[]) : Promise<DbTable[]>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/bulk_drop`, {
+                method:"DELETE",
+                body:{
+                    data:{
+                        tables: tables.map(e => e.table_name)
+                    }
+                }
+            })
+            .then(data => {
+                return tables
+            })
+        },
+        async deleteColumnDef(column: DbColumn) : Promise<DbColumn>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/${column.column_name}`, {
+                method:"DELETE"
+            })
+            .then(data => {
+                return data.data
+            })
+        },
         async getTableData(conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/query`, {
                 method:"POST",
@@ -150,6 +184,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             })
         },
         async createTableData(data:DbData) : Promise<DbData> {
+            // TODO ファイルの場合の実装
             const containBlob = this.selectedTable?.columns.find(e => e.data_type == "blob") != null
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_data`, {
                 method:"POST",
@@ -162,6 +197,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             })
         },
         async registerTable(table:DbTable) : Promise<DbTable>{
+            // TODO 実装？
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}`, {
                 method:"POST",
                 body: {
