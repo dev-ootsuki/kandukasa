@@ -264,7 +264,7 @@ export class UiHelper{
     }
     static generateColumnAvailableOperators(t: Function, dataType: DomainClass.UiDataType, columnDef:DomainClass.DbColumn) : {name:string, value:number}[]{
         let targets = []
-        if(columnDef.is_nullable == "NO")
+        if(!columnDef.is_nullable)
             targets = UiDataTypeConfig[dataType].operators
         else
             targets = UiDataTypeConfig[dataType].operators.concat(NullableOnlyOperatorTypes)
@@ -402,16 +402,25 @@ export class TableHelper{
         })
     }
     static createColumns($t: Function) : any[]{
-        return ColumnsOrderDifinitions.map(each => {
+        const system = useSystemStore().systemSetting
+        const ret = ColumnsOrderDifinitions.map(each => {
             return {
                 name: each,
-                required: true,
+                required: false,
                 label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
                 field: (row:any) => row[each],
                 format: (val:any) => `${val}`,
                 sortable:false
             }
         })
+        return [{
+            name: system.dbDataPrimaryKey!,
+            required: false,
+            label: $t('common.operation'),
+            field:(row:any) => '',
+            format: (val:any) => '',
+            sortable: false,
+        }].concat(ret)
     }
 
     static createDataColumns($t:Function, columns:any[]) : Design.DataColumn[]{

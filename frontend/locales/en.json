@@ -102,7 +102,12 @@
       "like_description": "LIKE '%VALUE%'",
       "like_not": "NOT LIKE",
       "like_not_description": "NOT LIKE '%VALUE%'",
-      "compare_nullable": "If value comparison is NULL, input value can't be selected"
+      "compare_nullable": "If value comparison is NULL, input value can't be selected",
+      "and_or_description_start": "( Merge condition for multiple items: ",
+      "and_or_description_end":" )"
+    },
+    "registration": {
+      "auto_increment": "No auto increment value can be entered"
     }
   },  
   "settings": {
