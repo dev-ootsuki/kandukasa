@@ -6,7 +6,6 @@ class DbConnectionsController < ApplicationController
         success DbConnection.all
       }
     rescue StandardError => error
-      logger.error($!) if $!
       failed error
     end
   end
@@ -17,7 +16,6 @@ class DbConnectionsController < ApplicationController
       strategy = DbStrategy.new id
       success strategy.db_server_info true
     rescue StandardError => error
-      logger.error($!) if $!
       failed error  
     end
   end
@@ -31,7 +29,6 @@ class DbConnectionsController < ApplicationController
         success con
       }
     rescue StandardError => error
-      logger.error($!) if $!
       failed error
     end
   end
@@ -50,7 +47,6 @@ class DbConnectionsController < ApplicationController
         success con
       }
     rescue StandardError => error
-      logger.error($!) if $!
       failed error
     end
   end
@@ -66,7 +62,6 @@ class DbConnectionsController < ApplicationController
         success ret
       }
     rescue StandardError => error
-      logger.error($!) if $!
       failed error
     end
 

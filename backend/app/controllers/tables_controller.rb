@@ -58,8 +58,6 @@ class TablesController < ApplicationController
       strategy = DbStrategy.new id, sid, tid
       success strategy.delete_data ids
     rescue StandardError => error 
-      logger.error $! if $!
-      logger.error $!.backtrace.join("\n") if $!
       failed error
     end    
   end
