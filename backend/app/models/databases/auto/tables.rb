@@ -9,10 +9,10 @@ module Databases
           "#{col} #{op} #{val == 1 ? 'TRUE' : 'FALSE'}"
         },
         :null => ->(base, col, op, val){
-          base.sanitize_sql_array ["#{col} #{op} ?", val[0]]
+          "#{col} #{op}"
         },
         :in => ->(base, col, op, val){
-          base.sanitize_sql_array ["#{col} #{op} (#{val[0].split(',').map{|e| '?'}.join(',')})", *val[0].split(",").map(&:strip)]
+          base.sanitize_sql_array ["#{col} #{op} (#{val[0].split(',').map{|e| '?'}.join(',')})", val[0].split(",").map(&:strip)]
         },
         :between => ->(base, col, op, val){
           base.sanitize_sql_array ["#{col} #{op} ? AND ?", val[0], val[1]]

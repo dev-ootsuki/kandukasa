@@ -180,9 +180,6 @@
     height: 160px !important;
 }
 .form-row > div:nth-child(1){
-/*
-width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
-*/
     padding-left: 10px !important;
     display: flex !important;
     align-items: center !important;
@@ -193,18 +190,7 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
     font-weight: bold !important;
     display: block;
 }
-/*
-.form-row > div:nth-child(2){
-    width: calc( (100vw - var(--leftmenu-width)) * 0.7) !important;
-}
-.form-row > div:nth-child(2) > .q-field{
-    width: calc( (100vw - var(--leftmenu-width)) * 0.7) !important;
-}
-*/
 .form-row > div:nth-child(2) > .pf-color-picker{
-/*
-    width: calc( (100vw - var(--leftmenu-width)) * 0.16) !important;
-*/
     width: 150px;
 }
 .form-row > div:nth-child(2) > strong{
@@ -282,7 +268,10 @@ width: calc( (100vw - var(--leftmenu-width)) * 0.25) !important;
     padding-bottom: 4px;
 }
 .dbdata-search-condition-value{
-    width: 370px;
+    width: 32vw;
+}
+.dbdata-search-condition-value-harf{
+    width: 16vw;
 }
 
 /* scrollber */

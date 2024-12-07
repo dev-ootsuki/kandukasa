@@ -2,7 +2,7 @@
     <!-- not taget null operation -->
     <DbdataColumnLinkedInput v-if="!selectNullOperation" :column="props.column" :value="props.value" :class="props.class" @change="onChange" ref="input" />
     <!-- target null operation -->
-    <span class="q-pt-sm dbdata-search-condition-value" v-if="selectNullOperation">{{ $t('dbdata.compare.compare_nullable') }}</span>
+    <span class="q-pt-sm q-pl-md dbdata-search-condition-value" v-if="selectNullOperation">{{ $t('dbdata.compare.compare_nullable') }}</span>
 </template>
 
 <script lang="ts" setup>
