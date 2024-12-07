@@ -67,7 +67,10 @@
   "tables": {
     "info": "Info",
     "data": "Data",
-    "def_columns":"Column Difinitions"
+    "def_columns":"Column Difinitions",
+    "primarykey": "Primary key",
+    "cannot_remove_pkey": "Primary keys of this type cannot be dele",
+    "foreignkey": "Foreign key"
   },
   "dbdata": {
     "compare": {
@@ -259,6 +262,13 @@
     "extra": "extra", 
     "column_comment": "column_comment", 
     "generation_expression": "generation_expression", 
-    "srs_id": "srs_id"
+    "srs_id": "srs_id",
+    "constraint_catalog": "constraint_catalog",
+    "constraint_schema": "constraint_schema",
+    "constraint_name": "constraint_name",
+    "position_in_unique_constraint": "position_in_unique_constraint",
+    "referenced_table_schema": "referenced_table_schema",
+    "referenced_table_name": "referenced_table_name",
+    "referenced_column_name": "referenced_column_name"
   }
 }

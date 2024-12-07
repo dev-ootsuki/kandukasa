@@ -163,6 +163,14 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
+        async deletePrimaryKey() : Promise<any>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/delete_pkey`, {
+                method:"DELETE"
+            })
+            .then(data => {
+                return data.data
+            })
+        },
         async getTableData(conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/query`, {
                 method:"POST",

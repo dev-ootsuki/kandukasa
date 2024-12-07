@@ -381,7 +381,7 @@ export class TableHelper{
                 return undefined
             return {
                 name: e,
-                required: true,
+                required: false,
                 label: $t(`metadata.${e}`),
                 field: (row:any) => row[e],
                 format: (val:any) => `${val}`,

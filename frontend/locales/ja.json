@@ -67,7 +67,10 @@
   "tables": {
     "info": "情報",
     "data": "データ",
-    "def_columns": "カラム定義"
+    "def_columns": "カラム定義",
+    "primarykey": "主キー",
+    "cannot_remove_pkey": "このタイプの主キーは削除できません",
+    "foreignkey":"外部キー"
   },
   "dbdata": {
     "compare": {
@@ -259,6 +262,14 @@
     "extra": "追加情報", 
     "column_comment": "コメント", 
     "generation_expression": "生成カラム時の計算式", 
-    "srs_id": "空間カラムの空間参照システムID"
+    "srs_id": "空間カラムの空間参照システムID",
+    "constraint_catalog": "制約の所属カタログ",
+    "constraint_schema": "制約の所属スキーマ",
+    "constraint_name": "制約名",
+    "position_in_unique_constraint": "外部キーの参照キー順序",
+    "referenced_table_schema": "制約の参照スキーマ",
+    "referenced_table_name": "制約の参照テーブル",
+    "referenced_column_name": "制約の参照カラム"
+
   }
 }
