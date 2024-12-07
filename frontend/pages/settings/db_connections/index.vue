@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <DialogConfirm ref="dialog" />
+    <DialogConfirm ref="dialog" @submit="onDeleteExecute" @complete="onDeleteComplete" />
     <q-toolbar class="content-header q-pa-sm">
       <span class="content-title text-eins bg-eins">{{$t('settings.db_connections.title')}}</span>
       <SystemBtnOperation to="/settings/db_connections/0" class="absolute-right" mode="register" feature="dbconnections" />
@@ -42,17 +42,20 @@
 </template>
 
 <script setup lang="ts">
-  import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
-  const store = useDbConnectionsStore()
-  await store.findDbConnectionsAll()
+import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
+const store = useDbConnectionsStore()
+await store.findDbConnectionsAll()
+const dialog = useTemplateRef<any>("dialog")
+const selectedId = ref<number>()
 
-  const dialog = useTemplateRef<any>("dialog")
-
-  const onDelete = (id:number) => {
-    dialog.value!.onConfirm("delete", () => {
-      return store.deleteDbConnection(id)
-    }, () => {
-      location.reload()
-    })
-  }
+const onDelete = (id:number) => {
+  selectedId.value = id
+  dialog.value!.show("delete")
+}
+const onDeleteExecute = () : Promise<any> => {
+  return store.deleteDbConnection(selectedId.value!)
+}
+const onDeleteComplete = () => {
+  location.reload()
+}
 </script>

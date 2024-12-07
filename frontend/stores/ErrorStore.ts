@@ -18,6 +18,9 @@ export const useErrorStore = defineStore('error', {
         },
         all(state: State) : WebAPI.WebAPIFailed[]{
             return state.errors
+        },
+        visibleDialog(state: State) : boolean{
+            return this.dialog
         }
     },
     actions: {

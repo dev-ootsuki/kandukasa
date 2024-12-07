@@ -1,5 +1,5 @@
 <template>
-  <DialogConfirm ref="dialog" />
+  <DialogConfirm ref="dialog" @submit="onSubmitDelete" @complete="onCompleteDelete" />
   <DialogAlert ref="alert" />
   <SearchConditionsDialog :columns="columns" ref="searchConditionsDialog" @close="bindSearchConditions"/>
   <div class="q-pa-md">
@@ -115,7 +115,7 @@ const tab = ref('info')
 
 
 if(store.selectedTable?.columns === undefined){
-  await store.getTableInfo(selectedTable.value!.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!)
+  await store.getTableInfo(selectedTable.value!.table_id!)
 }
 const searchConditions: { conditions: Design.SearchCondition[], andor:string} = { conditions:[], andor:"AND" }
 const searchConditionsDialog = ref<InstanceType<typeof SearchConditionsDialog>>()
@@ -138,7 +138,7 @@ const multiSelected = ref<any[]>([])
 // 検索時
 const onSearch = (props?: any) => {
   const condition = {
-    pagination: props?.pagination !== undefined ? props.pagination : pagination.value.toPlain(),
+    pagination: props?.pagination !== undefined ? props.pagination : pagination.value.toPlain !== undefined ? pagination.value.toPlain() : pagination.value,
     andor: searchConditions.andor,
     dbdata: {
         conditions: searchConditions.conditions.map(e => {
@@ -151,7 +151,7 @@ const onSearch = (props?: any) => {
     }
   }
   store
-    .getTableData(selectedTable.value?.id!, selectedTable.value!.schema_id!, selectedTable.value!.table_id!, condition)
+    .getTableData(condition)
     .then(res => {
       data.value = res.results
       pagination.value = design.toPagination(res.pagination)
@@ -171,32 +171,59 @@ const bindSearchConditions = (v:any) => {
   onSearch()
 }
 
+const selectedRow = ref()
+const handler: Design.MultiDialogHandler = {
+    delete: {
+        submit: () :Promise<any> => {
+          const keys = [selectedRow.value[system.dbDataPrimaryKey!]]
+          return store.deleteTableData(keys)
+        },
+        complete: () => {
+          multiSelected.value = []
+          onReload()
+      }
+    },
+    bulk_delete: {
+        submit: () : Promise<any> => {
+          const keys = multiSelected.value.map(e => e[system.dbDataPrimaryKey!])
+          return store.deleteTableData(keys)
+        },
+        complete: () => {
+          multiSelected.value = []
+          onReload()
+        }
+    }
+}
+const onSubmitDelete = (mode:Design.DialogEventType) => {
+  handler[mode]!.submit()
+  .then(data => {
+    dialog.value.complete()
+  })
+  .catch(data => {
+    dialog.value.hide()
+  })
+}
+const onCompleteDelete = (mode:Design.DialogEventType) => {
+  return handler[mode]?.complete?.()
+}
+
 // データテーブルで削除時@1レコード
 const onDeleteRecord = (row:any) => {
-  dialog.value!.onConfirm("delete", () : Promise<any> => {
-        const keys = [row[system.dbDataPrimaryKey!]]
-        return store.deleteTableData(selectedTable.value!.id!,selectedTable.value?.schema_id!, selectedTable.value?.table_id!, keys)
-    }, () => {
-        multiSelected.value = []
-        onReload()
-  })  
+  selectedRow.value = row
+  dialog.value!.show("delete")  
 }
 // 複数削除
 const onBulkDeleteData = () => {
   if(multiSelected.value.length == 0){
     return alert.value.show(t('validate.no_select'))
   }
-  dialog.value!.onConfirm("bulk_delete", () : Promise<any> => {
-        const keys = multiSelected.value.map(e => e[system.dbDataPrimaryKey!])
-        return store.deleteTableData(selectedTable.value!.id!,selectedTable.value?.schema_id!, selectedTable.value?.table_id!, keys)
-    }, () => {
-        multiSelected.value = []
-        onReload()
-  })  
+  dialog.value!.show("bulk_delete")
 }
 
 const onReload = () => {
   pagination.value = design.createTablePagination()
+  searchConditions .conditions = []
+  searchConditions.andor = "AND"
   onSearch()
 }
 

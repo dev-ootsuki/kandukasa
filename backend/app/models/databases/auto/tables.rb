@@ -87,13 +87,13 @@ module Databases
 
       def to_query_eq_string base, col_def, val
         v = string_to_type_value col_def, val
-        return nil if str.nil?
-        sanitize_sql_array ["#{col_def["column_name"]} = ?", v]
+        return nil if v.nil?
+        base.sanitize_sql_array ["#{col_def["column_name"]} = ?", v]
       end
 
       def string_to_type_value col_def, val
         if type_string? col_def
-          val.str
+          val
         elsif type_number? col_def
           val.to_i
         elsif type_float? col_def

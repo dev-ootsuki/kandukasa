@@ -127,6 +127,15 @@ export declare namespace Design{
     type DatabaseTreeNodeHeaderType = "connection" | "schema" | "schemasummary" | "table" | "view" | "trigger" | "routine" | "event"
     type SystemOperation = {label:string, icon:string, mode:Design.UIMode, danger:boolean}
     type DbdataBindingInfo = { operators: Domain.CompareOperator[]}
+    type DialogHandler = {
+        submit: () => Promise<any>,
+        cancel?: Function,
+        complete?: Function
+    }
+    type NoDialogHandlerMode = "complete"
+    type DialogEventType = Exclude<UIMode, NoDialogHandlerMode>
+    type MultiDialogHandler = { [key in DialogEventType]?: DialogHandler }
+
 }
 
 /* ----------------------------------------------------------
@@ -144,7 +153,6 @@ export declare namespace Domain{
     type DbProduct = {label:string, value:string, enable:boolean}
     type OperatorType = "=" | "!=" | ">=" | ">" | "<=" | "<" | "IS" | "IS NOT" | "IS NULL" | "IS NOT NULL" | "IN" | "NOT IN" | "BETWEEN" | "NOT BETWEEN" | "LIKE" | "NOT LIKE"
     type CompareOperator = { type: OperatorType, label: string , id: number, description: string}
-
 }
 
 /* ----------------------------------------------------------

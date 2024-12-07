@@ -86,7 +86,7 @@ const props = defineProps<{
     class?:string
 }>()
 const store = useDbConnectionsStore()
-const dbDataType = store.selectedDb!.db_instance?.ui_data_types
+const dbDataType = store.selectedDbDataTypes
 const input = ref(props.value)
 
 const uiDataType = computed<DomainClass.UiDataType>(() => {

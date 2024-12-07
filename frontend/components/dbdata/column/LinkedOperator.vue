@@ -25,7 +25,7 @@ const props = defineProps<{
 const store = useDbConnectionsStore()
 const selected = ref()
 const validator = useValidator(qRequired)
-const dbDataType = store.selectedDb!.db_instance?.ui_data_types
+const dbDataType = store.selectedDbDataTypes
 const operators = computed(() => {
     const uiDataType = props.column != null ? dbDataType?.findUiDataTypeByDbColumn(props.column) : undefined
     selected.value = undefined

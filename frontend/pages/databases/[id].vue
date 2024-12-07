@@ -160,7 +160,6 @@
 <script lang="ts" setup>
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
-import { UiHelper } from '~/utils/UiHelper'
 const store = useDbConnectionsStore()
 const design = useSystemStore().designSetting
 const { selected } = storeToRefs(store)

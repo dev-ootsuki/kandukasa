@@ -24,11 +24,11 @@
 
 <script lang="ts" setup>
 import { type Design } from '~/types/Types'
-
+import { useErrorStore } from '~/stores/ErrorStore'
+const errorStore = useErrorStore()
 const props = defineProps<{
     title?: string,
-    icon?: string,
-    message?:string
+    handler?:Design.MultiDialogHandler
 }>()
 
 const visible = ref(false)
@@ -37,55 +37,66 @@ const title = computed(() => {
     return props.title
   return UiHelper.findSystemOperaion(mode.value!).label
 })
-
-const callbackSubmit = ref<() => Promise<any>>()
-const callbackCancel = ref<Function>()
-const callbackComplete = ref<Function>()
-const callbackFailed = ref<Function>()
-const mode = ref<Design.UIMode>("register")
+const { dialog } = storeToRefs(errorStore)
+const mode = ref<Design.DialogEventType>("register")
 const phaseComplete = ref<boolean>(false)
-const phaseError = ref<boolean>(false)
+
+const emits = defineEmits<{
+  (e: 'submit', v:Design.DialogEventType): void,
+  (e: 'cancel', v:Design.DialogEventType): void,
+  (e: 'complete', v:Design.DialogEventType): void,
+}>()
+
 
 defineExpose({
-  onConfirm: (m:Design.UIMode, submit:() => Promise<any>, complete?: Function, failed?:Function, cancel?:Function) : void => {
-    mode.value = m 
-    callbackSubmit.value = submit
-    callbackCancel.value = cancel
-    callbackComplete.value = complete
-    callbackFailed.value = failed
+  show: (m:Design.DialogEventType) : void => {
+    mode.value = m
     visible.value = true
+  },
+  complete: () => {
+    showComplete()
+  },
+  hide: () => {
+    onHide()
   }
 })
 
+watch(dialog, async (newval:any, oldval:any) => {
+  dialog.value = newval
+  if(dialog.value)
+    onHide()
+})
+const showComplete = () => {
+  phaseComplete.value = true
+  visible.value = true
+}
+
 const onCancel = () => {
-  callbackCancel.value?.()
+  if(props.handler != null)
+    props.handler[mode.value]?.cancel?.()
+  emits('cancel', mode.value)
   onHide()
 }
 const onSubmit = () => {
-  callbackSubmit.value?.()
-  .catch(data => {
-    phaseError.value = true
-  })
-  .finally(() => {
-    if(phaseError.value !== true)
-      phaseComplete.value = true
-    else{
-      callbackFailed.value?.()
-      onHide()
-    }
-  })
+  if(props.handler != null)
+    props.handler[mode.value]?.submit()
+      .then(data => {
+        showComplete()
+      })
+      .catch(data => {
+        onHide()
+      })
+
+  emits('submit', mode.value)
 }
 const onComplete = () => {
-  callbackComplete.value?.()
+  if(props.handler != null)
+    props.handler[mode.value]?.complete?.()
+  emits('complete', mode.value)
   onHide()
 }
 const onHide = () => {
   visible.value = false
   phaseComplete.value = false
-  phaseError.value = false
-  callbackSubmit.value = undefined
-  callbackCancel.value = undefined
-  callbackComplete.value = undefined
-  callbackFailed.value = undefined
 }
 </script>

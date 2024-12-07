@@ -1,5 +1,5 @@
 <template>
-    <DialogConfirm ref="dialog" />
+    <DialogConfirm ref="dialog" :handler="dialogHandler" />
     <DialogAlert ref="alert" />
     <q-table
         flat bordered dense
@@ -63,6 +63,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useSystemStore } from '~/stores/SystemStore'
 import { UiHelper } from '~/utils/UiHelper'
 import { useI18n } from 'vue-i18n'
+import type { Design } from '~/types/Types'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -89,6 +90,47 @@ const multiSelected = ref([])
 const tableColumns = TableHelper.createTableColumn(t)
 const visibleColumns = ref(tableColumns.map(e => e.name))
 
+const dialogHandler: Design.MultiDialogHandler = {
+    delete: {
+        submit: () :Promise<any> => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            return new Promise<any>(resolve => resolve(true))
+        },
+        complete: () => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+        }
+    },
+    truncate: {
+        submit : () : Promise<any> => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            return new Promise<any>(resolve => resolve(true))
+        },
+        complete: () => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+        }
+    },
+    bulk_delete: {
+        submit: () : Promise<any> => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            return new Promise<any>(resolve => resolve(true))
+        },
+        complete: () => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            multiSelected.value = []
+        }
+    },
+    bulk_truncate: {
+        submit: () : Promise<any> => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            return new Promise<any>(resolve => resolve(true))
+        },
+        complete: () => {
+            console.log("tables#delete is NEED IMPLEMENT!!!! 左メニューをリロード＆今のテーブル一覧を更新したい")
+            multiSelected.value = []
+        }
+    }
+}
+
 const onCreateNewTable = () => {
 
 }
@@ -103,44 +145,24 @@ const onSelectTable = (target: any) => {
 }
 
 const onEraseTableData = (target:any) => {
-    dialog.value!.onConfirm("truncate", () : Promise<any> => {
-        return new Promise<any>((resolve) => {
-            resolve(null)
-        })
-    })
+    dialog.value!.show("truncate")
 }
 const onDeleteTable = (target:any) => {
-    dialog.value!.onConfirm("delete", () : Promise<any> => {
-        return new Promise<any>((resolve) => {
-            resolve(null)
-        })
-    })
+    dialog.value!.show("delete")
 }
 
 const onBulkDeleteTable = () => {
     if(multiSelected.value.length == 0){
         return alert.value.show(t('validate.no_select'))
     }
-    dialog.value!.onConfirm("bulk_delete", () : Promise<any> => {
-        return new Promise<any>((resolve) => {
-            resolve(null)
-        })
-    }, () => {
-        multiSelected.value = []
-    })
+    dialog.value!.show("bulk_delete")
 }
 
 const onBulkTruncateTable = () => {
     if(multiSelected.value.length == 0){
         return alert.value.show(t('validate.no_select'))
     }
-    dialog.value!.onConfirm("bulk_truncate", () : Promise<any> => {
-        return new Promise<any>((resolve) => {
-            resolve(null)
-        })
-    }, () => {
-        multiSelected.value = []
-    })
+    dialog.value!.show("bulk_truncate")
 }
 
 </script>

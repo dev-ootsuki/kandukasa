@@ -205,7 +205,7 @@ const handler = {
         exec:(node:any, key:any, done:any, fail:any) => {
             const keys = key.split(".")
             return store
-            .getSchemaInfo(parseInt(keys[0]), keys[1])
+            .getSchemaInfo(keys[1])
             .then(data => {
                 const children = TreeHelper.createSchemaChildren(t, key,data)
                 done(children)
@@ -214,7 +214,7 @@ const handler = {
         },
         navi: (node:any,key:any,show?:string) => {
             const keys = key.split(".")
-            store.setSelectedSchema(parseInt(keys[0]),keys[1])
+            store.setSelectedSchema(keys[1])
             navigateTo(`/databases/schemas/${keys[1]}?show=${show !== undefined ? show : "all"}`)
         }
     },
@@ -222,7 +222,7 @@ const handler = {
         exec: emptyHandler,
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
-            store.setSelectedTable(parseInt(keys[0]), keys[1], keys[3])
+            store.setSelectedTable(keys[3])
             navigateTo(`/databases/tables/${keys[3]}`)
         }
     },
@@ -230,7 +230,7 @@ const handler = {
         exec: emptyHandler,
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
-            store.setSelectedTrigger(parseInt(keys[0]), keys[1], keys[3])
+            store.setSelectedTrigger(keys[3])
             navigateTo(`/databases/triggers/${keys[3]}`)
         }
     },
@@ -238,7 +238,7 @@ const handler = {
         exec: emptyHandler,
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
-            store.setSelectedRoutine(parseInt(keys[0]), keys[1], keys[3])
+            store.setSelectedRoutine(keys[3])
             navigateTo(`/databases/routines/${keys[3]}`)
         }
     },
@@ -246,7 +246,7 @@ const handler = {
         exec: emptyHandler,
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
-            store.setSelectedEvent(parseInt(keys[0]), keys[1], keys[3])
+            store.setSelectedEvent(keys[3])
             navigateTo(`/databases/events/${keys[3]}`)
         }
     },
@@ -254,7 +254,7 @@ const handler = {
         exec: emptyHandler,
         navi: (node:any, key:any, show?:string) => {
             const keys = key.split(".")
-            store.setSelectedView(parseInt(keys[0]), keys[1], keys[3])
+            store.setSelectedView(keys[3])
             navigateTo(`/databases/views/${keys[3]}`)
         }
     }

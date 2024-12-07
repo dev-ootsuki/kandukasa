@@ -1,5 +1,5 @@
 <template>
-  <DialogConfirm ref="dialog" />
+  <DialogConfirm ref="dialog" @submit="onSubmit" @complete="onComplete" />
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
       <span class="content-title text-eins bg-eins">{{$t('settings.db_connections.title_'+mode)}}</span>
@@ -62,14 +62,15 @@ const mode:Design.UIMode = input.id !== undefined && input.id > 0 ? "update" : "
 const dialog = useTemplateRef<any>("dialog")
 
 const onRegistration = () => {
-  if(input.isValid()){
-    dialog.value!.onConfirm(mode, () => {
-      if(mode == "register")
-        return store.saveDbConnection(input)
-      return store.modifyDbConnection(input)
-    }, () => {
-      navigateTo('/settings/db_connections/')
-    })
-  }
+  if(input.isValid())
+    dialog.value!.show(mode)
+}
+const onSubmit = () : Promise<any> => {
+  if(mode == "register")
+    return store.saveDbConnection(input)
+  return store.modifyDbConnection(input)
+}
+const onComplete = () => {
+  navigateTo('/settings/db_connections/')
 }
 </script>

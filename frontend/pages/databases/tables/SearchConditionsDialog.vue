@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="visible">
+  <q-dialog persistent v-model="visible" transition-show="flip-down" transition-hide="flip-up" backdrop-filter="blur(4px) saturate(150%)">
     <div class="row q-pa-sm data-search-conditions-dialog">
       <q-card>
         <q-bar>

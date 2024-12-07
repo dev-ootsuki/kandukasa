@@ -38,6 +38,9 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
         },
         selectedNodeId(state: State){
             return state.selectedNode
+        },
+        selectedDbDataTypes(state: State) : DbUiDataTypes | undefined{
+            return state.selectedDb?.db_instance?.ui_data_types
         }
     },
     actions: {
@@ -75,7 +78,7 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             return ret === undefined ? newObject : new Promise<DbConnection>((resolve) => resolve(ret))
         },
         async saveDbConnection(domain: DbConnection){
-            const res = await webapi()<WebAPI.WebAPISuccess<DbConnection[]> | WebAPI.WebAPIFailed>('/db_connection/', {
+            return webapi()<WebAPI.WebAPISuccess<DbConnection[]> | WebAPI.WebAPIFailed>('/db_connection/', {
                 method: "POST",
                 body: {
                     "db_connection": domain
@@ -105,11 +108,10 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return con
             })
         },
-        async getSchemaInfo(conId: number, schemaId: string) : Promise<DbSchema>{
-            const con = await this.getDbConnectionById([conId])
-            return webapi()<WebAPI.WebAPISuccess<DbSchema[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}`)
+        async getSchemaInfo(schemaId: string) : Promise<DbSchema>{
+            return webapi()<WebAPI.WebAPISuccess<DbSchema[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${schemaId}`)
             .then(data => {
-                const schema = con.db_instance?.schemas.find(e => e.schema_id == schemaId)!
+                const schema = this.selectedDb!.db_instance?.schemas.find(e => e.schema_id == schemaId)!
                 schema.events = data?.data.events
                 schema.tables = data?.data.tables
                 schema.views = data?.data.views
@@ -118,18 +120,17 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return schema
             })
         },
-        async getTableInfo(conId:number, schemaId:string, tableId: string) : Promise<DbTable>{
-            const con = this.selected
-            return webapi()<WebAPI.WebAPISuccess<DbTable[]> | WebAPI.WebAPIFailed>(`/db_connection/${conId}/${schemaId}/${tableId}`)
+        async getTableInfo(tableId: string) : Promise<DbTable>{
+            return webapi()<WebAPI.WebAPISuccess<DbTable[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${tableId}`)
             .then(data => {
-                const table = con?.db_instance?.schemas.find(e => e.schema_id == schemaId)?.tables.find(e => e.table_id == tableId)!
+                const table = this.selectedSchema!.tables.find(e => e.table_id == tableId)!
                 table.columns = data?.data.columns
                 table.primaries = data?.data.primaries
                 return table
             })
         },
-        async getTableData(id:number, schema_id:string, table_id: string, conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
-            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/query`, {
+        async getTableData(conditions:any) : Promise<{results: DbData[], pagination: Pagination}>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/query`, {
                 method:"POST",
                 body: conditions  
             })
@@ -137,8 +138,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
-        async deleteTableData(id:number, schema_id:string, table_id:string, keys:any[]) : Promise<void>{
-            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${id}/${schema_id}/${table_id}/bulk_record_delete`, {
+        async deleteTableData(keys:any[]) : Promise<void>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/bulk_record_delete`, {
                 method:"DELETE",
                 body: {
                     keys:keys
@@ -147,7 +148,17 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             .then(data => {
                 return data.data
             })
-
+        },
+        async registerTable(table:DbTable) : Promise<DbTable>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}`, {
+                method:"POST",
+                body: {
+                    table:table
+                }
+            })
+            .then(data => {
+                return data.data
+            })
         },
         setSelectedDb(id: number) : DbConnection | null{
             this.selectedDb = this.dbConnections.find(e => e.id == id)!
@@ -159,11 +170,10 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = null
             return this.selectedDb
         },
-        setSelectedSchema(id:number, schemaId: string) : DbSchema | null{
-            const _selectedDb = this.setSelectedDb(id)
-            if(_selectedDb == null)
+        setSelectedSchema(schemaId: string) : DbSchema | null{
+            if(this.selectedDb == null)
                 return null
-            const _selectedSchema = _selectedDb.db_instance?.schemas.find(e => e.schema_id == schemaId)
+            const _selectedSchema = this.selectedDb.db_instance?.schemas.find(e => e.schema_id == schemaId)
             if(_selectedSchema == null){
                 this.selectedDb = null
                 return null
@@ -176,11 +186,10 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = null
             return this.selectedSchema
         },
-        setSelectedTable(id:number, schemaId: string, tableId:string) : DbTable | null{
-            const _selectedSchema = this.setSelectedSchema(id, schemaId)
-            if(_selectedSchema == null)
+        setSelectedTable(tableId:string) : DbTable | null{
+            if(this.selectedSchema == null)
                 return null
-            const _selectedTable = _selectedSchema.tables.find(e => e.table_id == tableId)!
+            const _selectedTable = this.selectedSchema.tables.find(e => e.table_id == tableId)!
             if(_selectedTable == null){
                 this.selectedTable = null
                 return null
@@ -192,11 +201,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = null            
             return this.selectedTable
         },
-        setSelectedTrigger(id:number, schemaId: string, triggerId:string) : DbTrigger | null{
-            const _selectedSchema = this.setSelectedSchema(id, schemaId)
-            if(_selectedSchema == null)
-                return null
-            const _selectedTrigger = _selectedSchema.triggers.find(e => e.trigger_id == triggerId)!
+        setSelectedTrigger(triggerId:string) : DbTrigger | null{
+            const _selectedTrigger = this.selectedSchema!.triggers.find(e => e.trigger_id == triggerId)!
             if(_selectedTrigger == null){
                 this.selectedTrigger = null
                 return null
@@ -208,11 +214,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = null            
             return this.selectedTrigger
         },
-        setSelectedView(id:number, schemaId: string, viewId:string) : DbView | null{
-            const _selectedSchema = this.setSelectedSchema(id, schemaId)
-            if(_selectedSchema == null)
-                return null
-            const _selectedView = _selectedSchema.views.find(e => e.view_id == viewId)!
+        setSelectedView(viewId:string) : DbView | null{
+            const _selectedView = this.selectedSchema!.views.find(e => e.view_id == viewId)!
             if(_selectedView == null){
                 this.selectedView = null
                 return null
@@ -224,11 +227,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = _selectedView            
             return this.selectedView
         },
-        setSelectedEvent(id:number, schemaId: string, eventId:string) : DbEvent | null{
-            const _selectedSchema = this.setSelectedSchema(id, schemaId)
-            if(_selectedSchema == null)
-                return null
-            const _selectedEvent = _selectedSchema.events.find(e => e.event_id == eventId)!
+        setSelectedEvent(eventId:string) : DbEvent | null{
+            const _selectedEvent = this.selectedSchema!.events.find(e => e.event_id == eventId)!
             if(_selectedEvent == null){
                 this.selectedEvent = null
                 return null
@@ -240,11 +240,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedView = null            
             return this.selectedEvent
         },
-        setSelectedRoutine(id:number, schemaId: string, routineId:string) : DbRoutine | null{
-            const _selectedSchema = this.setSelectedSchema(id, schemaId)
-            if(_selectedSchema == null)
-                return null
-            const _selectedRoutine = _selectedSchema.routines.find(e => e.routine_id == routineId)!
+        setSelectedRoutine(routineId:string) : DbRoutine | null{
+            const _selectedRoutine = this.selectedSchema!.routines.find(e => e.routine_id == routineId)!
             if(_selectedRoutine == null){
                 this.selectedRoutine = null
                 return null
