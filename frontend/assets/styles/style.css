@@ -273,6 +273,10 @@
 .dbdata-search-condition-value-harf{
     width: 16vw;
 }
+.dialog-registraton{
+    max-width:90vw;
+    min-width:80vw;
+}
 
 /* scrollber */
 ::-webkit-scrollbar-thumb {

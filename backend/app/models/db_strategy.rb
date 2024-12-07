@@ -35,7 +35,7 @@ class DbStrategy
           id: @connection_id
         }
       }
-      clonse_connection
+      close_connection
       ret
   end
 
@@ -44,7 +44,7 @@ class DbStrategy
     ret = establish{|con|
       db_schema.find_info con
     }
-    clonse_connection
+    close_connection
     ret
   end
 
@@ -53,7 +53,16 @@ class DbStrategy
     ret = establish{|con|
       db_table.find_info con
     }
-    clonse_connection
+    close_connection
+    ret
+  end
+
+  def table_columns
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.find_columns con
+    }
+    close_connection
     ret
   end
 
@@ -62,7 +71,16 @@ class DbStrategy
     ret = establish{|con|
       db_table.find_data con, pagination, condition, andor
     }
-    clonse_connection
+    close_connection
+    ret
+  end
+
+  def create_table_data data, columns
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.create_data con, data, columns
+    }
+    close_connection
     ret
   end
 
@@ -71,7 +89,7 @@ class DbStrategy
     ret = establish{|con|
       db_table.delete_data con, ids
     }
-    clonse_connection
+    close_connection
     ret
   end
 
@@ -90,7 +108,7 @@ class DbStrategy
   end
 
   private
-  def clonse_connection
+  def close_connection
     @connection.connection.disconnect!
   end
 

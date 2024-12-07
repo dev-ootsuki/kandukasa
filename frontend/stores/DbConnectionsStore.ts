@@ -149,6 +149,18 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
+        async createTableData(data:DbData) : Promise<DbData> {
+            const containBlob = this.selectedTable?.columns.find(e => e.data_type == "blob") != null
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_data`, {
+                method:"POST",
+                body: {
+                    data:data
+                }
+            })
+            .then(data => {
+                return data.data
+            })
+        },
         async registerTable(table:DbTable) : Promise<DbTable>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}`, {
                 method:"POST",

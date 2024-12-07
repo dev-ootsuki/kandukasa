@@ -232,11 +232,11 @@ const onReload = () => {
 }
 
 const onEditRecord = (row: any) => {
-  console.log(row)
-  dataRegistrationDialog.value!.show("register", new DbData())
+  dataRegistrationDialog.value!.show("update", row)
 }
 
 const onCreateRecord = () => {
-  dataRegistrationDialog.value!.show("register", new DbData())
+  const data = new DbData(columns)
+  dataRegistrationDialog.value!.show("register", data)
 }
 </script>

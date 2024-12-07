@@ -62,6 +62,24 @@ module Databases
         "ST_AsText(#{column_name})"
       end
 
+      def create_data base, data, columns
+        q_columns = []
+        q_val_meta = []
+        q_val = []
+        data.each_pair{|k,v|
+          col_def = columns.find{|e| e["column_name"] == k}
+          unless col_def["extra"] == "auto_increment"
+            q_columns << k
+            q_val_meta << "?"
+            q_val << string_to_type_value(columns.find{|e| e["column_name"] == k}, v)
+          end
+        }
+        query = base.sanitize_sql_array ["INSERT INTO #{table_name} (#{q_columns.join(",")}) VALUES (#{q_val_meta.join(",")})", *q_val]
+        base.connection.transaction do
+          base.connection.execute(query)
+        end
+      end
+
       def find_data base, pagination, conditions, andor
         empty = conditions_empty? conditions
         validate_data_search_params base, conditions unless empty
@@ -133,6 +151,7 @@ module Databases
           record["schema_id"] = @schema_id
           record["table_id"] = @table_id
           record["column_id"] = record["COLUMN_NAME"]
+          record["IS_NULLABLE"] = record["IS_NULLABLE"] === "YES" ? true : false
           record.transform_keys(&:downcase)
         }
       end

@@ -78,6 +78,7 @@ const onCancel = () => {
   onHide()
 }
 const onSubmit = () => {
+  onHide()
   if(props.handler != null)
     props.handler[mode.value]?.submit()
       .then(data => {

@@ -8,12 +8,13 @@
         :class="props.class"
         @update:model-value="onChange" 
         ref="datetime"
+        readonly
         v-if="componentTypeName == 'datetime'" 
     >
         <template v-slot:prepend v-if="uiDataType == 'datetime' || uiDataType == 'date'">
             <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="input" mask="YYYY-MM-DD HH:mm" @update:model-value="onChange">
+                <q-date v-model="input" mask="YYYY-MM-DD HH:mm:ss" @update:model-value="onChange" :rules="[]">
                     <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -25,7 +26,7 @@
         <template v-slot:append v-if="uiDataType == 'datetime' || uiDataType == 'time'">
             <q-icon name="access_time" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" @update:model-value="onChange">
-                <q-time v-model="input" mask="YYYY-MM-DD HH:mm" format24h>
+                <q-time v-model="input" mask="YYYY-MM-DD HH:mm:ss" format24h :rules="[]">
                     <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -86,7 +87,8 @@ const props = defineProps<{
     column:DbColumn,
     value:any,
     class?:string,
-    multiple:boolean
+    multiple:boolean,
+    required?:boolean
 }>()
 const store = useDbConnectionsStore()
 const dbDataType = store.selectedDbDataTypes
@@ -113,6 +115,9 @@ const characters = ref<InstanceType<typeof QInput>>()
 const file = ref<InstanceType<typeof QInput>>()
 const componentMap = { datetime, bool, characters, file }
 
+if(componentTypeName.value == "bool" && input.value == null)
+    input.value = 1
+
 const validator = computed(() => {
     const rules:Validator.Rule[] = []
     if(props.column == null)
@@ -128,9 +133,12 @@ const validator = computed(() => {
             message:"required",
             overrideMessage: t("validate.in_comma")
         })
-
+    // 検索時
     // カラムがnullableでも検索条件としては必要
-    rules.push(qRequired)
+    // 登録/更新時
+    // 必須かはカラムに依存するので外の定義を見て決める
+    if(props.required === undefined || props.required === true)
+        rules.push(qRequired)
 
     if(uiDataType.value == "numerics")
         rules.push(qNumber)

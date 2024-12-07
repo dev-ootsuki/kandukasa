@@ -30,7 +30,8 @@
     "bulk_truncate_exec": "Bulk truncate",
     "search_conditions": "Search condition",
     "search_conditions_description": "Please enter your search criteria",
-    "clear" : "Clear"
+    "clear" : "Clear",
+    "value": "Value"
   },
   "leftmenu": {
     "all": "All",

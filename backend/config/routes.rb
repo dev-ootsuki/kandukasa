@@ -24,11 +24,14 @@ Rails.application.routes.draw do
         member do
           get ":table_id", to: "tables#get"
           post ":table_id/query", to: "tables#query"
+          post ":table_id/create_data", to:"tables#create_data"
+          put ":table_id/update_data", to:"tables#update_data"
+          patch ":table_id/update_data", to:"tables#update_data"
           delete "bulk_truncate", to: "tables#bulk_truncate"
           delete "bulk_drop", to: "tables#bulk_drop"
           delete ":table_id/bulk_record_delete", to:"tables#bulk_record_delete"
         end
-        resource :column, path:":table_id", only:[:create,:update, :destroy]
+        resource :column, path:":table_id", only:[:create, :update, :destroy]
       end
     end
   end

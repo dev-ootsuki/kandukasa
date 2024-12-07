@@ -94,7 +94,7 @@ export class DbUiDataTypes{
         for(const key in this){
             if((this[key] as string[]).includes(column.data_type!)){
                 // only mysql?
-                if(key == "bool" && column.numeric_precision !== undefined && column.numeric_precision > 1)
+                if(key == "bool" && column.column_type !== "tinyint(1)")
                     return "numerics"
                 return key as UiDataType
             }
@@ -259,6 +259,11 @@ export class Pagination{
 
 export class DbData{
     [K:string]:any
+    constructor(columns:DbColumn[]){
+        columns.forEach(e => {
+            this[e.column_name!] = null
+        })
+    }
 }
 
 export class DbColumn extends DomainObject{
