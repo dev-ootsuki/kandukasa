@@ -1,7 +1,8 @@
 <template>
   <DialogConfirm ref="dialog" @submit="onSubmitDelete" @complete="onCompleteDelete" />
   <DialogAlert ref="alert" />
-  <SearchConditionsDialog :columns="columns" ref="searchConditionsDialog" @close="bindSearchConditions"/>
+  <DialogSearchConditions :columns="columns" ref="searchConditionsDialog" @close="bindSearchConditions"/>
+  <DialogDataRegistration :columns="columns" ref="dataRegistrationDialog" @complete="onReload" />
   <div class="q-pa-md">
     <q-toolbar class="content-header q-pa-sm">
       <LayoutBreadcrumbsDatabase />
@@ -51,7 +52,7 @@
               :rows-per-page-options="system.rowPerPageOptions"
             >
               <template v-slot:top-left>
-                <SystemBtnOperation mode="register" feature="dbdata" />
+                <SystemBtnOperation mode="register" feature="dbdata" @click="onCreateRecord" />
                 <q-space class="q-pl-md" />
                 <SystemBtnOperation mode="bulk_delete" feature="dbdata" @click="onBulkDeleteData" />
               </template>
@@ -105,7 +106,9 @@ if(selectedTable?.value == null)
 import { useSystemStore } from '~/stores/SystemStore'
 import { useI18n } from 'vue-i18n'
 import type { Design } from '~/types/Types'
-import SearchConditionsDialog from '~/pages/databases/tables/SearchConditionsDialog.vue'
+import DialogSearchConditions from '~/pages/databases/tables/DialogSearchConditions.vue'
+import DialogDataRegistration from '~/pages/databases/tables/DialogDataRegistration.vue'
+import { DbData } from '~/types/Domain.class'
 const { t } = useI18n() 
 const system = useSystemStore().systemSetting
 const design = useSystemStore().designSetting
@@ -118,7 +121,8 @@ if(store.selectedTable?.columns === undefined){
   await store.getTableInfo(selectedTable.value!.table_id!)
 }
 const searchConditions: { conditions: Design.SearchCondition[], andor:string} = { conditions:[], andor:"AND" }
-const searchConditionsDialog = ref<InstanceType<typeof SearchConditionsDialog>>()
+const searchConditionsDialog = ref<InstanceType<typeof DialogSearchConditions>>()
+const dataRegistrationDialog = ref<InstanceType<typeof DialogDataRegistration>>()
 const showSearchConditions = () => {
   searchConditionsDialog.value!.show(searchConditions)
 }
@@ -228,10 +232,11 @@ const onReload = () => {
 }
 
 const onEditRecord = (row: any) => {
-
+  console.log(row)
+  dataRegistrationDialog.value!.show("register", new DbData())
 }
 
-const onCreateNewData = () => {
-
+const onCreateRecord = () => {
+  dataRegistrationDialog.value!.show("register", new DbData())
 }
 </script>
