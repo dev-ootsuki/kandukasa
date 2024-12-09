@@ -46,7 +46,18 @@ class TablesController < ApplicationController
   end
 
   def update_data
-    
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      columns = strategy.table_columns
+      perm_targets = columns.map{|e| e["column_name"].to_sym}
+      dbdata = params.require(:data).permit(perm_targets)
+      success strategy.update_table_data dbdata, columns
+    rescue StandardError => error 
+      failed error
+    end    
   end
 
   def bulk_record_delete

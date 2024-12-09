@@ -58,6 +58,10 @@ module Databases
         BOOL_TYPE.include? col_def["data_type"] && col_def["numeric_precision"] == 1
       end
 
+      def type_datetime? col_def
+        Databases::Mysql::DbInstances::UI_DATA_TYPES[:date].include?(col_def["data_type"]) || Databases::Mysql::DbInstances::UI_DATA_TYPES[:datetime].include?(col_def["data_type"])
+      end
+
       def to_geometries_string column_name
         "ST_AsText(#{column_name})"
       end
@@ -78,6 +82,28 @@ module Databases
         base.connection.transaction do
           base.connection.execute(query)
         end
+      end
+
+      def update_data base, data, columns
+        primaries = find_primary_keys base
+        q_columns_meta = []
+        q_val = []
+        data.each_pair{|k,v|
+          col_def = columns.find{|e| e["column_name"] == k}
+          unless col_def["extra"] == "auto_increment"
+            q_columns_meta << "#{k} = ?"
+            q_val << string_to_type_value(columns.find{|e| e["column_name"] == k}, v)
+          end
+        }
+        wheres = primaries.map{|e|
+          q_val << string_to_type_value(e, data[e["column_name"]])
+          "#{e["column_name"]} = ?"
+        }.join(" AND ")
+        query = base.sanitize_sql_array ["UPDATE #{table_name} SET #{q_columns_meta.join(",")} WHERE #{wheres}", *q_val]
+        base.connection.transaction do
+          base.connection.execute(query)
+        end
+        
       end
 
       def find_data base, pagination, conditions, andor
@@ -107,6 +133,7 @@ module Databases
         paging = "LIMIT #{pagination[:rowsPerPage]} OFFSET #{(pagination[:page] - 1) * pagination[:rowsPerPage]}"
 
         query = "SELECT #{column} FROM #{table_name} #{wheres} #{orders} #{paging}"
+        datetime_columns = columns.filter{|e| type_datetime? e}
         ret = base.connection.select_all(query).to_a.map{|each|
           unless primaries.empty?
             each[DbStrategy::DB_DATA_PRIMARY_KEY] = primaries.map{|primary|
@@ -117,6 +144,9 @@ module Databases
               v
             }.join(DbStrategy::MULTI_PRIMARY_KEY_SEPARATOR)
           end
+            datetime_columns.each{|e|
+              each[e["column_name"]] = each[e["column_name"]].strftime DbStrategy::DATETIME_FORMAT
+            }
           each
         }
         {

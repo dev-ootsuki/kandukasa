@@ -1,6 +1,7 @@
 class DbStrategy
   DB_DATA_PRIMARY_KEY = "_internal_kandukasa_exchange_id_"
   MULTI_PRIMARY_KEY_SEPARATOR = "_internal_kandukasa_multi_pkey_separator"
+  DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
   @@database_config = {
     :MySQL => {
       :type_id => 0,
@@ -109,6 +110,15 @@ class DbStrategy
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
       db_table.create_data con, data, columns
+    }
+    close_connection
+    ret
+  end
+
+  def update_table_data data, columns
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.update_data con, data, columns
     }
     close_connection
     ret

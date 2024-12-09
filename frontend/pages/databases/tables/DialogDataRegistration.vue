@@ -67,7 +67,7 @@ const onSubmit = () => {
         promise = store.createTableData(data)
     }
     else{
-        promise = new Promise<any>((resolve) => resolve(true))
+        promise = store.updateTableData(data)
     }
     promise!.then(data => {
         dialog.value!.complete()

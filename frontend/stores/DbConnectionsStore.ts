@@ -204,6 +204,19 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
+        async updateTableData(data:DbData) : Promise<DbData> {
+            // TODO ファイルの場合の実装
+            const containBlob = this.selectedTable?.columns.find(e => e.data_type == "blob") != null
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/update_data`, {
+                method:"PUT",
+                body: {
+                    data:data
+                }
+            })
+            .then(data => {
+                return data.data
+            })
+        },
         async registerTable(table:DbTable) : Promise<DbTable>{
             // TODO 実装？
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}`, {
