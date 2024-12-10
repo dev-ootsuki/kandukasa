@@ -60,6 +60,7 @@ docker-compose.yml.prod
 * 訳が分からないような処理はコメント書いてく！
 * TODO書いてるところを直していく！！！！
 * ${PROJECT_ROOT}/backend/README.mdにディレクトリ構造と内容を書く
+* production / developmentのGemfile.lock分けるか本番用だけtest:developmentが必要としないようにどっかでbundle config書く必要がある、今はbundle installしてるので辞めたい
 
 ## やる事リスト(frontend)
 
@@ -77,8 +78,8 @@ docker-compose.yml.prod
 
 * production用のビルドスクリプト書く
 * dockerhubに登録して別プロジェクトで簡単に使えるようにしたい
-* productionでマルチステージビルドする時用のやつ、しばらく直してないのでどっかで動作確認する
 * 外から環境変数でタイムゾーンを設定できるようにする
+* ベースイメージをpostgresql:17.2-alipineにしたい
 
 ## 作りたい機能リスト
 

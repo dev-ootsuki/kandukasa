@@ -65,10 +65,15 @@ const onRegistration = () => {
   if(input.isValid())
     dialog.value!.show(mode)
 }
-const onSubmit = () : Promise<any> => {
+const onSubmit = () => {
+  let promise = null
   if(mode == "register")
-    return store.saveDbConnection(input)
-  return store.modifyDbConnection(input)
+    promise = store.saveDbConnection(input)
+  else
+    promise = store.modifyDbConnection(input)
+  promise.then(data => {
+    dialog.value!.complete()
+  })
 }
 const onComplete = () => {
   navigateTo('/settings/db_connections/')

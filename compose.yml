@@ -6,10 +6,10 @@ services:
       args:
         RUBY_VERSION: 3.3.6
         PG_VERSION: 17.2
-        APP_ENV: development
+        APP_ENV: production
         BUNDLE_DEPLOYMENT: 0
         BUNDLE_WITHOUT: 
-        STAGE_BASE: nuxt
+        STAGE_BASE: ruby
         MASTER_KEY: b3d7339d3b50fa706ae8813358435331
         DOMAIN_NAME: localhost
     container_name: app
@@ -18,7 +18,6 @@ services:
       - ./frontend:/app/frontend
     ports:
       - "443:443"
-      - "12345:12345" # ruby debug
     stdin_open: true
     tty: true
     environment:
@@ -44,7 +43,9 @@ services:
     stdin_open: true
     tty: true
     profiles:
+      - mysql
       - db
+      - all
   
   test-postgresql:
     image: postgres:17.2-alpine
@@ -60,7 +61,9 @@ services:
     stdin_open: true
     tty: true
     profiles:
+      - postgresql
       - db
+      - all
 
   # auth servers
   test-ldap:
@@ -76,7 +79,9 @@ services:
       - test-ldap-data:/var/lib/ldap
       - test-slapd-data:/etc/ldap/slapd.d
     profiles:
+      - ldap
       - auth
+      - all
 
 volumes:
   test-mysql-data:
