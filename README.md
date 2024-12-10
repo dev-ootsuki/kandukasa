@@ -1,9 +1,9 @@
 # Kandukasa
 
-## 動かし方 (development)
+## 動かし方 (production)
 ```project root
 docker compose build
-docker compose --profile db --profile auth up
+docker compose --profile mysql up
 ```
 初回起動はfrontendのnode_modules、backendのvendor/bundleの両方を落としてくるので起動は遅いです。
 
@@ -39,10 +39,11 @@ docker-compose.ymlを使って試す場合は
 
 してください！
 
-## 動かし方 (production)
-
-docker-compose.yml.prod
-を見てビルド（後でビルドスクリプトを書く）
+## 動かし方 (development)
+``` project root
+docker compose -f compose-dev.yml build
+docker compose -f compose-dev.yml --profile mysql up
+```
 
 ## 動かし方 (コンテナ以外)
 
@@ -80,6 +81,7 @@ docker-compose.yml.prod
 * dockerhubに登録して別プロジェクトで簡単に使えるようにしたい
 * 外から環境変数でタイムゾーンを設定できるようにする
 * ベースイメージをpostgresql:17.2-alipineにしたい
+* compose使わないでproductionを普通にイメージにする用のbash書く
 
 ## 作りたい機能リスト
 
