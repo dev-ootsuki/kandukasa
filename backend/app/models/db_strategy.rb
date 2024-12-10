@@ -44,6 +44,7 @@ class DbStrategy
   end
 
   def schema_info
+    # TODO インスタンス生成のコードが重複しているし呼び出しの箇所(estalibsh)も重複しているので後でなんとかする
     db_schema = get_db_mapping[:schema].camelize.constantize.new(@connection_id, @schema_id)
     ret = establish{|con|
       db_schema.find_info con
@@ -143,6 +144,8 @@ class DbStrategy
   end
 
   def establish
+    # TODO 接続がいけてないのでconnectioin_handlingかconnection_poolをハックしていい感じにしたい
+    # TODO できればコネクションはDB製品別の方がいいかもしれない＠要検討
     ActiveRecord::Base.establish_connection @config
     @connection = ActiveRecord::Base
     if block_given?
