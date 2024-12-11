@@ -21,15 +21,19 @@ docker-compose.ymlを使って試す場合は
 
 ・ポート： 3306
 
+・デフォルトスキーマ：sakila か world
+
 ・ユーザ： root
 
 ・パスワード： test
 
 が利用できます。
 
+もしくはコンテナから到達可能な接続先としてご自由に設定して下さい！
+
 また、このtest-mysqlを元に戻したい場合は
 
-・docker volume rm でボリュームを消す
+・docker volume rm でボリュームを消して再度upする
 
 ・docker compose exec test-mysql bash
 
@@ -71,7 +75,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * decoratorsがエラーになるやつ、nuxt対応するにはどうするのがベストか調べる
 * lint入ってないので入れる
 * frontendでどこまで自動テストコードを書くか決める
-* DbConnectionsSttore.tsが肥大化しつつあるのを分割したい
+* DbConnectionsStore.tsが肥大化しつつあるのを分割したい
 * DBデータ検索とかでHACK的にref<InstanceType<typeof Xxxx>>()がとれない問題解決しているのをvueの流儀に則りたい
 * ${PROJECT_ROOT}/frontend/README.mdにディレクトリ構造と内容を書く
 
@@ -80,10 +84,10 @@ docker compose -f compose-dev.yml --profile mysql up
 * production用のビルドスクリプト書く
 * dockerhubに登録して別プロジェクトで簡単に使えるようにしたい
 * 外から環境変数でタイムゾーンを設定できるようにする
-* ベースイメージをpostgresql:17.2-alipineにしたい
+* ベースイメージをpostgresql:17.2-alpineにしたい
 * compose使わないでproductionを普通にイメージにする用のbash書く
 
-## 作りたい機能リスト
+## 作りたい機能リスト（未実装リスト）
 
 * ログインユーザー
 * ユーザーの権限
