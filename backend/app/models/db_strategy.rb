@@ -2,7 +2,7 @@ class DbStrategy
   DB_DATA_PRIMARY_KEY = "_internal_kandukasa_exchange_id_"
   MULTI_PRIMARY_KEY_SEPARATOR = "_internal_kandukasa_multi_pkey_separator"
   DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-  @@database_config = {
+  DB_STRATEGRY_SETTING = {
     :MySQL => {
       :type_id => 0,
       :rubygem => "mysql2",
@@ -18,6 +18,14 @@ class DbStrategy
       :schema => 'Databases::Postgresql::Schemas',
       :table => 'Databases::Postgresql::Tables',
       :column => 'Databases::Postgresql::Columns'
+    },
+    :AuroraMySQL => {
+      :type_id => 0,
+      :rubygem => "mysql2",
+      :db_instance => 'Databases::Mysql::DbInstances',
+      :schema => 'Databases::Mysql::Schemas',
+      :table => 'Databases::Mysql::Tables',
+      :column => 'Databases::Mysql::Columns'
     }
   }
 
@@ -165,7 +173,7 @@ class DbStrategy
   end
 
   def get_db_mapping
-    @@database_config[@settings.db_type.to_sym]
+    DB_STRATEGRY_SETTING[@settings.db_type.to_sym]
   end
 
   def load_primary_config

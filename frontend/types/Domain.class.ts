@@ -42,7 +42,7 @@ export class DbConnection extends DomainObject{
     default_dabase_name:string | undefined
     login_name: string | undefined
     password: string | undefined
-    timeout: number = 60
+    timeout: number = 10000
     use_ssl: boolean = false
     ssl_key: string | undefined
     ssl_cert: string | undefined

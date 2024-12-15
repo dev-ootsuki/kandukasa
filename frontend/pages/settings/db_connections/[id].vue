@@ -24,7 +24,7 @@
           <!-- login_name -->
           <PfInput icon="person" :label="$t('settings.db_connections.login_name')" :validate="[qRequired, qLengthTo32]" :model="input" ref="input.login_name" />
           <!-- password -->
-          <PfInput icon="key" :label="$t('settings.db_connections.password')" :validate="[qLengthTo32]" :model="input" ref="input.password" type="password" />
+          <PfInput icon="key" :label="$t('settings.db_connections.password')" :validate="[qLengthTo64]" :model="input" ref="input.password" type="password" />
           <!-- timeout -->
           <PfInput icon="wifi_off" :label="$t('settings.db_connections.timeout')" :validate="[qRequired, qNumber, qRangeTo99999]" :model="input" ref="input.timeout" />
           <!-- description -->

@@ -1,4 +1,5 @@
 class DbConnection < ApplicationRecord
+  TIMEOUT_MAX_VALUE = 1000 * 60 * 10
   attr_accessor :ssl_key_name, :ssl_cert_name, :ssl_ca_name, :ssl_key_file, :ssl_cert_file, :ssl_ca_file, :db_instance
   def self.primary
     config_hash = ActiveRecord::Base.send(:resolve_config_for_connection, Rails.env.to_sym)
@@ -7,14 +8,16 @@ class DbConnection < ApplicationRecord
   end
 
 
-  validates :name, presence: { message: 'validate.required' }
-  validates :host, presence: true
-  validates :port, presence: true
-  validates :default_database_name, presence: true
-  validates :db_type, presence: true, inclusion: {in: ["MySQL", "postgreSQL", "Aurora MySQL", "Aurora postgreSQL"]}
-  validates :login_name, presence: true
-  validates :timeout, numericality: { only_integer: true }
-  validates :use_ssl, inclusion: {in: [true, false]}
+  validates :name, presence: { message: 'validate.required' }, length: {maximum: 32, message: 'validate.length_to#32'}
+  validates :host, presence: { message: 'validate.required' }, length: {maximum: 128, message: 'validate.length_to#128'}
+  validates :port, presence: { message: 'validate.required' }, inclusion: { in: 1..99999, message: 'validate.range_from_to#1-99999' }
+  validates :default_database_name, presence: {message: 'validate.required'}, length: {maximum: 64, message: 'validate.length_to#64'}
+  validates :db_type, presence: {message: 'validate.required'}, inclusion: {in: DbStrategy::DB_STRATEGRY_SETTING.keys.map{|e| "#{e}"}, message: 'validate.select_from_puludown'}
+  validates :login_name, presence: {message: 'validate.required'}, length: {maximum: 32, message: 'validate.length_to#32'}
+  validates :password, length: {maximum: 64, message: 'validate.length_to#64'}
+  validates :timeout, inclusion: { in:1..TIMEOUT_MAX_VALUE, message: "validate.range_from_to#1-#{TIMEOUT_MAX_VALUE}" }
+  validates :description, length: {maximum: 1024, message: 'validate.length_to#1024'}
+  validates :use_ssl, inclusion: {in: [true, false], message: 'validate.select_from_puludown'}
   validate :ssl_file_valid?
 
   def ssl_file_valid?

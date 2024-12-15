@@ -4,6 +4,7 @@ module ResponseFormattingConcern
   end
 
   def failed error
+    Rails.logger.error error
     render json: {
       :error => error.message, 
       :exception => error.message, 
@@ -13,6 +14,13 @@ module ResponseFormattingConcern
       :status => :internal_server_error, 
       :errors => error
     }, status: :internal_server_error
+  end
+
+  def record_not_found error
+    render json: {
+      :error => :not_found,
+      :status => :not_found
+    }, status: :not_found
   end
 
   def invalid_params code, model

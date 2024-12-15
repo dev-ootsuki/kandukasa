@@ -15,6 +15,8 @@ class DbConnectionsController < ApplicationController
       id = params.require(:con_id)
       strategy = DbStrategy.new id
       success strategy.db_server_info true
+    rescue ActiveRecord::RecordNotFound => error
+      record_not_found error
     rescue StandardError => error
       failed error  
     end

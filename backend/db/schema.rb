@@ -25,7 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_07_050727) do
     t.string "default_database_name", null: false
     t.string "password"
     t.string "parameters"
-    t.integer "timeout", default: 60
+    t.integer "timeout", default: 5000
     t.boolean "use_ssl", default: false
     t.string "ssl_key"
     t.string "ssl_cert"
