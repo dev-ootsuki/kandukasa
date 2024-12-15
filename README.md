@@ -78,6 +78,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * DbConnectionsStore.tsが肥大化しつつあるのを分割したい
 * DBデータ検索とかでHACK的にref<InstanceType<typeof Xxxx>>()がとれない問題解決しているのをvueの流儀に則りたい
 * ${PROJECT_ROOT}/frontend/README.mdにディレクトリ構造と内容を書く
+* validate errorになったやつを画面に反映させるかdialog出す
 
 ## やる事リスト(infra)
 
@@ -86,6 +87,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * 外から環境変数でタイムゾーンを設定できるようにする
 * ベースイメージをpostgresql:17.2-alpineにしたい
 * compose使わないでproductionを普通にイメージにする用のbash書く
+* github actionsのcheckout@v3がv4出てるらしいので調べる
 
 ## 作りたい機能リスト（未実装リスト）
 
