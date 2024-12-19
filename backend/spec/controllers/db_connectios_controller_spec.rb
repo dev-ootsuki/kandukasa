@@ -35,5 +35,19 @@ RSpec.describe DbConnection, type: :request do
       end
     end
 
+    context 'POST create (/db_connection)' do
+      it do
+        post '/db_connection', headers: @headers, params: {}
+        data = JSON.parse response.body
+        expect(response.status).to be 400
+        expect(data["errors"]["message"]).to eq "E-001"
+      end
+
+      it do
+        post '/db_connection', headers: @headers, params: build(:mysql_world_new).to_h
+        data = JSON.parse response.body
+        p data
+      end
+    end
   end
 end

@@ -71,6 +71,7 @@ class DbConnectionsController < ApplicationController
 
   private
   def db_connection_permit _param
+    return nil if _param[:db_connection].nil?
     _param[:db_connection].delete :created_at
     _param[:db_connection].delete :updated_at
     _param[:db_connection].delete :id
