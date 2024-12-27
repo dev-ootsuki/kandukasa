@@ -18,6 +18,7 @@ services:
       - ./frontend:/app/frontend
     ports:
       - "443:443"
+      - "3000:3000"
       - "12345:12345" # ruby debug
     stdin_open: true
     tty: true

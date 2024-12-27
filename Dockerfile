@@ -26,14 +26,14 @@ ENV RC_APPEND_PATH="/etc/profile.d/rbenv.sh"
 ENV PATH=$RBENV_PATH/bin:$PATH
 RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/rbenv/rbenv.git $RBENV_PATH && \
     echo 'eval "$(rbenv init -)"' >> $RC_APPEND_PATH && \
-	GIT_SSL_NO_VERIFY=1 git clone https://github.com/rbenv/ruby-build.git $RBENV_PATH/plugins/ruby-build && \
-	$RBENV_PATH/plugins/ruby-build/install.sh
+    GIT_SSL_NO_VERIFY=1 git clone https://github.com/rbenv/ruby-build.git $RBENV_PATH/plugins/ruby-build && \
+    $RBENV_PATH/plugins/ruby-build/install.sh
 
 # install ruby
 ENV RUBY_VERSION=$RUBY_VERSION
 RUN HOME=$RBENV_PATH rbenv install $RUBY_VERSION && \
     HOME=$RBENV_PATH rbenv global $RUBY_VERSION && \
-	HOME=$RBENV_PATH rbenv rehash
+    HOME=$RBENV_PATH rbenv rehash
 ENV PATH=$RBENV_PATH/.rbenv/versions/$RUBY_VERSION/bin:$PATH
 
 CMD [ "irb" ]
@@ -64,7 +64,7 @@ ENV BACKEND_PATH="/app/backend"
 COPY ./backend/Gemfile ./backend/Gemfile.lock $BACKEND_PATH/
 WORKDIR $BACKEND_PATH
 RUN bundle install && \
-	rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 COPY ./backend $BACKEND_PATH
 #RUN bundle exec bootsnap precompile --gemfile
 
@@ -92,10 +92,10 @@ COPY ./frontend/package.json ./frontend/yarn.lock $FRONTEND_PATH/
 WORKDIR $FRONTEND_PATH
 RUN . $NVM_DIR/nvm.sh && \
     yarn install && \
-	yarn postinstall
+    yarn postinstall
 COPY ./frontend $FRONTEND_PATH
 # genearate SPA
-RUN	. $NVM_DIR/nvm.sh && yarn generate
+RUN . $NVM_DIR/nvm.sh && yarn generate
 
 #############################################################
 # DEVELOPMENT SETTINGS 
@@ -110,6 +110,10 @@ RUN echo export NVM_DIR=$MVN_DIR >> /home/nuxt/.bashrc && \
 
 # debugging
 RUN apt-get update && apt-get install -y procps vim
+# ruby debugger
+EXPOSE 12345 
+# rails port
+EXPOSE 3000
 
 #############################################################
 # final stage
@@ -139,7 +143,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 # settings nginx
 RUN rm -f /etc/nginx/conf.d/* && \
     sed -i "s|www-data|nginx|g" /etc/nginx/nginx.conf && \
-	groupadd --system --gid 3000 nginx && \
+    groupadd --system --gid 3000 nginx && \
     useradd nginx --uid 3000 --gid 3000 --create-home --shell /bin/bash && \
     touch /var/run/nginx.pid && \
     mkdir -p /var/log/nginx && \  
@@ -149,8 +153,8 @@ ENV CERT_PATH="/etc/ssl/pki"
 RUN mkdir -p $CERT_PATH && \
     cd $CERT_PATH && \
     openssl req -x509 -days 36500 -newkey rsa:2048 -nodes -out $DOMAIN_NAME.crt -keyout $DOMAIN_NAME.key -subj "/C=JP/ST=Tokyo/L=null/O=null/OU=null/CN=$DOMAIN_NAME/" && \
-	chown -R nginx:nginx $CERT_PATH && \
-	chmod 777 $CERT_PATH/* && \
+    chown -R nginx:nginx $CERT_PATH && \
+    chmod 777 $CERT_PATH/* && \
     sed -i "s|DOMAIN_NAME|$DOMAIN_NAME|g" /etc/nginx/conf.d/app.conf
 
 # settings supervisor
@@ -200,40 +204,3 @@ ENV DB_ADAPTER="postgresql"
 ENV DB_PORT="5432"
 ENV DB_USER="kandukasa"
 ENV DB_PASSWORD="kandukasa"
-
-# set when you needs not standalone mode
-# none is already use root
-ENV AUTH_TYPE="none" 
-ENV AUTH_PORT=""
-ENV AUTH_SERVER=""
-ENV AUTH_SECURE=""
-ENV AUTH_KEY=""
-ENV AUTH_CALLBACK=""
-
-# with none
-# not use authentication
-# (Use the root user that application has)
-# AUTH_TYPE="none"
-
-# with standalone
-# You will have to login with root first
-# AUTH_TYPE="standalone"
-
-# with LDAP
-# AUTH_TYPE="ldap"
-# AUTH_PORT="636"
-# AUTH_SERVER="foobar-ldap-01" (LDAP server in your network)
-# AUTH_SECURE="use" (if "LDAPS" is used, specify this)
-# AUTH_KEY="cn=#USER_ID#,ou=users,dc=foo,dc=bar,dc=com" (User ID entered in #USER_ID# is embedded)
-
-# with SAML2
-# AUTH_TYPE="saml"
-# AUTH_PORT="" (not use)
-# AUTH_SERVER="" AssertionConsumerService? /sso/auth?
-# AUTH_KEY="" this application name
-# AUTH_SECURE="x509 word" ?
-# AUTH_CALLBACK="/sso/login" ?
-
-# with OAuth
-# // TODO あとで書く
-# write letter!

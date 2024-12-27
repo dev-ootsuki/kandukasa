@@ -12,4 +12,4 @@ bundle install --with development:test
 bundle exec rails db:prepare
 # migration
 bundle exec rake db:migrate
-RAILS_ENV=development rdbg -n --open --host 0.0.0.0 --port 12345 -c  -- ./bin/rails s -p 3000 -b '0.0.0.0'
+/bin/bash -c "rdbg -n --open --host 0.0.0.0 --port 12345 -c  -- $BACKEND_PATH/bin/rails s -p 3000 -b '0.0.0.0'"
