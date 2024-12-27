@@ -1,0 +1,25 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "rdbg",
+            "name": "rdbg",
+            "request": "attach",
+            "debugPort": "localhost:12345",
+            "localfsMap": "/app/backend:${workspaceFolder}/backend"
+        },
+        {
+            "type": "rdbg",
+            "name": "Debug Rspec with current file",
+            "request": "launch",
+            "rdbgPath": "bundle exec rdbg",
+            "command": "rspec",
+            "script": "${file}",
+            "args": ["-p", "12345"],
+            "askParameters": true
+        }
+    ]
+}
