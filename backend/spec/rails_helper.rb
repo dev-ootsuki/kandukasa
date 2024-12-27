@@ -79,6 +79,7 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
+    DbConnection.primary
     DatabaseCleaner.clean
   end
 

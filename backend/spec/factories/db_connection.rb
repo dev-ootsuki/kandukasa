@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :mysql_sakila, class:DbConnection do
-    id {1}
     name {"sakila DB"}
     host {"test-mysql"}
     port {3306}
@@ -13,7 +12,6 @@ FactoryBot.define do
   end
   
   factory :mysql_world, class:DbConnection do
-    id {2}
     name {"world DB"}
     host {"test-mysql"}
     port {3306}

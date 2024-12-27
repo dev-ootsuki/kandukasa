@@ -37,6 +37,8 @@ class DbConnectionsController < ApplicationController
 
   def update
     id = params.require(:con_id)
+    raise RecordNotFound.new if DbConnection.find(id).nil?
+    
     permit_params = db_connection_permit(params)
     input = DbConnection.new(permit_params)
     return invalid_params("E-001", input) if input.invalid?
@@ -54,12 +56,14 @@ class DbConnectionsController < ApplicationController
   end
 
   def destroy
+    id = params.require(:con_id)
+    obj = DbConnection.find(id)
+    raise RecordNotFound.new if obj.nil? 
     begin
-      id = params.require(:con_id)
-      ret = nil
+    ret = nil
       DbConnection.primary{
         DbConnection.transaction do
-          ret = DbConnection.find(id).delete
+          ret = obj.delete
         end
         success ret
       }
