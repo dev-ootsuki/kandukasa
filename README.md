@@ -5,8 +5,6 @@
 docker compose build
 docker compose --profile mysql up
 ```
-初回起動はfrontendのnode_modules、backendのvendor/bundleの両方を落としてくるので起動は遅いです。
-
 起動後に
 
 https://localhost/
@@ -43,6 +41,17 @@ docker-compose.ymlを使って試す場合は
 
 してください！
 
+github actionsの動作確認は以下で実行してください！
+```
+# install act (mac), インストール済みなら不要
+brew install act
+# どれ使うか聞かれたらLargeかMidumにしとくと良いです！
+act pull_request --container-architecture linux/amd64
+
+# actがインストール済みなら以下をキックする
+act -j test --container-architecture linux/amd64  
+```
+
 ## 動かし方 (development)
 ``` project root
 docker compose -f compose-dev.yml build
@@ -58,7 +67,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * rdocとしてbackendのコードにコメントを書く
 * 複数DB製品を考慮してMySQLコードから共通化してAuto以下に移動する
 * 特殊な型＠binary/varbinary/geometry/blob系は手厚くテストする必要がある
-* テストコードちゃんと書いてく、できれば複数DB製品対応前にMySQL分は完備したい
+* db_strategy以下のテスト
 * 日付のフォーマットでDBのタイムゾーン見てコンテナのタイムゾーンに合わせて返すようにする
 * logが出しっぱなしなのでローテートは入れておきたい
 * できればopenapi(swagger)も書く、ruby/railsでいいのないか探す
@@ -76,7 +85,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * lint入ってないので入れる
 * frontendでどこまで自動テストコードを書くか決める
 * DbConnectionsStore.tsが肥大化しつつあるのを分割したい
-* DBデータ検索とかでHACK的にref<InstanceType<typeof Xxxx>>()がとれない問題解決しているのをvueの流儀に則りたい
+* DBデータ検索とかでHACK的にref<InstanceType< typeof Xxxx >>()がとれない問題解決しているのをvueの流儀に則りたい
 * ${PROJECT_ROOT}/frontend/README.mdにディレクトリ構造と内容を書く
 * validate errorになったやつを画面に反映させるかdialog出す
 
@@ -88,6 +97,7 @@ docker compose -f compose-dev.yml --profile mysql up
 * ベースイメージをpostgresql:17.2-alpineにしたい
 * compose使わないでproductionを普通にイメージにする用のbash書く
 * github actionsのcheckout@v3がv4出てるらしいので調べる
+* ビルドをキャッシュして高速化したい (save, actions/cache)
 
 ## 作りたい機能リスト（未実装リスト）
 
