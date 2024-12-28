@@ -1,7 +1,7 @@
 module Databases
   module Mysql
     # 
-    class DbInstances < Databases::Auto::DbInstance
+    class DbInstances < Databases::Auto::DbInstances
       UI_DATA_TYPES = {
         :characters => ["char", "varchar"],
         :enum => ["enum", "set"],
@@ -17,11 +17,6 @@ module Databases
         :binaries => ["binary", "varbinary"],
         :geometries => ["geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"]
       }
-      def initialize connection_id, type_id, hide_system_schema
-        @type_id = type_id
-        @connection_id = connection_id
-        @hide_system_schema = hide_system_schema
-      end
 
       def find_ui_db_data_mapping base
         UI_DATA_TYPES

@@ -1,12 +1,6 @@
 module Databases
   module Postgresql
-    class DbInstances < Databases::Auto::DbInstance
-      def initialize connection_id, type_id, hide_system_schema
-        @connection_id = connection_id
-        @type_id = type_id
-        @hide_system_schema = hide_system_schema
-      end
-
+    class DbInstances < Databases::Auto::DbInstances
       def find_character_sets base
         query = <<-"EOS"
           SELECT DISTINCT

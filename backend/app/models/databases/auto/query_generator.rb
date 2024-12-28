@@ -2,14 +2,14 @@ module Databases
   module Auto
     class QueryGenerator
       UNSUPPORTED = "'---'"
-      def self.generate index, mapping, *conditions
+      def self.generate index, mapping, conditions = []
         columns = mapping[:columns].map{|each|
           unless each[:mapping][index][:belong].nil?
             "#{each[:mapping][index][:belong]}.#{each[:mapping][index][:column]} AS #{each[:label]}"
           else
             "#{each[:mapping][index][:column]} AS #{each[:label]}"
           end
-        }.join(", ") + " "
+        }.join(", ")
         table = "#{mapping[:table][:mapping][index][:name]}"
 
         joins = mapping[:joins]&.map{|join|
@@ -21,8 +21,8 @@ module Databases
           end
         }&.compact&.join("")
 
-        query = "SELECT DISTINCT #{columns} FROM #{table} #{joins} "
-        order = !mapping[:orders].empty? ? "ORDER BY #{mapping[:orders]&.join(", ")}" : ""
+        query = "SELECT DISTINCT #{columns} FROM #{table} #{joins}"
+        order = !mapping[:orders].nil? ? "ORDER BY #{mapping[:orders].join(", ")}" : ""
         return query + order if conditions.nil? || conditions.compact.empty?
 
         target = mapping[:columns].find{|each|
@@ -33,7 +33,7 @@ module Databases
             "#{mapping[:where][:converter][index].call(each)}"
           }.join(", ") + " ) "
         else
-          cond = conditions.map{|each|
+          cond = conditions&.map{|each|
             "#{target[:mapping][index][:belong]}.#{target[:mapping][index][:column]} #{mapping[:where][:operator]} #{mapping[:where][:converter][index].call(each)}"
           }.join(" AND ")
         end

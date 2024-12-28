@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DbConnection, type: :request do
+RSpec.describe DbConnectionsController, type: :request do
   INT_MAX = 1 << 64
   describe '#Request testing' do
     before do
@@ -99,8 +99,8 @@ RSpec.describe DbConnection, type: :request do
 
       it '指定IDの情報が取得可能か' do
         get "/db_connection/#{@mysql_sakila.id}", headers: @headers
-        expect(response).to have_http_status(:success)
         data = JSON.parse response.body
+        expect(response).to have_http_status(:success)
         expect(data["data"]["id"]).to eq @mysql_sakila.id.to_s
       end
     end

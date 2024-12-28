@@ -1,10 +1,15 @@
 module Databases
   module Auto
-    class DbInstance
+    class DbInstances
       SCHEMA_NAME = "schm"
+      def initialize connection_id, type_id, hide_system_schema
+        @type_id = type_id
+        @connection_id = connection_id
+        @hide_system_schema = hide_system_schema
+      end
 
-      def generate_query db_type_id, mapping, *param
-        QueryGenerator::generate db_type_id, mapping, *param
+      def generate_query mapping, *param
+        QueryGenerator::generate @type_id, mapping, param
       end
 
       def find_info base
@@ -20,7 +25,7 @@ module Databases
 
       def find_schmemas base
         conditions = @hide_system_schema ? @@system_schemas[@type_id] : []
-        query = generate_query @type_id, @@mappings[:schema_info], *conditions
+        query = generate_query @@mappings[:schema_info], *conditions
         base.connection.select_all(query).to_a.map{|each|
           each[:id] = @connection_id
           each
@@ -28,7 +33,7 @@ module Databases
       end
       
       def find_collations base
-        query = generate_query @type_id, @@mappings[:collation_info]
+        query = generate_query @@mappings[:collation_info]
         base.connection.select_all(query).to_a
       end
 
