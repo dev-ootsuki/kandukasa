@@ -106,6 +106,8 @@ jobs:
         run: docker compose -f compose-test.yml exec app /bin/bash -c "cd /app/backend; bundle exec rspec"
   cleanup:
     needs: test
+    name: Cleanup
+    runs-on: ubuntu-latest
     steps:
       - name: Update cache
         run: |
