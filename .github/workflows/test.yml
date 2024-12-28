@@ -5,37 +5,111 @@ on:
     branches:
       - "develop"
 
+permissions: write-all
+# act -wv test --container-architecture linux/amd64
+# act -lv --container-architecture linux/amd64
+
 jobs:
-  test:
-    name: Run tests
+  configure:
+    name: Setup Host and Cache
     runs-on: ubuntu-latest
-    permissions: write-all    
     steps:
       # checkout
       - name: Checkout
         uses: actions/checkout@v4
       # buildxの設定
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - uses: docker/build-push-action@v4
+        id: buildx
+      # キャッシュ設定＠app
+      - name: Buildx settings for app cache
+        uses: actions/cache@v4
         with:
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          path: /tmp/.buildx-cache-app
+          key: ${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ github.ref }}
+      # キャッシュ設定＠test-mysql
+      - name: Buildx settings for test-ldap cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-test-ldap
+          key: ${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ github.ref }}
+      # Install dockerize
       - name: Install dockerize
         run: |
           wget https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz
           tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.8.0.tar.gz
           rm dockerize-linux-amd64-v0.8.0.tar.gz
-      - name: Build
-        run: docker compose -f compose-dev.yml --profile all build --pull
-      - name: Run Containers
-        run: docker compose -f compose-dev.yml --profile all up -d
-      - name: Setup MySQL
-        run: docker compose -f compose-dev.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
-      #  curl -k https://localhost/api/ -o /dev/null -w '%{http_code}\n' -s
-      - name: Wait for startup backend
+      - name: Build images (app)
+        uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          tags: kandukasa-app:latest    
+          push: false
+          load: true
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-app
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-app
+          build-args: |
+            RUBY_VERSION=3.3.6
+            PG_VERSION=17.2
+            APP_ENV=development
+            BUNDLE_DEPLOYMENT=0
+            BUNDLE_WITHOUT=
+            STAGE_BASE=nuxt
+            MASTER_KEY=b3d7339d3b50fa706ae8813358435331
+            DOMAIN_NAME=localhost
+      - name: Build images (test-ldap)
+        uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          tags: kandukasa-test-ldap:latest    
+          push: false
+          load: true
+          context: ./tests-integration/auth/test-ldap
+          cache-from: type=local,src=/tmp/.buildx-cache-test-ldap
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-test-ldap
+
+  build:
+    needs: configure
+    name: Build Containers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build containers
         run: |
-          dockerize -wait tcp://localhost:443/api/ -timeout 120s
+          docker compose -f ${{github.workspace}}/compose-test.yml build
+
+  run:
+    needs: [configure, build]
+    name: Run Containers
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Start containers
+        run: docker compose -f compose-dev.yml --profile all up -d
+      - name: Wait for processes
+        run: |
+          dockerize -wait tcp://localhost:3000 -timeout 120s
+      - name: Setup integration-systems
+        run: |
+          docker compose -f ${{github.workspace}}/compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
+  test:
+    needs: [configure, build, run]
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      #  curl -k https://localhost/api/ -o /dev/null -w '%{http_code}\n' -s
       - name: Test backend
-        run: docker compose -f compose-dev.yml exec app /bin/bash -c "cd /app/backend; bundle install && bundle exec rspec"
+        run: docker compose -f compose-test.yml exec app /bin/bash -c "cd /app/backend; bundle exec rspec"
+  cleanup:
+    needs: test
+    steps:
+      - name: Update cache
+        run: |
+          rm -rf /tmp/.buildx-cache-app
+          rm -rf /tmp/.buildx-cache-test-ldap
+          mv /tmp/.buildx-cache-new-app /tmp/.buildx-cache-app
+          mv /tmp/.buildx-cache-new-test-ldap /tmp/.buildx-cache-test-ldap

@@ -114,6 +114,9 @@ RUN apt-get update && apt-get install -y procps vim
 EXPOSE 12345 
 # rails port
 EXPOSE 3000
+# rails test
+WORKDIR $BACKEND_PATH
+RUN bundle install
 
 #############################################################
 # final stage
