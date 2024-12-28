@@ -5,12 +5,11 @@
 #############################################################
 ARG PG_VERSION=17.2
 ARG STAGE_BASE="nuxt"
-ARG MASTER_KEY=""
-FROM docker.io/library/postgres:${PG_VERSION}-bullseye as ruby
+FROM docker.io/library/postgres:${PG_VERSION}-bullseye AS ruby
 LABEL maintainer="dev-ootsuki"
 ARG RUBY_VERSION=3.3.6
 ARG APP_ENV="production"
-ENV LANG C.UTF-8
+ENV LANG="C.UTF-8"
 
 # // TODO timezone
 
@@ -44,6 +43,7 @@ CMD [ "irb" ]
 # install project depends on gems
 #############################################################
 FROM ruby AS rails
+ARG MASTER_KEY=""
 ARG RAILS_ENV=$APP_ENV
 ARG BUNDLE_DEPLOYMENT="1"
 ARG BUNDLE_WITHOUT="development:test"
@@ -74,7 +74,7 @@ COPY ./backend $BACKEND_PATH
 # install nvm(contains npm,npx), yarn, nuxi
 #############################################################
 FROM rails AS nuxt
-ENV NVM_VERSION v0.40.1
+ENV NVM_VERSION="v0.40.1"
 ENV NVM_DIR="/usr/local/nvm"
 ENV FRONTEND_PATH="/app/frontend"
 WORKDIR $NVM_DIR
@@ -138,7 +138,7 @@ COPY --from=nuxt /app/frontend/.output/public /app/static
 ENV DOCKERIZE_VERSION="v0.8.0"
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
-    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # settings nginx
 RUN rm -f /etc/nginx/conf.d/* && \

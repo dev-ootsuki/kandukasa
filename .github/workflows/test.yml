@@ -9,11 +9,33 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    permissions: write-all    
     steps:
-      - uses: actions/checkout@v3
+      # checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+      # buildxの設定
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Install dockerize
+        run: |
+          wget https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz
+          tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.8.0.tar.gz
+          rm dockerize-linux-amd64-v0.8.0.tar.gz
       - name: Build
+        run: docker compose -f compose-dev.yml --profile all build --pull
+      - name: Run Containers
         run: docker compose -f compose-dev.yml --profile all up -d
       - name: Setup MySQL
         run: docker compose -f compose-dev.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
+      #  curl -k https://localhost/api/ -o /dev/null -w '%{http_code}\n' -s
+      - name: Wait for startup backend
+        run: |
+          dockerize -wait tcp://localhost:443/api/ -timeout 120s
       - name: Test backend
-        run: docker compose -f compose-dev.yml exec app /bin/bash -c "cd /app/backend; bundle exec rspec"
+        run: docker compose -f compose-dev.yml exec app /bin/bash -c "cd /app/backend; bundle install && bundle exec rspec"
