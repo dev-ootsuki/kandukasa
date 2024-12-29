@@ -97,7 +97,6 @@ jobs:
       - name: Wait for processes
         run: |
           dockerize -wait tcp://localhost:3000 -timeout 120s
-          dockerize -wait tcp://localhost:3306 -timeout 60s
       - name: Setup integration-systems
         run: |
           docker compose -f ${{github.workspace}}/compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
