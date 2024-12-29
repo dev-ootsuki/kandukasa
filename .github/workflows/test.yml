@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # checkout
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       # buildxの設定
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -37,12 +36,6 @@ jobs:
           key: ${{ github.ref }}-${{ github.sha }}
           restore-keys: |
             ${{ github.ref }}
-      # Install dockerize
-      - name: Install dockerize
-        run: |
-          wget https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz
-          tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.8.0.tar.gz
-          rm dockerize-linux-amd64-v0.8.0.tar.gz
       - name: Build images (app)
         uses: docker/build-push-action@v6
         with:
@@ -78,7 +71,10 @@ jobs:
     name: Build Containers
     runs-on: ubuntu-latest
     steps:
-      - name: Build containers
+      # checkout
+      - uses: actions/checkout@v4
+      # compose build
+      - name: Compose Build
         run: |
           docker compose -f ${{github.workspace}}/compose-test.yml build
 
@@ -88,11 +84,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
+      # checkout
+      - uses: actions/checkout@v4
       - name: Start containers
         run: docker compose -f compose-dev.yml --profile all up -d
+      # Install dockerize
+      - name: Install dockerize
+        run: |
+          wget https://github.com/jwilder/dockerize/releases/download/v0.8.0/dockerize-linux-amd64-v0.8.0.tar.gz
+          tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.8.0.tar.gz
+          rm dockerize-linux-amd64-v0.8.0.tar.gz
       - name: Wait for processes
         run: |
           dockerize -wait tcp://localhost:3000 -timeout 120s
+          dockerize -wait tcp://localhost:3306 -timeout 60s
       - name: Setup integration-systems
         run: |
           docker compose -f ${{github.workspace}}/compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
@@ -101,6 +106,8 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
+      # checkout
+      - uses: actions/checkout@v4
       #  curl -k https://localhost/api/ -o /dev/null -w '%{http_code}\n' -s
       - name: Test backend
         run: docker compose -f compose-test.yml exec app /bin/bash -c "cd /app/backend; bundle exec rspec"
@@ -109,9 +116,13 @@ jobs:
     name: Cleanup
     runs-on: ubuntu-latest
     steps:
-      - name: Update cache
+      - name: Update cache (app)
+        if: ${{ hashFiles('/tmp/.buildx-cache-new-app') != '' }}
         run: |
           rm -rf /tmp/.buildx-cache-app
-          rm -rf /tmp/.buildx-cache-test-ldap
           mv /tmp/.buildx-cache-new-app /tmp/.buildx-cache-app
+      - name: Update cache (test-ldap)
+        if: ${{ hashFiles('/tmp/.buildx-cache-new-test-ldap') != '' }}
+        run: |
+          rm -rf /tmp/.buildx-cache-test-ldap
           mv /tmp/.buildx-cache-new-test-ldap /tmp/.buildx-cache-test-ldap
