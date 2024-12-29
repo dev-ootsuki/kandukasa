@@ -76,7 +76,7 @@ jobs:
       # compose build
       - name: Compose Build
         run: |
-          docker compose -f ${{github.workspace}}/compose-test.yml build
+          docker compose -f compose-test.yml build
 
   run:
     needs: [configure, build]
@@ -99,7 +99,7 @@ jobs:
           dockerize -wait tcp://localhost:3000 -timeout 120s
       - name: Setup integration-systems
         run: |
-          docker compose -f ${{github.workspace}}/compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
+          docker compose -f compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
   test:
     needs: [configure, build, run]
     name: Run tests

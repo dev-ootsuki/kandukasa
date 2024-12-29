@@ -1,18 +1,6 @@
 services:
   app:
     image: kandukasa-app:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        RUBY_VERSION: 3.3.6
-        PG_VERSION: 17.2
-        APP_ENV: development
-        BUNDLE_DEPLOYMENT: 0
-        BUNDLE_WITHOUT: 
-        STAGE_BASE: nuxt
-        MASTER_KEY: b3d7339d3b50fa706ae8813358435331
-        DOMAIN_NAME: localhost
     container_name: app
     hostname: app
     volumes:
@@ -65,9 +53,6 @@ services:
   # auth servers
   test-ldap:
     image: kandukasa-test-ldap:latest
-    build:
-      context: ./tests-integration/auth/test-ldap
-      dockerfile: Dockerfile
     container_name: test-ldap
     hostname: test-ldap
     ports:
