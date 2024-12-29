@@ -78,7 +78,7 @@ jobs:
         run: |
           docker compose -f compose-test.yml build
 
-  run:
+  test:
     needs: [configure, build]
     name: Run Containers
     runs-on: ubuntu-latest
@@ -100,16 +100,10 @@ jobs:
       - name: Setup integration-systems
         run: |
           docker compose -f compose-test.yml exec test-mysql /bin/bash -c "/docker-entrypoint-initdb.d/02_restore_db.sh"
-  test:
-    needs: [configure, build, run]
-    name: Run tests
-    runs-on: ubuntu-latest
-    steps:
-      # checkout
-      - uses: actions/checkout@v4
       #  curl -k https://localhost/api/ -o /dev/null -w '%{http_code}\n' -s
       - name: Test backend
         run: docker compose -f compose-test.yml exec app /bin/bash -c "cd /app/backend; bundle exec rspec"
+  
   cleanup:
     needs: test
     name: Cleanup
