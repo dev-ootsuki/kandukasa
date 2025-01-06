@@ -66,9 +66,15 @@ const onSubmit = () => {
 const onComplete = () => {
     emits("complete", mode.value)
     visible.value = false
+    store
+        .getTableInfo(store.selectedTable!.table_id!)
+        .then(data => {
+            selected.value = []
+        })
 }
 
 const onClose = () => {
     visible.value = false
+    selected.value = []
 }
 </script>

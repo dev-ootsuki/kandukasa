@@ -334,6 +334,22 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             this.selectedTable = null
             this.selectedView = null            
             return this.selectedRoutine
+        },
+        toNodeId() : string{
+            const schemaChildSelected = () : string | null => {
+                if(this.selectedTable != null)
+                    return `tables.${this.selectedTable.table_id!}`
+                if(this.selectedView != null)
+                    return `views.${this.selectedView.view_id!}`
+                if(this.selectedTrigger != null)
+                    return `triggers.${this.selectedTrigger.trigger_id!}`
+                if(this.selectedEvent != null)
+                    return `events.${this.selectedEvent.event_id!}`
+                if(this.selectedRoutine != null)
+                    return `routines.${this.selectedRoutine.routine_id!}`
+                return null
+            }
+            return [this.selectedDb?.id, this.selectedSchema?.schema_id, schemaChildSelected()].filter(e => e).join(".")
         }
     }
 })

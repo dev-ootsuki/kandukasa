@@ -82,7 +82,10 @@ const handler:Design.MultiDialogHandler = {
       return store.deletePrimaryKey()
     },
     complete: () => {
-        // TODO リロード？
+      store
+        .getTableInfo(store.selectedTable!.table_id!)
+        .then(data => {
+        })
     }
   }
 }
