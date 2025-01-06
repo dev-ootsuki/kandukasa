@@ -27,7 +27,7 @@ import type { Design } from '~/types/Types'
 const props = defineProps<{
     mode: Design.DialogEventType,
     visible:boolean,
-    validator:() => boolean,
+    validator:() => boolean | Promise<boolean>,
     small?:boolean
 }>()
 const visible = computed(() => props.visible)
@@ -48,8 +48,17 @@ defineExpose({
 })
 
 const onSubmit = () => {
-    if(props.validator())
-        confirm.value?.show(props.mode)
+    const isValid = props.validator()
+    if(isValid instanceof Promise)
+        isValid
+            .then(ret => {
+                if(ret)
+                    confirm.value?.show(props.mode)
+            })
+    else{
+        if(isValid)
+            confirm.value?.show(props.mode)
+    }
 }
 const onConfirmSubmit = () => {
     emits("submit", props.mode)
