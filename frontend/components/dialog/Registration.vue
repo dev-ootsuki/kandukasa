@@ -1,7 +1,7 @@
 <template>
     <DialogConfirm ref="confirm" @submit="onConfirmSubmit" @complete="onComplete" />
     <q-dialog persistent v-model="visible" transition-show="flip-down" transition-hide="flip-up" backdrop-filter="blur(4px) saturate(150%)">
-        <q-card class="dialog-registraton">
+        <q-card :class="props.small ? 'dialog-registration-small' : 'dialog-registraton'">
             <q-bar>
                 <div>
                     <span>{{$t(title)}}</span>
@@ -27,7 +27,8 @@ import type { Design } from '~/types/Types'
 const props = defineProps<{
     mode: Design.DialogEventType,
     visible:boolean,
-    validator:() => boolean
+    validator:() => boolean,
+    small?:boolean
 }>()
 const visible = computed(() => props.visible)
 const title = computed(() => {
