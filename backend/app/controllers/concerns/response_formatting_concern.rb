@@ -24,10 +24,22 @@ module ResponseFormattingConcern
   end
 
   def invalid_params code, model
-    render json: {:data => nil, :status => :bad_request, :errors => {message: code, detail:model.errors}}, status: :bad_request
+    render json: {:data => nil, :status => :bad_request, :errors => {message: code, detail:model&.errors}}, status: :bad_request
+  end
+
+  def to_error_model key, val
+    ret = ErrorModel.new
+    ret.errors = {}
+    ret.errors["detail"] = {}
+    ret.errors["detail"][key] = val
+    ret
   end
 
   def not_found
     render json: {:data => nil, :status => :not_found, :errors => {message: :not_found}}, status: :not_found
+  end
+
+  class ErrorModel
+    attr_accessor :errors
   end
 end

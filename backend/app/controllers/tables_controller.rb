@@ -82,6 +82,21 @@ class TablesController < ApplicationController
       success strategy.delete_pkey
     rescue StandardError => error 
       failed error
-    end    
+    end
+  end
+
+  def create_pkey
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    data = params.require(:data).permit(primaries: [])
+    primaries = data["primaries"]
+    return invalid_params('E-001', to_error_model("primaries", 'validate.required')) unless primaries.length > 0
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.create_pkey primaries
+    rescue StandardError => error
+      failed error
+    end
   end
 end

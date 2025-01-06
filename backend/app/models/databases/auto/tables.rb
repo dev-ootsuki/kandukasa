@@ -90,6 +90,12 @@ module Databases
         end
       end
 
+      def create_pkey base, primaries
+        base.connection.transaction do
+          base.connection.execute "ALTER TABLE #{table_name} ADD PRIMARY KEY (#{primaries.join(',')})"
+        end
+      end
+
       def to_unique_identifer_query base, primaries, columns, ids
         ids.map.with_index{|id, idx|
           ret = id.split(DbStrategy::MULTI_PRIMARY_KEY_SEPARATOR).map.with_index{|pkeys, pidx|
