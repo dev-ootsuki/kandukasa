@@ -1,5 +1,6 @@
 <template>
     <DialogConfirm ref="dialog" :handler="handler" />
+    <DialogPrimaryRegistration ref="registrationDialog" :columns="props.columns" />
     <q-table
         flat bordered dense
         :rows="primaries"
@@ -39,6 +40,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import { useI18n } from 'vue-i18n'
 import { DbPrimaryKey, DbColumn } from '~/types/Domain.class'
 import type { Design } from '~/types/Types'
+import DialogPrimaryRegistration from './DialogPrimaryRegistration.vue'
 
 const props = defineProps<{
     primaries?:DbPrimaryKey[]
@@ -64,11 +66,14 @@ const cantDeletePrimaryKey = defPrimaries != null && defPrimaries.length == 1 &&
 const primaries = ref(props.primaries == null ? [] : props.primaries)
 console.log(defPrimaries)
 
+// 登録用
+const registrationDialog = useTemplateRef<any>("registrationDialog")
+
 const onDeletePkey = (row:any) => {
   dialog.value.show("delete")
 }
 const onCreatePkey = () => {
-
+  registrationDialog.value.show()
 }
 
 const handler:Design.MultiDialogHandler = {

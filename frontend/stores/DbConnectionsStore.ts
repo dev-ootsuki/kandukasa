@@ -156,8 +156,21 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
             })
         },
         async deleteColumnDef(column: DbColumn) : Promise<DbColumn>{
-            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/${column.column_name}`, {
+            return webapi()<WebAPI.WebAPISuccess<any[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/${column.column_name}`, {
                 method:"DELETE"
+            })
+            .then(data => {
+                return data.data
+            })
+        },
+        async createPrimaryKeys(columnNames: String[]) : Promise<any>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_pkey`, {
+                method:"POST",
+                body:{
+                    data:{
+                        primaries: columnNames
+                    }
+                }
             })
             .then(data => {
                 return data.data
