@@ -87,6 +87,19 @@
                 <DbTablePrimariesView :columns="columns" :primaries="selectedTable?.primaries"/>
               </q-card-section>
             </q-expansion-item>
+
+            <q-expansion-item
+              dense-toggle
+              default-opened
+              expand-separator
+              icon="priority_high"
+              class="text-weight-bold"
+              :label="$t('tables.foreignkey')"
+            >
+              <q-card-section>
+                <DbTableForeignsView />
+              </q-card-section>
+            </q-expansion-item>
           </q-tab-panel>
         </q-tab-panels>
 
@@ -104,6 +117,7 @@
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import DbDataView from '~/pages/databases/tables/DbDataView.vue'
 import DbTablePrimariesView from '~/pages/databases/tables/DbTablePrimariesView.vue'
+import DbTableForeignsView from '~/pages/databases/tables/DbTableForeignsView.vue'
 import { useI18n } from 'vue-i18n'
 import { useSystemStore } from '~/stores/SystemStore'
 import type { Design } from '~/types/Types'
