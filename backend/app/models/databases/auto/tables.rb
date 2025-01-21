@@ -80,7 +80,8 @@ module Databases
       def find_info base
         {
           :columns => find_columns(base),
-          :primaries => find_primary_keys(base)
+          :primaries => find_primary_keys(base),
+          :foreigns => find_foreign_keys(base),
         }
       end
 

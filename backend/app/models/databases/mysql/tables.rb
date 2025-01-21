@@ -205,6 +205,29 @@ module Databases
           each.transform_keys(&:downcase)
         }
       end
+
+      def find_foreign_keys base
+        query = <<-"EOS"
+          select 
+            kcu.*
+          from
+            information_schema.table_constraints tc
+          inner join
+            information_schema.key_column_usage kcu
+          on
+            kcu.table_schema = tc.table_schema and kcu.table_name = tc.table_name and tc.constraint_name = kcu.constraint_name
+          where
+            tc.constraint_type = 'FOREIGN KEY' and
+            tc.table_schema = ? and
+            tc.table_name = ? 
+          order by
+            ordinal_position
+        EOS
+        query = base.sanitize_sql_array([query, @schema_id, @table_id])
+        base.connection.select_all(query).to_a.map{|each|
+          each.transform_keys(&:downcase)
+        }
+      end
     end
   end
 end
