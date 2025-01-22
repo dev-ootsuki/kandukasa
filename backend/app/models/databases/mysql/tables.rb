@@ -225,8 +225,52 @@ module Databases
         EOS
         query = base.sanitize_sql_array([query, @schema_id, @table_id])
         base.connection.select_all(query).to_a.map{|each|
+          each["id"] = each["CONSTRAINT_NAME"]
           each.transform_keys(&:downcase)
         }
+      end
+
+      def find_indexes base
+        # 最初にindexesの名前と定義を取得して
+        # 2回目のSQLで対象のカラムの定義を取ってきて
+        # 最後に1-2回目をマージする
+
+        # statisticsからindex定義を取ってくるが複合indexの場合に複数レコードになっているので
+        # group byしつつ集約関数で取ってくる
+        query = <<-"EOS"
+          select 
+            index_name, group_concat(column_name ORDER BY seq_in_index SEPARATOR ", ") as column_names, non_unique, collation, sub_part, packed, nullable, index_type, comment, index_comment, is_visible, expression
+          from 
+            information_schema.statistics
+          where
+            table_schema = ? and
+            table_name = ?
+          group by 
+            index_name, non_unique, collation, sub_part, packed, nullable, index_type, comment, index_comment, is_visible, expression
+        EOS
+        query = base.sanitize_sql_array([query, @schema_id, @table_id])
+        column_names = []
+        indexes = base.connection.select_all(query).to_a.map{|each|
+          # indexのリストの各要素にcolumnsを追加して集約関数で纏めたやつをバラす
+          # 今は名前だけのリストにしているが最終的に定義に置き換える
+          each["columns"] = each["column_names"].split(", ")
+          column_names << each["columns"]
+          each["IS_VISIBLE"] = each["IS_VISIBLE"] ? true : false
+          each["id"] = each["INDEX_NAME"]
+          each.transform_keys(&:downcase)
+        }
+        # indexの各カラムをカラム定義から取ってくる
+        def_columns = find_columns base, column_names.flatten.uniq
+
+        # 結果をマージする
+        indexes.each{|index|
+          coldefs = []
+          index["columns"].each{|col_name|
+            coldefs << def_columns.find{|coldef| coldef["column_name"] == col_name}
+          }
+          index["columns"] = coldefs
+        }
+        indexes
       end
     end
   end

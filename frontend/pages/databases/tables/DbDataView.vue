@@ -41,7 +41,7 @@
                 options-cover
                 class="select-table-filter-column"
             />
-        </template>            
+        </template>
         <template v-slot:body-cell="props">
             <q-td :props="props">
                 <span v-if="props.col.name == system.dbDataPrimaryKey">

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable,DbTrigger,DbView,DbRoutine, DbColumn, DbData, Pagination, DbUiDataTypes } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable, DbTrigger, DbView, DbRoutine, DbColumn, DbData, DbForeignKey, Pagination, DbUiDataTypes } from '~/types/Domain.class'
 import type { WebAPI } from '~/types/Types'
 
 type State = {
@@ -126,6 +126,8 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 const table = this.selectedSchema!.tables.find(e => e.table_id == tableId)!
                 table.columns = data?.data.columns
                 table.primaries = data?.data.primaries
+                table.foreigns = data?.data.foreigns
+                table.indexes = data?.data.indexes
                 return table
             })
         },
@@ -179,6 +181,19 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
         async deletePrimaryKey() : Promise<any>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/delete_pkey`, {
                 method:"DELETE"
+            })
+            .then(data => {
+                return data.data
+            })
+        },
+        async deleteForeignKeys(keys: DbForeignKey[]) : Promise<any>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/delete_fkeys`, {
+                method:"DELETE",
+                body: {
+                    data: {
+                        keys: keys
+                    }
+                }
             })
             .then(data => {
                 return data.data

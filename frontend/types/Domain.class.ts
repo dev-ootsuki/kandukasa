@@ -219,13 +219,25 @@ export class DbTable extends DomainObject{
     version:number = 0
     columns: DbColumn[] = []
     primaries: DbPrimaryKey[] = []
+    foreigns: DbForeignKey[] = []
+    indexes: DbIndex[] = []
     constructor(){
         super()
     }
 }
 
-export class DbPrimaryKey{
+class DbKeyColumnUsage{
     column_name?:string
+}
+export class DbPrimaryKey extends DbKeyColumnUsage{
+}
+
+export class DbForeignKey extends DbKeyColumnUsage{
+    
+}
+
+export class DbIndex{
+    
 }
 export class Pagination{
     rowsPerPage:number = 0

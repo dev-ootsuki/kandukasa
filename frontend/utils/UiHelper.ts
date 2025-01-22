@@ -216,7 +216,11 @@ const TablesOrderDifinitions = ["id", "table_name", "auto_increment", "table_row
 /**
  * テーブル詳細を並べる時の表示順序 = indexkey
  */
-const ColumnsOrderDifinitions = ["column_name", "ordinal_position", "data_type", "is_nullable", "column_default", "character_maximum_length", "character_octet_length", "numeric_precision", "numeric_scale", "datetime_precision", "character_set_name", "collation_name", "column_type", "column_key", "extra", "privileges", "column_comment", "generation_expression", "srs_id"]
+const ColumnsOrderDifinitions = ["column_name", "column_type", "ordinal_position", "data_type", "is_nullable", "column_default", "character_maximum_length", "character_octet_length", "numeric_precision", "numeric_scale", "datetime_precision", "character_set_name", "collation_name", "column_key", "extra", "privileges", "column_comment", "generation_expression", "srs_id"]
+/**
+ * Fkeyなどの成約を並べる時の表示順序 = indexkey
+ */
+const KeyColumnUsageOrderDifinitions = ["constraint_name", "table_schema", "table_name", "column_name", "ordinal_position", "position_in_unique_constraint", "referenced_table_schema", "referenced_table_name", "referenced_column_name"]
 
 export class UiHelper{
     /**
@@ -421,6 +425,32 @@ export class TableHelper{
             format: (val:any) => '',
             sortable: false,
         }].concat(ret)
+    }
+
+    static createKeyColumnUsages($t: Function, useOperation: boolean = false) : any[]{
+        const system = useSystemStore().systemSetting
+        const ret = KeyColumnUsageOrderDifinitions.map(each => {
+            return {
+                name: each,
+                required: false,
+                label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
+                field: (row:any) => row[each],
+                format: (val:any) => `${val}`,
+                sortable:false
+            }
+        })
+        if(!useOperation)
+            return ret
+
+        return [{
+            name: "id",
+            required: false,
+            label: $t('common.operation'),
+            field:(row:any) => '',
+            format: (val:any) => '',
+            sortable: false,
+        }].concat(ret)
+
     }
 
     static createDataColumns($t:Function, columns:any[]) : Design.DataColumn[]{

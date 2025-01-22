@@ -28,4 +28,5 @@ const emits = defineEmits(["click"])
 const onClick = () => {
     emits("click")
 }
+// TODO storeの権限を見て自身の表示/非表示を制御する
 </script>

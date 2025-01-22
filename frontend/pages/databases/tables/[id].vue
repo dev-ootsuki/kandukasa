@@ -92,12 +92,12 @@
               dense-toggle
               default-opened
               expand-separator
-              icon="priority_high"
+              icon="share"
               class="text-weight-bold"
               :label="$t('tables.foreignkey')"
             >
               <q-card-section>
-                <DbTableForeignsView />
+                <DbTableForeignsView :columns="columns" :foreigns="selectedTable?.foreigns" />
               </q-card-section>
             </q-expansion-item>
           </q-tab-panel>

@@ -55,7 +55,7 @@ const dialog = useTemplateRef<any>("dialog")
 
 // PKEY定義
 // view上のヘッダ定義
-const headerPrimaries = TableHelper.convertColumn(props.primaries == null || props.primaries.length == 0 ? undefined : props.primaries?.[0], t)
+const headerPrimaries = TableHelper.createKeyColumnUsages(t)
 // ヘッダを画面上で表示/非表示切り替えする時の見えるリスト
 const headerVisiblePrimaries = ref(headerPrimaries.map(e => e.name))
 // primaryの定義元カラム(複数あり)
@@ -64,7 +64,6 @@ const defPrimaries = props.primaries!.map(e => props.columns.find(c => c.column_
 const cantDeletePrimaryKey = defPrimaries != null && defPrimaries.length == 1 && defPrimaries[0]!.extra == 'auto_increment'
 // 操作するのでprimaryをpropsからrefにしておく
 const primaries = ref(props.primaries == null ? [] : props.primaries)
-console.log(defPrimaries)
 
 // 登録用
 const registrationDialog = useTemplateRef<any>("registrationDialog")

@@ -82,6 +82,7 @@ module Databases
           :columns => find_columns(base),
           :primaries => find_primary_keys(base),
           :foreigns => find_foreign_keys(base),
+          :indexes => find_indexes(base)
         }
       end
 
