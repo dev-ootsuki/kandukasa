@@ -30,8 +30,10 @@ Rails.application.routes.draw do
           put ":table_id/update_data", to:"tables#update_data"
           patch ":table_id/update_data", to:"tables#update_data"
           delete ":table_id/bulk_record_delete", to:"tables#bulk_record_delete"
-          delete ":table_id/delete_pkey", to:"tables#delete_pkey"
           post ":table_id/create_pkey", to: "tables#create_pkey"
+          delete ":table_id/delete_pkey", to:"tables#delete_pkey"
+          post ":table_id/create_fkey", to: "tables#create_fkey"
+          delete ":table_id/delete_fkeys", to: "tables#delete_fkeys"
         end
         resource :column, path:":table_id", only:[] do
           member do
