@@ -191,7 +191,22 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 method:"DELETE",
                 body: {
                     data: {
-                        keys: keys
+                        keys: keys.map(e => e.constraint_name)
+                    }
+                }
+            })
+            .then(data => {
+                return data.data
+            })
+        },
+        async createForeignKey(fkeyName:string, column:DbColumn) : Promise<any>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_fkey`, {
+                method:"POST",
+                body: {
+                    fkey: {
+                        fkey_name: fkeyName,
+                        ref_table: column.table_name,
+                        ref_column: column.column_name
                     }
                 }
             })

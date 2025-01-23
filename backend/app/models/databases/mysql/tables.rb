@@ -272,6 +272,20 @@ module Databases
         }
         indexes
       end
+      
+      def delete_fkeys base, keys
+        base.connection.transaction do
+          keys.each{|e|
+            base.connection.execute "ALTER TABLE #{table_name} DROP FOREIGN KEY #{e}"
+          }
+        end
+      end
+
+      def create_fkey base, fkey_name, ref_table, ref_column
+        base.connection.transaction do
+          base.connection.execute "ALTER TABLE #{table_name} ADD FOREIGN KEY #{fkey_name} REFERENCES #{ref_table} (#{ref_column})"
+        end
+      end
     end
   end
 end

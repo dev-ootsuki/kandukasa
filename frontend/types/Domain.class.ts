@@ -228,12 +228,12 @@ export class DbTable extends DomainObject{
 
 class DbKeyColumnUsage{
     column_name?:string
+    constraint_name?:string
 }
 export class DbPrimaryKey extends DbKeyColumnUsage{
 }
 
 export class DbForeignKey extends DbKeyColumnUsage{
-    
 }
 
 export class DbIndex{

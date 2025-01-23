@@ -99,4 +99,32 @@ class TablesController < ApplicationController
       failed error
     end
   end
+
+  def delete_fkeys
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    data = params.require(:data).permit(keys: [])
+    keys = data["keys"]
+    return invalid_params('E-001', to_error_model("keys", 'validate.required')) unless keys.length > 0
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.delete_fkeys keys
+    rescue StandardError => error
+      failed error
+    end
+  end
+
+  def create_fkey
+    id = params.require(:con_id)
+    sid = params.require(:schema_id)
+    tid = params.require(:table_id)
+    data = params.require(:fkey).permit(:fkey_name, :ref_table, :ref_column)
+    begin
+      strategy = DbStrategy.new id, sid, tid
+      success strategy.create_fkey data[:fkey_name], data[:ref_table], data[:ref_column]
+    rescue StandardError => error
+      failed error
+    end
+  end
 end

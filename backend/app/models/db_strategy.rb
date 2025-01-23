@@ -115,6 +115,24 @@ class DbStrategy
     ret
   end
 
+  def delete_fkeys keys
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.delete_fkeys con, keys
+    }
+    close_connection
+    ret
+  end
+
+  def create_fkey fkey_name, ref_table, ref_column
+    db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
+    ret = establish{|con|
+      db_table.create_fkey con, fkey_name, ref_table, ref_column
+    }
+    close_connection
+    ret
+  end
+
   def table_data pagination, condition, andor
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
