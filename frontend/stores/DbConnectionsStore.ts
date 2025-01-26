@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable, DbTrigger, DbView, DbRoutine, DbColumn, DbData, DbForeignKey, Pagination, DbUiDataTypes } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable, DbTrigger, DbView, DbRoutine, DbColumn, DbData, DbForeignKey, Pagination, DbUiDataTypes, InputForeignKey } from '~/types/Domain.class'
 import type { WebAPI } from '~/types/Types'
 
 type State = {
@@ -199,19 +199,19 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
-        async createForeignKey(fkeyName:string, defColumn:DbColumn, column:DbColumn, useActionOnRef:boolean, matchType:string, actionOnCreate:string, actionOnDelete:string) : Promise<any>{
+        async createForeignKey(input:InputForeignKey) : Promise<any>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_fkey`, {
                 method:"POST",
                 body: {
                     fkey: {
-                        fkey_name: fkeyName,
-                        def_column: defColumn.column_name,
-                        ref_table: column.table_name,
-                        ref_column: column.column_name,
-                        use_action_on_ref: useActionOnRef,
-                        match_type: useActionOnRef ? matchType : null,
-                        action_on_create: useActionOnRef ? actionOnCreate : null,
-                        action_on_delete: useActionOnRef ? actionOnDelete : null
+                        fkey_name: input.fkeyName,
+                        def_column: input.defColumn,
+                        ref_table: input.refTable,
+                        ref_column: input.refColumn,
+                        use_action_on_ref: input.actionOnUse,
+                        match_type: input.actionOnUse ? input.actionOnMatchType : null,
+                        action_on_create: input.actionOnUse ? input.actionOnCreate : null,
+                        action_on_delete: input.actionOnUse ? input.actionOnDelete : null
                     }
                 }
             })

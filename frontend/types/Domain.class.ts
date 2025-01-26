@@ -237,6 +237,17 @@ export class DbPrimaryKey extends DbKeyColumnUsage{
 export class DbForeignKey extends DbKeyColumnUsage{
 }
 
+export class InputForeignKey{
+    fkeyName?:string
+    defColumn?:string
+    refColumn?:string
+    refTable?:string
+    actionOnUse:boolean = false
+    actionOnMatchType?:string
+    actionOnCreate?:string
+    actionOnDelete?:string
+}
+
 export class DbIndex{
     
 }
