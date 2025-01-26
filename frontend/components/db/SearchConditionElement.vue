@@ -12,9 +12,9 @@
         v-model="props.condition.column"
         @update:model-value="onChangeColumn"
     />
-    <DbdataColumnLinkedOperator class="q-pl-sm" :condition-size="props.conditionSize" :column="props.condition.column" :operator="props.condition.operator" @select="onSelectOperator" />
-    <DbdataColumnOperatorLinkedInput :class="inputClassName" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input[0]" @change="onChangeInput" />
-    <DbdataColumnOperatorLinkedInput v-if="selectBetweenOperation" class="dbdata-search-condition-value-harf q-pl-sm" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input[1]" @change="onChangeInput2nd" />
+    <DbColumnLinkedOperator class="q-pl-sm" :condition-size="props.conditionSize" :column="props.condition.column" :operator="props.condition.operator" @select="onSelectOperator" />
+    <DbColumnOperatorLinkedInput :class="inputClassName" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input[0]" @change="onChangeInput" />
+    <DbColumnOperatorLinkedInput v-if="selectBetweenOperation" class="dbdata-search-condition-value-harf q-pl-sm" :column="props.condition.column" :operator="props.condition.operator" :value="props.condition.input[1]" @change="onChangeInput2nd" />
 </template>
 
 <script lang="ts" setup>
@@ -22,8 +22,8 @@ import type { Design } from '~/types/Types'
 import { DbColumn } from '~/types/Domain.class'
 import { DoubleParamsOperatorTypes } from '~/utils/UiHelper'
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
-import DbdataColumnLinkedOperator from '~/components/dbdata/column/LinkedOperator.vue'
-import DbdataColumnOperatorLinkedInput from '~/components/dbdata/column/OperatorLinkedInput.vue'
+import DbColumnLinkedOperator from '~/components/db/column/LinkedOperator.vue'
+import DbColumnOperatorLinkedInput from '~/components/db/column/OperatorLinkedInput.vue'
 
 const props = defineProps<{
     columns: DbColumn[],

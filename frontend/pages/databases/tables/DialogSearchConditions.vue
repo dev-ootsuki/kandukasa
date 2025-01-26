@@ -25,7 +25,7 @@
 
         <q-card-section class="scroll" style="max-height: 50vh">
           <div class="row search-conditions-card" v-for="condition in searchConditions.conditions">
-            <DbdataSearchConditionElement :condition-size="searchConditions.conditions.length" :columns="columns" :condition="condition" :ref="`condition_${condition.key}`" :refs="condition.refs"/>
+            <DbSearchConditionElement :condition-size="searchConditions.conditions.length" :columns="columns" :condition="condition" :ref="`condition_${condition.key}`" :refs="condition.refs"/>
             <q-btn flat round icon="remove" color="negative" @click="onRemoveSearchConditionsAt(condition.key)" />
           </div>
         </q-card-section>
@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import type { Design } from '~/types/Types'
 import { DbColumn } from '~/types/Domain.class'
-import DbdataSearchConditionElement from '~/components/dbdata/SearchConditionElement.vue'
+import DbSearchConditionElement from '~/components/db/SearchConditionElement.vue'
 // 検索条件
 const visible = ref<boolean>(false)
 const searchConditions = ref<{conditions: Design.SearchCondition[], andor:string}>({conditions:[], andor:"AND"})

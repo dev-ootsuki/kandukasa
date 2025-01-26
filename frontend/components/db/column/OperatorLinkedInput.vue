@@ -1,6 +1,6 @@
 <template>
     <!-- not taget null operation -->
-    <DbdataColumnLinkedInput :multiple="multiple" v-if="!selectNullOperation" :column="props.column" :value="props.value" :class="props.class" @change="onChange" ref="input" />
+    <DbColumnLinkedInput :multiple="multiple" v-if="!selectNullOperation" :column="props.column" :value="props.value" :class="props.class" @change="onChange" ref="input" />
     <!-- target null operation -->
     <span class="q-pt-sm q-pl-md dbdata-search-condition-value" v-if="selectNullOperation">{{ $t('dbdata.compare.compare_nullable') }}</span>
 </template>

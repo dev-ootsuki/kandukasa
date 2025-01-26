@@ -84,7 +84,7 @@
               :label="$t('tables.primarykey')"
             >
               <q-card-section>
-                <DbTablePrimariesView :columns="columns" :primaries="selectedTable?.primaries"/>
+                <ViewPrimaries :columns="columns" :primaries="selectedTable?.primaries"/>
               </q-card-section>
             </q-expansion-item>
 
@@ -97,7 +97,7 @@
               :label="$t('tables.foreignkey')"
             >
               <q-card-section>
-                <DbTableForeignsView :columns="columns" :foreigns="selectedTable?.foreigns" />
+                <ViewForeigns :columns="columns" :foreigns="selectedTable?.foreigns" />
               </q-card-section>
             </q-expansion-item>
           </q-tab-panel>
@@ -105,7 +105,7 @@
 
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="data">
-            <DbDataView :columns="columns"/>
+            <ViewData :columns="columns"/>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -115,9 +115,9 @@
   
 <script lang="ts" setup>
 import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
-import DbDataView from '~/pages/databases/tables/DbDataView.vue'
-import DbTablePrimariesView from '~/pages/databases/tables/DbTablePrimariesView.vue'
-import DbTableForeignsView from '~/pages/databases/tables/DbTableForeignsView.vue'
+import ViewData from '~/pages/databases/tables/ViewData.vue'
+import ViewPrimaries from '~/pages/databases/tables/ViewPrimaries.vue'
+import ViewForeigns from '~/pages/databases/tables/ViewForeigns.vue'
 import { useI18n } from 'vue-i18n'
 import { useSystemStore } from '~/stores/SystemStore'
 import type { Design } from '~/types/Types'

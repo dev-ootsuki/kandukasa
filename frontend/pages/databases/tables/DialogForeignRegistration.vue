@@ -1,7 +1,7 @@
 <template>
     <DialogRegistration slot-style="min-height:34vh;" :validator="isValid" ref="dialog" mode="register" :visible="visible" @close="onClose" @submit="onSubmit" @complete="onComplete" midium>
         <div class="q-ma-md">
-            <DbdataForeignKey :columns="props.columns" ref="fkeyComponent" />
+            <DbForeignKey :columns="props.columns" ref="fkeyComponent" />
         </div>
     </DialogRegistration>
 </template>

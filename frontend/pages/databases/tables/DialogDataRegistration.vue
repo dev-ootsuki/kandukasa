@@ -7,7 +7,7 @@
             </div>
             <div class="col-12 col-md-4 bg-eins text-eins" ref="inputRoot">
                 <template v-if="column.extra != 'auto_increment'">
-                    <DbdataColumnLinkedInput :required="!column.is_nullable" class="q-pt-md" :column="column" :multiple="false" :value="data![column.column_name!]" @change="(v:any) => {data![column.column_name!] = v}" />
+                    <DbColumnLinkedInput :required="!column.is_nullable" class="q-pt-md" :column="column" :multiple="false" :value="data![column.column_name!]" @change="(v:any) => {data![column.column_name!] = v}" />
                 </template>
                 <template v-else>
                     <div class="q-pt-lg q-pl-sm">{{mode == "register" ? $t('dbdata.registration.auto_increment') : data![column.column_name!]}}</div>
