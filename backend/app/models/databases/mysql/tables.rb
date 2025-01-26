@@ -256,6 +256,8 @@ module Databases
           each["columns"] = each["column_names"].split(", ")
           column_names << each["columns"]
           each["IS_VISIBLE"] = each["IS_VISIBLE"] ? true : false
+          each["NON_UNIQUE"] = each["NON_UNIQUE"] == 1 ? true : false
+          each["NULLABLE"] = each["NULLABLE"] == "YES" ? true : false
           each["id"] = each["INDEX_NAME"]
           each.transform_keys(&:downcase)
         }

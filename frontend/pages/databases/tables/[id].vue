@@ -100,6 +100,22 @@
                 <ViewForeigns :columns="columns" :foreigns="selectedTable?.foreigns" />
               </q-card-section>
             </q-expansion-item>
+
+
+            <q-expansion-item
+              dense-toggle
+              default-opened
+              expand-separator
+              icon="list"
+              class="text-weight-bold"
+              :label="$t('tables.index')"
+            >
+              <q-card-section>
+                <ViewIndexes :columns="columns" :indexes="selectedTable?.indexes" />
+              </q-card-section>
+            </q-expansion-item>
+
+
           </q-tab-panel>
         </q-tab-panels>
 
@@ -118,6 +134,7 @@ import { useDbConnectionsStore } from '~/stores/DbConnectionsStore'
 import ViewData from '~/pages/databases/tables/ViewData.vue'
 import ViewPrimaries from '~/pages/databases/tables/ViewPrimaries.vue'
 import ViewForeigns from '~/pages/databases/tables/ViewForeigns.vue'
+import ViewIndexes from '~/pages/databases/tables/ViewIndexes.vue'
 import { useI18n } from 'vue-i18n'
 import { useSystemStore } from '~/stores/SystemStore'
 import type { Design } from '~/types/Types'

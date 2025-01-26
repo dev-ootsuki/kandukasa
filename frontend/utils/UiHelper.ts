@@ -222,6 +222,7 @@ const ColumnsOrderDifinitions = ["column_name", "column_type", "ordinal_position
  */
 const KeyColumnUsageOrderDifinitions = ["constraint_name", "table_schema", "table_name", "column_name", "ordinal_position", "position_in_unique_constraint", "referenced_table_schema", "referenced_table_name", "referenced_column_name"]
 
+const IndexOrderDifinitions = ["index_name", "column_names", "non_unique", "collation", "sub_part", "packed", "nullable", "index_type", "comment", "index_comment", "is_visible", "expression"]
 export class UiHelper{
     /**
      * Get current instance's ref ID
@@ -450,7 +451,28 @@ export class TableHelper{
             format: (val:any) => '',
             sortable: false,
         }].concat(ret)
+    }
 
+    static createIndexColumns($t: Function) : any[]{
+        const system = useSystemStore().systemSetting
+        const ret = IndexOrderDifinitions.map(each => {
+            return {
+                name: each,
+                required: false,
+                label: each != "id" ? $t(`metadata.${each}`) : $t('common.operation'),
+                field: (row:any) => row[each],
+                format: (val:any) => `${val}`,
+                sortable:false
+            }
+        })
+        return [{
+            name: "id",
+            required: false,
+            label: $t('common.operation'),
+            field:(row:any) => '',
+            format: (val:any) => '',
+            sortable: false,
+        }].concat(ret)
     }
 
     static createDataColumns($t:Function, columns:any[]) : Design.DataColumn[]{

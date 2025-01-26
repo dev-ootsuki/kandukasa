@@ -249,7 +249,7 @@ export class InputForeignKey{
 }
 
 export class DbIndex{
-    
+    index_name?:string
 }
 export class Pagination{
     rowsPerPage:number = 0

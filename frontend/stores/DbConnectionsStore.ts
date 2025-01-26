@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DbConnection, DbEvent, DbSchema, DbTable, DbTrigger, DbView, DbRoutine, DbColumn, DbData, DbForeignKey, Pagination, DbUiDataTypes, InputForeignKey } from '~/types/Domain.class'
+import { DbConnection, DbEvent, DbSchema, DbTable, DbTrigger, DbView, DbRoutine, DbColumn, DbData, DbForeignKey, Pagination, DbUiDataTypes, InputForeignKey, DbIndex } from '~/types/Domain.class'
 import type { WebAPI } from '~/types/Types'
 
 type State = {
@@ -212,6 +212,19 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                         match_type: input.actionOnUse ? input.actionOnMatchType : null,
                         action_on_create: input.actionOnUse ? input.actionOnCreate : null,
                         action_on_delete: input.actionOnUse ? input.actionOnDelete : null
+                    }
+                }
+            })
+            .then(data => {
+                return data.data
+            })
+        },
+        async deleteIndexes(indexes:DbIndex[]) : Promise<any>{
+            return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/delete_indexes`, {
+                method:"DELETE",
+                body: {
+                    data: {
+                        keys: indexes.map(e => e.index_name)
                     }
                 }
             })

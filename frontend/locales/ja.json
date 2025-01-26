@@ -77,7 +77,8 @@
     "fkey_action_on_references": "参照アクション",
     "fkey_action_match_type": "一致タイプ",
     "fkey_action_on_create": "ON CREATE",
-    "fkey_action_on_delete": "ON DELETE"
+    "fkey_action_on_delete": "ON DELETE",
+    "index": "インデックス"
   },
   "dbdata": {
     "compare": {
@@ -277,7 +278,17 @@
     "position_in_unique_constraint": "外部キーの参照キー順序",
     "referenced_table_schema": "制約の参照スキーマ",
     "referenced_table_name": "制約の参照テーブル",
-    "referenced_column_name": "制約の参照カラム"
-
+    "referenced_column_name": "制約の参照カラム",
+    "index_name": "index名",
+    "column_names": "対象カラム",
+    "non_unique": "重複許容",
+    "collation": "照合順序",
+    "sub_part": "接頭辞",
+    "packed": "パック方法",
+    "nullable": "null許容",
+    "index_type": "index方法",
+    "index_comment": "index作成時コメント",
+    "is_visible": "オプティマイザのindex参照可否",
+    "expression": "関数キー"
   }
 }
