@@ -31,7 +31,9 @@
     "search_conditions": "検索条件",
     "search_conditions_description": "検索条件を入力してください",
     "clear": "クリア",
-    "value": "値"
+    "value": "値",
+    "use": "使う",
+    "no_use": "使わない"
   },
   "leftmenu": {
     "all": "全て",
@@ -70,7 +72,12 @@
     "def_columns": "カラム定義",
     "primarykey": "主キー",
     "cannot_remove_pkey": "このタイプの主キーは削除できません",
-    "foreignkey":"外部キー"
+    "foreignkey":"外部キー",
+    "foreignkey_name": "外部キー名",
+    "fkey_action_on_references": "参照アクション",
+    "fkey_action_match_type": "一致タイプ",
+    "fkey_action_on_create": "ON CREATE",
+    "fkey_action_on_delete": "ON DELETE"
   },
   "dbdata": {
     "compare": {

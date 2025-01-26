@@ -199,14 +199,19 @@ export const useDbConnectionsStore = defineStore('dbConnections', {
                 return data.data
             })
         },
-        async createForeignKey(fkeyName:string, column:DbColumn) : Promise<any>{
+        async createForeignKey(fkeyName:string, defColumn:DbColumn, column:DbColumn, useActionOnRef:boolean, matchType:string, actionOnCreate:string, actionOnDelete:string) : Promise<any>{
             return webapi()<WebAPI.WebAPISuccess<DbData[]> | WebAPI.WebAPIFailed>(`/db_connection/${this.selectedDb?.id}/${this.selectedSchema?.schema_id}/${this.selectedTable?.table_id}/create_fkey`, {
                 method:"POST",
                 body: {
                     fkey: {
                         fkey_name: fkeyName,
+                        def_column: defColumn.column_name,
                         ref_table: column.table_name,
-                        ref_column: column.column_name
+                        ref_column: column.column_name,
+                        use_action_on_ref: useActionOnRef,
+                        match_type: useActionOnRef ? matchType : null,
+                        action_on_create: useActionOnRef ? actionOnCreate : null,
+                        action_on_delete: useActionOnRef ? actionOnDelete : null
                     }
                 }
             })

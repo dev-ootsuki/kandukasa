@@ -18,6 +18,10 @@ module Databases
         :geometries => ["geometry", "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection"]
       }
 
+      def find_fkey_match_typs base
+        ["SIMPLE"]
+      end
+
       def find_ui_db_data_mapping base
         UI_DATA_TYPES
       end

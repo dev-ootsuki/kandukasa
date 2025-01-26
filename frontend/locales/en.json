@@ -31,7 +31,9 @@
     "search_conditions": "Search condition",
     "search_conditions_description": "Please enter your search criteria",
     "clear" : "Clear",
-    "value": "Value"
+    "value": "Value",
+    "use": "use",
+    "no_use": "not use"
   },
   "leftmenu": {
     "all": "All",
@@ -70,7 +72,13 @@
     "def_columns":"Column Difinitions",
     "primarykey": "Primary key",
     "cannot_remove_pkey": "Primary keys of this type cannot be dele",
-    "foreignkey": "Foreign key"
+    "foreignkey": "Foreign key",
+    "foreignkey_name": "Foreign key name",
+    "fkey_action_on_references": "Action on references",
+    "fkey_action_match_type": "Match types",
+    "fkey_action_on_create": "ON CREATE",
+    "fkey_action_on_delete": "ON DELETE"
+
   },
   "dbdata": {
     "compare": {

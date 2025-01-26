@@ -281,6 +281,10 @@
     max-width:40vw;
     min-width:35vw;
 }
+.dialog-registration-midium{
+    max-width: 60vw;
+    min-width: 50vw;
+}
 
 /* scrollber */
 ::-webkit-scrollbar-thumb {

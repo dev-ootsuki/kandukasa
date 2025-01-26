@@ -19,7 +19,8 @@ module Databases
           :privileges => find_users_privileges(base),
           :engines => find_available_engines(base),
           :collations => find_collations(base),
-          :ui_data_types => find_ui_db_data_mapping(base)
+          :ui_data_types => find_ui_db_data_mapping(base),
+          :fkey_match_types => find_fkey_match_typs(base),
         }
       end
 

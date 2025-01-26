@@ -67,6 +67,7 @@ export class DbInstance extends DomainObject{
     privileges:DbPrivileges[] = []
     collations:DbCollations[] = []
     ui_data_types?: DbUiDataTypes
+    fkey_match_types:string[] = []
 }
 
 export class DbUiDataTypes{

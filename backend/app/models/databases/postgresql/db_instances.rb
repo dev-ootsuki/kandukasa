@@ -1,6 +1,10 @@
 module Databases
   module Postgresql
     class DbInstances < Databases::Auto::DbInstances
+      def find_fkey_match_typs base
+        ["SIMPLE", "FULL", ] # PARTICAL is not implement
+      end
+
       def find_character_sets base
         query = <<-"EOS"
           SELECT DISTINCT

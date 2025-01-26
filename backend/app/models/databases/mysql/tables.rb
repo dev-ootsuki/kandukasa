@@ -281,9 +281,10 @@ module Databases
         end
       end
 
-      def create_fkey base, fkey_name, ref_table, ref_column
+      def create_fkey base, data
         base.connection.transaction do
-          base.connection.execute "ALTER TABLE #{table_name} ADD FOREIGN KEY #{fkey_name} REFERENCES #{ref_table} (#{ref_column})"
+          action_on_ref = data[:use_action_on_ref] ? "MATCH #{data[:match_type]} ON UPDATE #{data[:action_on_create]} ON DELETE #{data[:action_on_delete]}" : ""
+          base.connection.execute "ALTER TABLE #{table_name} ADD CONSTRAINT #{data[:fkey_name]} FOREIGN KEY (#{data[:def_column]}) REFERENCES #{@schema_id}.#{data[:ref_table]} (#{data[:ref_column]}) #{action_on_ref}"
         end
       end
     end

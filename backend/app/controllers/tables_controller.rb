@@ -119,10 +119,10 @@ class TablesController < ApplicationController
     id = params.require(:con_id)
     sid = params.require(:schema_id)
     tid = params.require(:table_id)
-    data = params.require(:fkey).permit(:fkey_name, :ref_table, :ref_column)
+    data = params.require(:fkey).permit(:fkey_name, :ref_table, :ref_column, :def_column, :use_action_on_ref, :match_type, :action_on_create, :action_on_delete)
     begin
       strategy = DbStrategy.new id, sid, tid
-      success strategy.create_fkey data[:fkey_name], data[:ref_table], data[:ref_column]
+      success strategy.create_fkey data
     rescue StandardError => error
       failed error
     end

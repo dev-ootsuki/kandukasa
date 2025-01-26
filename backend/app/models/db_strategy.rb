@@ -124,10 +124,10 @@ class DbStrategy
     ret
   end
 
-  def create_fkey fkey_name, ref_table, ref_column
+  def create_fkey data
     db_table = get_db_mapping[:table].camelize.constantize.new(@connection_id, @schema_id, @table_id)
     ret = establish{|con|
-      db_table.create_fkey con, fkey_name, ref_table, ref_column
+      db_table.create_fkey con, data
     }
     close_connection
     ret
